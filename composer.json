@@ -1,5 +1,6 @@
 {
-    "name": "pldin601/phlisp",
+    "name": "pldin601/lisp-vm",
+    "description": "Lisp parser and interpreter.",
     "authors": [
         {
             "name": "Roman Gemini",
