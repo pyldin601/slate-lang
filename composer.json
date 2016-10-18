@@ -1,0 +1,11 @@
+{
+    "name": "pldin601/phlisp",
+    "authors": [
+        {
+            "name": "Roman Gemini",
+            "email": "roman@homefs.biz"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
