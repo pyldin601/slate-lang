@@ -29,13 +29,31 @@ function makeLexeme($type, $data = null)
  * @param $char
  * @return bool
  */
-function isSymbol($char)
+function isStructural($char)
 {
-    return !in_array($char, ['(', ')', '"']);
+    return in_array($char, ['(', ')', '"']);
 }
 
 /**
- * Covert code to list of lexemes.
+ * @param $char
+ * @return bool
+ */
+function isSymbol($char)
+{
+    return !isDelimiter($char) && !isStructural($char);
+}
+
+/**
+ * @param $char
+ * @return bool
+ */
+function isDelimiter($char)
+{
+    return in_array($char, ["\t", "\r", "\n", " "]);
+}
+
+/**
+ * Covert code to list of lexemes using iterative state machine.
  *
  * @param $code
  * @return mixed
@@ -49,11 +67,6 @@ function toLexemes($code)
         $head = $rest[0];
         $tail = substr($rest, 1);
         switch ($head) {
-            case ' ':
-            case "\n":
-            case "\r":
-            case "\t":
-                return $baseIter($tail, $acc);
             case '(':
                 return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_OPEN_PAREN)]));
             case ')':
@@ -61,38 +74,49 @@ function toLexemes($code)
             case '"':
                 return $stringIter($tail, [], $acc);
             default:
+                if (isDelimiter($head)) {
+                    return $baseIter($tail, $acc);
+                }
                 return $symbolIter($tail, [$head], $acc);
         }
     };
 
-    $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter) {
+    $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter) {
+        if (!empty($rest)) {
+            $head = $rest[0];
+            $tail = substr($rest, 1);
+            if (isSymbol($head)) {
+                return $symbolIter($tail, array_merge($buffer, $head), $acc);
+            }
+        }
+        $lexeme = makeLexeme(LEXEME_SYMBOL, $buffer);
+        return $baseIter($rest, array_merge($acc, [$lexeme]));
+    };
+
+    $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
         if (empty($rest)) {
-            throw new \Exception();
+            throw new \Exception("Unexpected end of string!");
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
-        switch ($head) {
-
+        if ($head == '"') {
+            $lexeme = makeLexeme(LEXEME_STRING, $buffer);
+            return $baseIter($tail, array_merge($acc, [$lexeme]));
         }
-    };
-
-    $stringIter = function ($rest, $buffer, $acc) {
-
-    };
-
-    $iter = function ($rest, $buffer, $state, $acc) use (&$iter) {
-        $current = $rest[0];
-        switch ($state) {
-            case STATE_INIT:
-                switch ($current) {
-                    case '(':
-                        return $iter(substr($rest, 1), [], STATE_INIT, array_merge($acc, [makeLexeme(LEXEME_OPEN_PAREN)]));
-                }
-            case STATE_SYMBOL:
-            case STATE_STRING:
-            case STATE_ESCAPE:
+        if ($head == '\\') {
+            return $escapeIter($tail, $buffer, $acc);
         }
+        return $stringIter($tail, array_merge($buffer, [$head]), $acc);
     };
 
-    return $baseIter($code[]);
+    $escapeIter = function ($rest, $buffer, $acc) use (&$stringIter) {
+        if (empty($rest)) {
+            throw new \Exception("Unexpected end of string!");
+        }
+        $head = $rest[0];
+        $tail = substr($rest, 1);
+        return $stringIter($tail, array_merge($buffer, [$head]), $acc);
+    };
+
+    return $baseIter($code, []);
 }
