@@ -2,28 +2,18 @@
 
 namespace PeacefulBit\LispMachine\Parser;
 
-const LEXEME_DELIMITER      = 0;
-const LEXEME_OPEN_BRACKET   = 1;
-const LEXEME_CLOSE_BRACKET  = 2;
-const LEXEME_SYMBOL         = 4;
-const LEXEME_STRING         = 5;
+use PeacefulBit\LispMachine\Lexer;
 
-const STATE_INIT            = 1;
-const STATE_SYMBOL          = 2;
-const STATE_STRING          = 3;
-const STATE_ESCAPE          = 4;
 
-/**
- * Make lexeme item.
- *
- * @param string $type
- * @param mixed $data
- * @return array
- */
-function makeLexeme($type, $data = null)
-{
-    return [$type, $data];
-}
+const TOKEN_OPEN_BRACKET    = '(';
+const TOKEN_CLOSE_BRACKET   = ')';
+const TOKEN_DOUBLE_QUOTE    = '"';
+const TOKEN_BACK_SLASH      = '\\';
+
+const TOKEN_TAB             = "\t";
+const TOKEN_SPACE           = " ";
+const TOKEN_NEW_LINE        = "\n";
+const TOKEN_CARRIAGE_RETURN = "\r";
 
 /**
  * @param $char
@@ -31,7 +21,25 @@ function makeLexeme($type, $data = null)
  */
 function isStructural($char)
 {
-    return in_array($char, ['(', ')', '"']);
+    return in_array($char, [
+        TOKEN_OPEN_BRACKET,
+        TOKEN_CLOSE_BRACKET,
+        TOKEN_DOUBLE_QUOTE
+    ]);
+}
+
+/**
+ * @param $char
+ * @return bool
+ */
+function isDelimiter($char)
+{
+    return in_array($char, [
+        TOKEN_TAB,
+        TOKEN_CARRIAGE_RETURN,
+        TOKEN_NEW_LINE,
+        TOKEN_SPACE]
+    );
 }
 
 /**
@@ -43,14 +51,7 @@ function isSymbol($char)
     return !isDelimiter($char) && !isStructural($char);
 }
 
-/**
- * @param $char
- * @return bool
- */
-function isDelimiter($char)
-{
-    return in_array($char, ["\t", "\r", "\n", " "]);
-}
+
 
 /**
  * Covert code to list of lexemes using iterative state machine.
@@ -67,11 +68,11 @@ function toLexemes($code)
         $head = $rest[0];
         $tail = substr($rest, 1);
         switch ($head) {
-            case '(':
-                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_OPEN_BRACKET)]));
-            case ')':
-                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_CLOSE_BRACKET)]));
-            case '"':
+            case TOKEN_OPEN_BRACKET:
+                return $baseIter($tail, array_merge($acc, [Lexer\makeLexeme(Lexer\LEXEME_OPEN_BRACKET)]));
+            case TOKEN_CLOSE_BRACKET:
+                return $baseIter($tail, array_merge($acc, [Lexer\makeLexeme(Lexer\LEXEME_CLOSE_BRACKET)]));
+            case TOKEN_DOUBLE_QUOTE:
                 return $stringIter($tail, [], $acc);
             default:
                 if (isDelimiter($head)) {
@@ -89,7 +90,7 @@ function toLexemes($code)
                 return $symbolIter($tail, array_merge($buffer, [$head]), $acc);
             }
         }
-        $lexeme = makeLexeme(LEXEME_SYMBOL, $buffer);
+        $lexeme = Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, $buffer);
         return $baseIter($rest, array_merge($acc, [$lexeme]));
     };
 
@@ -100,8 +101,8 @@ function toLexemes($code)
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
-        if ($head == '"') {
-            $lexeme = makeLexeme(LEXEME_STRING, $buffer);
+        if ($head == TOKEN_DOUBLE_QUOTE) {
+            $lexeme = Lexer\makeLexeme(Lexer\LEXEME_STRING, $buffer);
             return $baseIter($tail, array_merge($acc, [$lexeme]));
         }
         if ($head == '\\') {

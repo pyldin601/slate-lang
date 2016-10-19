@@ -11,7 +11,8 @@
   "require": {},
   "autoload": {
     "files": [
-      "src/PeacefulBit/LispMachine/Parser/Parser.php"
+      "src/PeacefulBit/LispMachine/Parser/Parser.php",
+      "src/PeacefulBit/LispMachine/Lexer/Lexer.php"
     ],
     "psr-4": {
       "": "src/"
