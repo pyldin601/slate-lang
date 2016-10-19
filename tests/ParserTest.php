@@ -24,8 +24,8 @@ class ParserTest extends TestCase
 
         $lexeme = $lexemes[0];
 
-        $this->assertEquals(Lexer\LEXEME_SYMBOL, $lexeme[0]);
-        $this->assertEquals("some_symbol", implode("", $lexeme[1]));
+        $this->assertEquals(Lexer\LEXEME_SYMBOL, Lexer\getType($lexeme));
+        $this->assertEquals("some_symbol", implode("", Lexer\getData($lexeme)));
     }
 
     public function testDelimiters()
@@ -42,7 +42,7 @@ class ParserTest extends TestCase
 
         $lexeme = $lexemes[0];
 
-        $this->assertEquals(Lexer\LEXEME_STRING, $lexeme[0]);
+        $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
         $this->assertEquals("hello world", implode("", $lexeme[1]));
     }
 
@@ -53,8 +53,8 @@ class ParserTest extends TestCase
 
         $lexeme = $lexemes[0];
 
-        $this->assertEquals(Lexer\LEXEME_STRING, $lexeme[0]);
-        $this->assertEquals("hello \"world\"", implode("", $lexeme[1]));
+        $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
+        $this->assertEquals("hello \"world\"", implode("", Lexer\getData($lexeme)));
     }
 
     public function testBrackets()
@@ -62,8 +62,8 @@ class ParserTest extends TestCase
         $lexemes = Parser\toLexemes('()');
         $this->assertCount(2, $lexemes);
 
-        $this->assertEquals(Lexer\LEXEME_OPEN_BRACKET, $lexemes[0][0]);
-        $this->assertEquals(Lexer\LEXEME_CLOSE_BRACKET, $lexemes[1][0]);
+        $this->assertEquals(Lexer\LEXEME_OPEN_BRACKET, Lexer\getType($lexemes[0]));
+        $this->assertEquals(Lexer\LEXEME_CLOSE_BRACKET, Lexer\getType($lexemes[1]));
     }
 
     public function testUnclosedString()
