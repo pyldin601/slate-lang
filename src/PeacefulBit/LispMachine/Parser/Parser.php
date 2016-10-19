@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Lisp\Parser;
+namespace PeacefulBit\LispMachine\Parser;
 
 const LEXEME_DELIMITER      = 0;
 const LEXEME_OPEN_BRACKET   = 1;

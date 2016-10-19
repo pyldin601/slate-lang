@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Lisp\Exceptions;
+namespace PeacefulBit\LispMachine\Exceptions;
 
 class LispException extends \Exception
 {
