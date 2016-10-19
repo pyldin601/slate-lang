@@ -78,4 +78,33 @@ class ParserTest extends TestCase
             $this->assertEquals("Unused escape character after \"hello\"", $exception->getMessage());
         }
     }
+
+    public function testParseSimpleProgram()
+    {
+        $code = '(+ 5.6 2.7 (- 15 (/ 4 2)))';
+        $lexemes = Parser\toLexemes($code);
+
+        $this->assertCount(14, $lexemes);
+
+        $expectedLexemes = [
+            Lexer\LEXEME_OPEN_BRACKET,  // (
+            Lexer\LEXEME_SYMBOL,        // +
+            Lexer\LEXEME_SYMBOL,        // 5.6
+            Lexer\LEXEME_SYMBOL,        // 2.7
+            Lexer\LEXEME_OPEN_BRACKET,  // (
+            Lexer\LEXEME_SYMBOL,        // -
+            Lexer\LEXEME_SYMBOL,        // 15
+            Lexer\LEXEME_OPEN_BRACKET,  // (
+            Lexer\LEXEME_SYMBOL,        // /
+            Lexer\LEXEME_SYMBOL,        // 4
+            Lexer\LEXEME_SYMBOL,        // 2
+            Lexer\LEXEME_CLOSE_BRACKET, // )
+            Lexer\LEXEME_CLOSE_BRACKET, // )
+            Lexer\LEXEME_CLOSE_BRACKET  // )
+        ];
+
+        $types = array_map('\PeacefulBit\LispMachine\Lexer\getType', $lexemes);
+
+        $this->assertEquals($expectedLexemes, $types);
+    }
 }
