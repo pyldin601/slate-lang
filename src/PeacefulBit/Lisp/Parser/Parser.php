@@ -1,10 +1,10 @@
 <?php
 
-namespace Lisp\VM\Parser;
+namespace PeacefulBit\Lisp\Parser;
 
 const LEXEME_DELIMITER      = 0;
-const LEXEME_OPEN_PAREN     = 1;
-const LEXEME_CLOSE_PAREN    = 2;
+const LEXEME_OPEN_BRACKET   = 1;
+const LEXEME_CLOSE_BRACKET  = 2;
 const LEXEME_SYMBOL         = 4;
 const LEXEME_STRING         = 5;
 
@@ -68,9 +68,9 @@ function toLexemes($code)
         $tail = substr($rest, 1);
         switch ($head) {
             case '(':
-                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_OPEN_PAREN)]));
+                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_OPEN_BRACKET)]));
             case ')':
-                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_CLOSE_PAREN)]));
+                return $baseIter($tail, array_merge($acc, [makeLexeme(LEXEME_CLOSE_BRACKET)]));
             case '"':
                 return $stringIter($tail, [], $acc);
             default:
@@ -95,7 +95,8 @@ function toLexemes($code)
 
     $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
         if (empty($rest)) {
-            throw new \Exception("Unexpected end of string!");
+            $bufferString = implode('', $buffer);
+            throw new ParserException("Unexpected end of string after \"$bufferString\"");
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
@@ -111,7 +112,8 @@ function toLexemes($code)
 
     $escapeIter = function ($rest, $buffer, $acc) use (&$stringIter) {
         if (empty($rest)) {
-            throw new \Exception("Unexpected end of string!");
+            $bufferString = implode('', $buffer);
+            throw new ParserException("Unused escape character after \"$bufferString\"");
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
