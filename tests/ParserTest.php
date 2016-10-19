@@ -19,5 +19,10 @@ class ParserTest extends TestCase
     {
         $lexemes = toLexemes("some_symbol");
         $this->assertCount(1, $lexemes);
+
+        $lexeme = $lexemes[0];
+
+        $this->assertEquals(\Lisp\VM\Parser\LEXEME_SYMBOL, $lexeme[0]);
+        $this->assertEquals("some_symbol", implode("", $lexeme[1]));
     }
 }
