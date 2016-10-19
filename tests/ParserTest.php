@@ -28,6 +28,13 @@ class ParserTest extends TestCase
         $this->assertEquals("some_symbol", implode("", $lexeme[1]));
     }
 
+    public function testDelimiters()
+    {
+        $this->assertCount(2, Parser\toLexemes("foo bar"));
+        $this->assertCount(2, Parser\toLexemes("foo \t bar"));
+        $this->assertCount(2, Parser\toLexemes("foo \r\n bar"));
+    }
+
     public function testUnescapedString()
     {
         $lexemes = Parser\toLexemes('"hello world"');
