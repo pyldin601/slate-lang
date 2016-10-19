@@ -86,7 +86,7 @@ function toLexemes($code)
             $head = $rest[0];
             $tail = substr($rest, 1);
             if (isSymbol($head)) {
-                return $symbolIter($tail, array_merge($buffer, $head), $acc);
+                return $symbolIter($tail, array_merge($buffer, [$head]), $acc);
             }
         }
         $lexeme = makeLexeme(LEXEME_SYMBOL, $buffer);
