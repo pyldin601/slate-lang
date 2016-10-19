@@ -50,4 +50,24 @@ class TreeTest extends TestCase
 
         $this->assertEquals($expected, $ast);
     }
+
+    public function testSequenceOfExpressions()
+    {
+        $lexemes = Parser\toLexemes("(+ 1 2) (- 10 2)");
+        $ast = Parser\toAst($lexemes);
+
+        $expected = [
+            [
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['+']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2'])
+            ], [
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['-']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1', '0']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2']),
+            ]
+        ];
+
+        $this->assertEquals($expected, $ast);
+    }
 }
