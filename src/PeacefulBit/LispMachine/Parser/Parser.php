@@ -51,8 +51,6 @@ function isSymbol($char)
     return !isDelimiter($char) && !isStructural($char);
 }
 
-
-
 /**
  * Covert code to list of lexemes using iterative state machine.
  *
@@ -122,4 +120,49 @@ function toLexemes($code)
     };
 
     return $baseIter($code, []);
+}
+
+/**
+ * Convert list of lexemes to ast tree.
+ *
+ * @param array $lexemes
+ * @return array
+ */
+function toAst($lexemes)
+{
+    $findCloseBracket = function ($rest, $depth = 0, $offset = 0) use (&$findCloseBracket) {
+        if (empty($rest)) {
+            return null;
+        }
+        $head = $rest[0];
+        $tail = array_slice($rest, 1);
+        switch (Lexer\getType($head)) {
+            case Lexer\LEXEME_OPEN_BRACKET:
+                return $findCloseBracket($tail, $depth + 1, $offset + 1);
+            case Lexer\LEXEME_CLOSE_BRACKET:
+                return $depth == 0
+                    ? $offset
+                    : $findCloseBracket($tail, $depth - 1, $offset + 1);
+            default:
+                return $findCloseBracket($tail, $depth, $offset + 1);
+        }
+    };
+    $iter = function ($rest, $acc) use (&$iter, &$findCloseBracket) {
+        if (empty($rest)) {
+            return $acc;
+        }
+        $head = $rest[0];
+        $tail = array_slice($rest, 1);
+        if (Lexer\getType($head) == Lexer\LEXEME_OPEN_BRACKET) {
+            $closeIndex = $findCloseBracket($tail);
+            if (is_null($closeIndex)) {
+                throw new ParserException("Unclosed bracket found");
+            }
+            $expr = toAst(array_slice($tail, 0, $closeIndex));
+            $newTail = array_slice($tail, $closeIndex + 1);
+            return $iter($newTail, array_merge($acc, [$expr]));
+        }
+        return $iter($tail, array_merge($acc, [$head]));
+    };
+    return $iter($lexemes, []);
 }

@@ -58,3 +58,12 @@ function getData($lexeme)
 {
     return $lexeme[1];
 }
+
+/**
+ * @param $lexemes
+ * @return array
+ */
+function getListOfTypes($lexemes)
+{
+    return array_map('\PeacefulBit\LispMachine\Lexer\getType', $lexemes);
+}
