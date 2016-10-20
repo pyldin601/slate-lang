@@ -4,7 +4,7 @@
 
 My own light lisp-interpreter written on PHP.
 
-## todo
+## checklist
 1. ~~Parse code into list of lexemes~~
 2. ~~Make ast tree from list of lexemes~~
 3. Make interpreter that will run our ast (in progress)
