@@ -15,6 +15,27 @@ class TreeTest extends TestCase
         $this->assertCount(0, $ast);
     }
 
+    public function testEmptyCode()
+    {
+        $lexemes = Parser\toLexemes("");
+        $ast = Parser\toAst($lexemes);
+        $this->assertCount(0, $ast);
+    }
+
+    public function testMultiSymbol()
+    {
+        $lexemes = Parser\toLexemes("1 2");
+        $ast = Parser\toAst($lexemes);
+        $this->assertCount(2, $ast);
+
+        $expected = [
+            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
+            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2']),
+        ];
+
+        $this->assertEquals($expected, $ast);
+    }
+
     public function testSimpleExpression()
     {
         $lexemes = Parser\toLexemes("(+ 1 2)");

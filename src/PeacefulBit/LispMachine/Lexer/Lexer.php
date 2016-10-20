@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 10/19/16
- * Time: 1:46 PM
- */
 
 namespace PeacefulBit\LispMachine\Lexer;
 
@@ -57,13 +51,4 @@ function getType($lexeme)
 function getData($lexeme)
 {
     return $lexeme[1];
-}
-
-/**
- * @param $lexemes
- * @return array
- */
-function getListOfTypes($lexemes)
-{
-    return array_map('\PeacefulBit\LispMachine\Lexer\getType', $lexemes);
 }
