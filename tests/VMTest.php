@@ -28,6 +28,18 @@ class VMTest extends TestCase
         $this->assertEquals(2, $this->evaluate('(/ 24 2 6)'));
     }
 
+    public function testNestedExpression()
+    {
+        $this->assertEquals(23, $this->evaluate('
+            (+ 5 
+               10 
+               (+ 1 
+                  2) 
+               (/ 10 
+                  2))
+        '));
+    }
+
     private function evaluate($code)
     {
         $lexemes = \PeacefulBit\LispMachine\Parser\toLexemes($code);
