@@ -69,28 +69,28 @@ function toLexemes($code)
         $head = $rest[0];
         $tail = substr($rest, 1);
         switch ($head) {
-            // We got '(' so we just add it to list of lexemes
+            // We got '(', so we just add it to list of lexemes.
             case TOKEN_OPEN_BRACKET:
                 $lexeme = Lexer\makeLexeme(Lexer\LEXEME_OPEN_BRACKET);
                 return $baseIter($tail, array_merge($acc, [$lexeme]));
-            // We got ')' and doing the same as in previous case
+            // We got ')' and doing the same as in previous case.
             case TOKEN_CLOSE_BRACKET:
                 $lexeme = Lexer\makeLexeme(Lexer\LEXEME_CLOSE_BRACKET);
                 return $baseIter($tail, array_merge($acc, [$lexeme]));
-            // We got '"'. It means that we are at the beginning of the string
-            // and must switch our state to stringIter
+            // We got '"'! It means that we are at the beginning of the string
+            // and must switch our state to stringIter.
             case TOKEN_DOUBLE_QUOTE:
                 return $stringIter($tail, [], $acc);
-            // We got ';'. It means that comment is started here. So we
-            // change our state to commentIter
+            // We got ';'. It means that comment is starting here. So we
+            // change our state to commentIter.
             case TOKEN_SEMICOLON:
                 return $commentIter($tail, $acc);
             default:
-                // If current char is delimiter we ignore it
+                // If current char is a delimiter, we just ignore it.
                 if (isDelimiter($head)) {
                     return $baseIter($tail, $acc);
                 }
-                // On all other cases we interpret current char as start
+                // In all other cases we interpret current char as start
                 // of symbol and change our state to symbolIter
                 return $symbolIter($tail, [$head], $acc);
         }
