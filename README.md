@@ -1,5 +1,6 @@
 # lisp-machine
-It does not work yet, but in a future it will, I hope. :)
+It is something like **Rocket**, but very light and written on PHP.
+So i'll call this **Light Pocket** :)
 
 ## todo
 1. ~~Parse code into list of lexemes~~
