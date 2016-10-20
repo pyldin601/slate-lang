@@ -13,7 +13,8 @@
   "autoload": {
     "files": [
       "src/PeacefulBit/LispMachine/Parser/Parser.php",
-      "src/PeacefulBit/LispMachine/Lexer/Lexer.php"
+      "src/PeacefulBit/LispMachine/Lexer/Lexer.php",
+      "src/PeacefulBit/LispMachine/Environment/Environment.php"
     ],
     "psr-4": {
       "": "src/"
