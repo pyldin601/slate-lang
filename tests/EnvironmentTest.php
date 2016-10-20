@@ -20,7 +20,9 @@ class EnvironmentTest extends TestCase
     public function testAccessors()
     {
         $env = makeEnvironment([
-            'foo' => function () { return 'bar'; }
+            'foo' => function () {
+                return 'bar';
+            }
         ]);
 
         $this->assertTrue(has($env, 'foo'));
@@ -40,7 +42,9 @@ class EnvironmentTest extends TestCase
     public function testInherit(callable $env)
     {
         $env2 = makeEnvironment([
-            'baz' => function () { return 'bas'; }
+            'baz' => function () {
+                return 'bas';
+            }
         ], $env);
 
         $this->assertTrue(has($env2, 'foo'));
