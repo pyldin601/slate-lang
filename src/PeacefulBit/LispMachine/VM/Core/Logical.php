@@ -41,7 +41,6 @@ function export()
                 throw new VMException("Function 'if' accepts only three arguments");
             }
             list ($expr, $onTrue, $onFalse) = $arguments;
-
             return evaluateExpression($env, $expr)
                 ? evaluateExpression($env, $onTrue)
                 : evaluateExpression($env, $onFalse);
