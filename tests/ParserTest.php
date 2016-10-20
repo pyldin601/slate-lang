@@ -121,6 +121,5 @@ class ParserTest extends TestCase
         $lexemes = Parser\toLexemes($code);
 
         $this->assertCount(5, $lexemes);
-
     }
 }

@@ -4,7 +4,6 @@ namespace PeacefulBit\LispMachine\Parser;
 
 use PeacefulBit\LispMachine\Lexer;
 
-
 const TOKEN_OPEN_BRACKET    = '(';
 const TOKEN_CLOSE_BRACKET   = ')';
 const TOKEN_DOUBLE_QUOTE    = '"';
@@ -40,8 +39,8 @@ function isDelimiter($char)
         TOKEN_TAB,
         TOKEN_CARRIAGE_RETURN,
         TOKEN_NEW_LINE,
-        TOKEN_SPACE]
-    );
+        TOKEN_SPACE
+    ]);
 }
 
 /**

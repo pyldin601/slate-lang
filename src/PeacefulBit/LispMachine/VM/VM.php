@@ -9,4 +9,3 @@ const NORMAL_ORDER_OPERATIONS = [
 const DECLARE_OPERATIONS = [
     'def', 'lambda', 'let'
 ];
-
