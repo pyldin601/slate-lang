@@ -61,6 +61,7 @@ function isSymbol($char)
  */
 function toLexemes($code)
 {
+    // Initial state of parser
     $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
         if (empty($rest)) {
             return $acc;
@@ -84,6 +85,7 @@ function toLexemes($code)
         }
     };
 
+    // State when parser parses any symbol
     $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter) {
         if (!empty($rest)) {
             $head = $rest[0];
@@ -96,6 +98,7 @@ function toLexemes($code)
         return $baseIter($rest, array_merge($acc, [$lexeme]));
     };
 
+    // State when parser parses string
     $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
         if (empty($rest)) {
             $bufferString = implode('', $buffer);
@@ -113,6 +116,7 @@ function toLexemes($code)
         return $stringIter($tail, array_merge($buffer, [$head]), $acc);
     };
 
+    // State when parser parses escaped symbol
     $escapeIter = function ($rest, $buffer, $acc) use (&$stringIter) {
         if (empty($rest)) {
             $bufferString = implode('', $buffer);
@@ -123,6 +127,7 @@ function toLexemes($code)
         return $stringIter($tail, array_merge($buffer, [$head]), $acc);
     };
 
+    // State when parser ignores comments
     $commentIter = function ($rest, $acc) use (&$commentIter, &$baseIter) {
         if (empty($rest)) {
             return $acc;
