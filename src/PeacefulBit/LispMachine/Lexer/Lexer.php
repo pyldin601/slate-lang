@@ -14,12 +14,12 @@ const LEXEME_ID             = '$$lex$$';
  * Make lexeme.
  *
  * @param string $type
- * @param mixed $data
+ * @param mixed $value
  * @return array
  */
-function makeLexeme($type, $data = null)
+function makeLexeme($type, $value = null)
 {
-    return [LEXEME_ID, $type, $data];
+    return [LEXEME_ID, $type, $value];
 }
 
 /**
@@ -50,7 +50,7 @@ function getType($lexeme)
  * @param $lexeme
  * @return mixed
  */
-function getData($lexeme)
+function getValue($lexeme)
 {
     return $lexeme[2];
 }

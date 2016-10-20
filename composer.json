@@ -14,7 +14,9 @@
     "files": [
       "src/PeacefulBit/LispMachine/Parser/Parser.php",
       "src/PeacefulBit/LispMachine/Lexer/Lexer.php",
-      "src/PeacefulBit/LispMachine/Environment/Environment.php"
+      "src/PeacefulBit/LispMachine/Environment/Environment.php",
+      "src/PeacefulBit/LispMachine/VM/VM.php",
+      "src/PeacefulBit/LispMachine/VM/Core/Math.php"
     ],
     "psr-4": {
       "": "src/"

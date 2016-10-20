@@ -29,7 +29,7 @@ function export()
             }
             return array_reduce($rest, function ($result, $argument) use ($env) {
                 return $result - evaluateExpression($env, $argument);
-            }, $first);
+            }, evaluateExpression($env, $first));
         },
         '/' => function ($env, array $args) {
             if (sizeof($args) == 0) {
@@ -42,7 +42,7 @@ function export()
             }
             return array_reduce($rest, function ($result, $argument) use ($env) {
                 return $result / evaluateExpression($env, $argument);
-            }, $first);
+            }, evaluateExpression($env, $first));
         }
     ];
 }

@@ -62,7 +62,7 @@ function toLexemes($code)
 {
     // Initial state of parser
     $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
-        if (empty($rest)) {
+        if (strlen($rest) == 0) {
             return $acc;
         }
         $head = $rest[0];
@@ -79,7 +79,7 @@ function toLexemes($code)
             // We got '"'! It means that we are at the beginning of the string
             // and must switch our state to stringIter.
             case TOKEN_DOUBLE_QUOTE:
-                return $stringIter($tail, [], $acc);
+                return $stringIter($tail, '', $acc);
             // We got ';'. It means that comment is starting here. So we
             // change our state to commentIter.
             case TOKEN_SEMICOLON:
@@ -91,17 +91,17 @@ function toLexemes($code)
                 }
                 // In all other cases we interpret current char as start
                 // of symbol and change our state to symbolIter
-                return $symbolIter($tail, [$head], $acc);
+                return $symbolIter($tail, $head, $acc);
         }
     };
 
     // State when parser parses any symbol
     $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter) {
-        if (!empty($rest)) {
+        if (strlen($rest) > 0) {
             $head = $rest[0];
             $tail = substr($rest, 1);
             if (isSymbol($head)) {
-                return $symbolIter($tail, array_merge($buffer, [$head]), $acc);
+                return $symbolIter($tail, $buffer . $head, $acc);
             }
         }
         $lexeme = Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, $buffer);
@@ -110,9 +110,8 @@ function toLexemes($code)
 
     // State when parser parses string
     $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
-        if (empty($rest)) {
-            $bufferString = implode('', $buffer);
-            throw new ParserException("Unexpected end of string after \"$bufferString\"");
+        if (strlen($rest) == 0) {
+            throw new ParserException("Unexpected end of string after \"$buffer\"");
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
@@ -123,23 +122,22 @@ function toLexemes($code)
         if ($head == '\\') {
             return $escapeIter($tail, $buffer, $acc);
         }
-        return $stringIter($tail, array_merge($buffer, [$head]), $acc);
+        return $stringIter($tail, $buffer . $head, $acc);
     };
 
     // State when parser parses escaped symbol
     $escapeIter = function ($rest, $buffer, $acc) use (&$stringIter) {
-        if (empty($rest)) {
-            $bufferString = implode('', $buffer);
-            throw new ParserException("Unused escape character after \"$bufferString\"");
+        if (strlen($rest) == 0) {
+            throw new ParserException("Unused escape character after \"$buffer\"");
         }
         $head = $rest[0];
         $tail = substr($rest, 1);
-        return $stringIter($tail, array_merge($buffer, [$head]), $acc);
+        return $stringIter($tail, $buffer . $head, $acc);
     };
 
     // State when parser ignores comments
     $commentIter = function ($rest, $acc) use (&$commentIter, &$baseIter) {
-        if (empty($rest)) {
+        if (strlen($rest) == 0) {
             return $acc;
         }
         $head = $rest[0];

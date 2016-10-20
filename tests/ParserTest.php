@@ -25,7 +25,7 @@ class ParserTest extends TestCase
         $lexeme = $lexemes[0];
 
         $this->assertEquals(Lexer\LEXEME_SYMBOL, Lexer\getType($lexeme));
-        $this->assertEquals("some_symbol", implode("", Lexer\getData($lexeme)));
+        $this->assertEquals("some_symbol", Lexer\getValue($lexeme));
     }
 
     public function testDelimiters()
@@ -43,7 +43,7 @@ class ParserTest extends TestCase
         $lexeme = $lexemes[0];
 
         $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
-        $this->assertEquals("hello world", implode("", Lexer\getData($lexeme)));
+        $this->assertEquals("hello world", Lexer\getValue($lexeme));
     }
 
     public function testEscapedString()
@@ -54,7 +54,7 @@ class ParserTest extends TestCase
         $lexeme = $lexemes[0];
 
         $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
-        $this->assertEquals("hello \"world\"", implode("", Lexer\getData($lexeme)));
+        $this->assertEquals("hello \"world\"", Lexer\getValue($lexeme));
     }
 
     public function testBrackets()

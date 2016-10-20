@@ -3,7 +3,6 @@
 namespace PeacefulBit\LispMachine\VM;
 
 use function PeacefulBit\LispMachine\Environment\get;
-use function PeacefulBit\LispMachine\Environment\has;
 use function PeacefulBit\LispMachine\Environment\makeEnvironment;
 
 use PeacefulBit\LispMachine\Lexer;
@@ -41,7 +40,7 @@ function evaluateExpression($env, $expression)
         throw new VMException("Empty expression");
     }
 
-    return $this->apply($env, $expression);
+    return apply($env, $expression);
 }
 
 /**
@@ -57,13 +56,13 @@ function evaluateLexeme($env, $lexeme)
     $type = Lexer\getType($lexeme);
     switch ($type) {
         case Lexer\LEXEME_SYMBOL:
-            $data = implode('', Lexer\getData($lexeme));
+            $data = Lexer\getValue($lexeme);
             if (is_numeric($data)) {
-                return $data;
+                return is_float($data) ? floatval($data) : intval($data);
             }
             return get($env, $data);
         case Lexer\LEXEME_STRING:
-            return implode('', Lexer\getData($lexeme));
+            return Lexer\getValue($lexeme);
         default:
             throw new VMException("Unexpected token");
     }
@@ -84,7 +83,7 @@ function apply($env, $expression)
         throw new VMException("Function name must be a symbol");
     }
 
-    $symbol = implode('', Lexer\getData($head));
+    $symbol = Lexer\getValue($head);
     $arguments = array_slice($expression, 1);
 
     return runCoreFunction($env, $symbol, $arguments);

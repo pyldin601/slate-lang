@@ -29,8 +29,8 @@ class TreeTest extends TestCase
         $this->assertCount(2, $ast);
 
         $expected = [
-            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
-            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2']),
+            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
+            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
         ];
 
         $this->assertEquals($expected, $ast);
@@ -43,9 +43,9 @@ class TreeTest extends TestCase
 
         $expected = [
             [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['+']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
             ]
         ];
 
@@ -59,12 +59,12 @@ class TreeTest extends TestCase
 
         $expected = [
             [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['+']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
                 [
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['-']),
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1', '0']),
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2'])
+                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '-'),
+                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '10'),
+                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2')
                 ]
             ]
         ];
@@ -79,13 +79,13 @@ class TreeTest extends TestCase
 
         $expected = [
             [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['+']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2'])
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2')
             ], [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['-']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['1', '0']),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, ['2']),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '-'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '10'),
+                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
             ]
         ];
 
