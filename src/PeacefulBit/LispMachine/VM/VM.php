@@ -18,10 +18,7 @@ const TOKEN_NOT = 'not';
 function evaluate($env, $ast)
 {
     return array_reduce($ast, function ($env, $expression) {
-        if (Lexer\isLexeme($expression)) {
-            return evaluateLexeme($env, $expression);
-        }
-        return $env;
+        return evaluateLexeme($env, $expression);
     }, $env);
 }
 
@@ -35,14 +32,21 @@ function evaluate($env, $ast)
  */
 function evaluateExpression($env, $expression)
 {
+    if (Lexer\isLexeme($expression)) {
+        return evaluateLexeme($env, $expression);
+    }
+
     if (sizeof($expression) == 0) {
         throw new ParserException("Empty expression");
     }
+
     $id = $expression[0];
     $type = Lexer\getType($id);
+
     if ($type != Lexer\LEXEME_SYMBOL) {
         throw new ParserException("Id must be a symbol");
     }
+
     return $env;
 }
 
@@ -55,5 +59,5 @@ function evaluateExpression($env, $expression)
  */
 function evaluateLexeme($env, $lexeme)
 {
-    return $env;
+    return [$env, null];
 }
