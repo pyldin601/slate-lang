@@ -44,6 +44,15 @@ function export()
             return evaluateExpression($env, $expr)
                 ? evaluateExpression($env, $onTrue)
                 : evaluateExpression($env, $onFalse);
+        },
+        'unless' => function ($env, array $arguments) {
+            if (sizeof($arguments) != 3) {
+                throw new VMException("Function 'unless' accepts only three arguments");
+            }
+            list ($expr, $onFalse, $onTrue) = $arguments;
+            return evaluateExpression($env, $expr)
+                ? evaluateExpression($env, $onTrue)
+                : evaluateExpression($env, $onFalse);
         }
     ];
 }

@@ -63,9 +63,10 @@ class VMTest extends TestCase
         $this->assertTrue($this->evaluate('(!== "hello" 6)'));
     }
 
-    public function testIf()
+    public function testIfAndUnless()
     {
         $this->assertEquals(3, $this->evaluate('(if (> 5 2) 3 5)'));
+        $this->assertEquals(5, $this->evaluate('(unless (> 5 2) 3 5)'));
     }
 
     private function evaluate($code)

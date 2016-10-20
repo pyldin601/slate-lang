@@ -7,10 +7,6 @@ use function PeacefulBit\LispMachine\Environment\makeEnvironment;
 
 use PeacefulBit\LispMachine\Lexer;
 
-const TOKEN_OR  = 'or';
-const TOKEN_AND = 'and';
-const TOKEN_NOT = 'not';
-
 /**
  * @param $expression
  * @return mixed
@@ -100,8 +96,9 @@ function apply($env, $expression)
 function runCoreFunction($env, $name, array $arguments)
 {
     $modules = array_merge(
-        \PeacefulBit\LispMachine\VM\Core\Relative\export(),
+        \PeacefulBit\LispMachine\VM\Core\Standard\export(),
         \PeacefulBit\LispMachine\VM\Core\Logical\export(),
+        \PeacefulBit\LispMachine\VM\Core\Relative\export(),
         \PeacefulBit\LispMachine\VM\Core\Math\export()
     );
     return call_user_func($modules[$name], $env, $arguments);
