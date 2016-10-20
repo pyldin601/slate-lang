@@ -9,6 +9,7 @@ const TOKEN_OPEN_BRACKET    = '(';
 const TOKEN_CLOSE_BRACKET   = ')';
 const TOKEN_DOUBLE_QUOTE    = '"';
 const TOKEN_BACK_SLASH      = '\\';
+const TOKEN_SEMICOLON       = ';';
 
 const TOKEN_TAB             = "\t";
 const TOKEN_SPACE           = " ";
@@ -24,7 +25,8 @@ function isStructural($char)
     return in_array($char, [
         TOKEN_OPEN_BRACKET,
         TOKEN_CLOSE_BRACKET,
-        TOKEN_DOUBLE_QUOTE
+        TOKEN_DOUBLE_QUOTE,
+        TOKEN_SEMICOLON
     ]);
 }
 
@@ -59,7 +61,7 @@ function isSymbol($char)
  */
 function toLexemes($code)
 {
-    $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter) {
+    $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
         if (empty($rest)) {
             return $acc;
         }
@@ -72,6 +74,8 @@ function toLexemes($code)
                 return $baseIter($tail, array_merge($acc, [Lexer\makeLexeme(Lexer\LEXEME_CLOSE_BRACKET)]));
             case TOKEN_DOUBLE_QUOTE:
                 return $stringIter($tail, [], $acc);
+            case TOKEN_SEMICOLON:
+                return $commentIter($tail, $acc);
             default:
                 if (isDelimiter($head)) {
                     return $baseIter($tail, $acc);
@@ -117,6 +121,17 @@ function toLexemes($code)
         $head = $rest[0];
         $tail = substr($rest, 1);
         return $stringIter($tail, array_merge($buffer, [$head]), $acc);
+    };
+
+    $commentIter = function ($rest, $acc) use (&$commentIter, &$baseIter) {
+        if (empty($rest)) {
+            return $acc;
+        }
+        $head = $rest[0];
+        $tail = substr($rest, 1);
+        return $head == TOKEN_NEW_LINE
+            ? $baseIter($tail, $acc)
+            : $commentIter($tail, $acc);
     };
 
     return $baseIter($code, []);

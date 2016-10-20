@@ -114,4 +114,13 @@ class ParserTest extends TestCase
 
         $this->assertEquals($expectedLexemes, $types);
     }
+
+    public function testComments()
+    {
+        $code = '(+ 1 2) ; This must be ignored';
+        $lexemes = Parser\toLexemes($code);
+
+        $this->assertCount(5, $lexemes);
+
+    }
 }
