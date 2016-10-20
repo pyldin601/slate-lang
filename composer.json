@@ -18,8 +18,9 @@
 
       "src/PeacefulBit/LispMachine/VM/VM.php",
 
-      "src/PeacefulBit/LispMachine/VM/Core/Math.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Logical.php"
+      "src/PeacefulBit/LispMachine/VM/Core/Logical.php",
+      "src/PeacefulBit/LispMachine/VM/Core/Relative.php",
+      "src/PeacefulBit/LispMachine/VM/Core/Math.php"
     ],
     "psr-4": {
       "": "src/"

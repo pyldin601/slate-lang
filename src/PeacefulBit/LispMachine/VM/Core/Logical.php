@@ -32,9 +32,19 @@ function export()
         },
         'not' => function ($env, array $arguments) {
             if (sizeof($arguments) != 1) {
-                throw new VMException("Logical 'not' accepts only one argument");
+                throw new VMException("Function 'not' accepts only one argument");
             }
             return !evaluateExpression($env, $arguments[0]);
+        },
+        'if' => function ($env, array $arguments) {
+            if (sizeof($arguments) != 3) {
+                throw new VMException("Function 'if' accepts only three arguments");
+            }
+            list ($expr, $onTrue, $onFalse) = $arguments[0];
+
+            return evaluateExpression($env, $expr)
+                ? evaluateExpression($env, $onTrue)
+                : evaluateExpression($env, $onFalse);
         }
     ];
 }

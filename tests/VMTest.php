@@ -52,6 +52,17 @@ class VMTest extends TestCase
         $this->assertFalse($this->evaluate('(not 15)'));
     }
 
+    public function testRelations()
+    {
+        $this->assertTrue($this->evaluate('(> 5 2)'));
+        $this->assertFalse($this->evaluate('(< 5 2)'));
+        $this->assertTrue($this->evaluate('(= 5 (+ 2 3))'));
+        $this->assertFalse($this->evaluate('(> 5 2 3)'));
+        $this->assertTrue($this->evaluate('(> 15 12 3)'));
+        $this->assertTrue($this->evaluate('(!= 5 6)'));
+        $this->assertTrue($this->evaluate('(!== "hello" 6)'));
+    }
+
     private function evaluate($code)
     {
         $lexemes = \PeacefulBit\LispMachine\Parser\toLexemes($code);
