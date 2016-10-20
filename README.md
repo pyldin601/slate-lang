@@ -1,4 +1,6 @@
 # lisp-machine
+[![Build Status](https://travis-ci.org/peacefulbit/lisp-machine.svg?branch=master)](https://travis-ci.org/peacefulbit/lisp-machine)
+
 It is something like **Rocket**, but very light and written on PHP.
 So I'll call this **Light Pocket** :)
 
