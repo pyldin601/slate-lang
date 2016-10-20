@@ -6,7 +6,6 @@ function export()
 {
     return [
         'or' => function ($env, array $arguments) {
-
         }
     ];
 }
