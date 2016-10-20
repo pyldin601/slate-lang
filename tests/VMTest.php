@@ -40,6 +40,18 @@ class VMTest extends TestCase
         '));
     }
 
+    public function testLogicalExpression()
+    {
+        $this->assertTrue($this->evaluate('(or 5 10)'));
+        $this->assertTrue($this->evaluate('(or 0 10)'));
+
+        $this->assertTrue($this->evaluate('(and 5 15)'));
+        $this->assertFalse($this->evaluate('(and 0 15)'));
+
+        $this->assertTrue($this->evaluate('(not 0)'));
+        $this->assertFalse($this->evaluate('(not 15)'));
+    }
+
     private function evaluate($code)
     {
         $lexemes = \PeacefulBit\LispMachine\Parser\toLexemes($code);

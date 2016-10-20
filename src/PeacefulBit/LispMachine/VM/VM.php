@@ -99,6 +99,9 @@ function apply($env, $expression)
  */
 function runCoreFunction($env, $name, array $arguments)
 {
-    $modules = \PeacefulBit\LispMachine\VM\Core\Math\export();
+    $modules = array_merge(
+        \PeacefulBit\LispMachine\VM\Core\Math\export(),
+        \PeacefulBit\LispMachine\VM\Core\Logical\export()
+    );
     return call_user_func($modules[$name], $env, $arguments);
 }
