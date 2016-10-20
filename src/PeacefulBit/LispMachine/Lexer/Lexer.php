@@ -8,6 +8,8 @@ const LEXEME_CLOSE_BRACKET  = 102;
 const LEXEME_SYMBOL         = 104;
 const LEXEME_STRING         = 105;
 
+const LEXEME_ID             = '$$lex$$';
+
 /**
  * Make lexeme.
  *
@@ -17,7 +19,7 @@ const LEXEME_STRING         = 105;
  */
 function makeLexeme($type, $data = null)
 {
-    return [$type, $data];
+    return [LEXEME_ID, $type, $data];
 }
 
 /**
@@ -28,7 +30,7 @@ function makeLexeme($type, $data = null)
  */
 function isLexeme($lexeme)
 {
-    return is_array($lexeme) && sizeof($lexeme) == 2;
+    return is_array($lexeme) && sizeof($lexeme) == 3 && $lexeme[0] == LEXEME_ID;
 }
 
 /**
@@ -39,7 +41,7 @@ function isLexeme($lexeme)
  */
 function getType($lexeme)
 {
-    return $lexeme[0];
+    return $lexeme[1];
 }
 
 /**
@@ -50,5 +52,5 @@ function getType($lexeme)
  */
 function getData($lexeme)
 {
-    return $lexeme[1];
+    return $lexeme[2];
 }

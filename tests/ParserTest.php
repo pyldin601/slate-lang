@@ -43,7 +43,7 @@ class ParserTest extends TestCase
         $lexeme = $lexemes[0];
 
         $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
-        $this->assertEquals("hello world", implode("", $lexeme[1]));
+        $this->assertEquals("hello world", implode("", Lexer\getData($lexeme)));
     }
 
     public function testEscapedString()
