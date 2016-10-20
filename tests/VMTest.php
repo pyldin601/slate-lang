@@ -63,6 +63,11 @@ class VMTest extends TestCase
         $this->assertTrue($this->evaluate('(!== "hello" 6)'));
     }
 
+    public function testIf()
+    {
+        $this->assertEquals(3, $this->evaluate('(if (> 5 2) 3 5)'));
+    }
+
     private function evaluate($code)
     {
         $lexemes = \PeacefulBit\LispMachine\Parser\toLexemes($code);

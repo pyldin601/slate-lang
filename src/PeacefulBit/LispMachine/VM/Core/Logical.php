@@ -40,7 +40,7 @@ function export()
             if (sizeof($arguments) != 3) {
                 throw new VMException("Function 'if' accepts only three arguments");
             }
-            list ($expr, $onTrue, $onFalse) = $arguments[0];
+            list ($expr, $onTrue, $onFalse) = $arguments;
 
             return evaluateExpression($env, $expr)
                 ? evaluateExpression($env, $onTrue)
