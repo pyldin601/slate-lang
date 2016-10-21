@@ -24,4 +24,14 @@ abstract class TokenWithContent extends SimpleToken
     {
         return $this->content;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $name = explode('\\', __CLASS__);
+        $short = end($name);
+        return sprintf('%s(%s)', $short, $this->getContent());
+    }
 }
