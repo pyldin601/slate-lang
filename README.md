@@ -10,4 +10,5 @@ My own light lisp-interpreter written on PHP.
 3. ~~Make interpreter that will run our ast~~
 4. ~~Must support modules~~
 5. ~~Must support functions and variables definition~~
-6. Access PHP functions from lisp code
+6. Implement using visitors and finite state machine 
+7. Import PHP functions from pocket code
