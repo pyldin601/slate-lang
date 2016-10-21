@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\LispMachine\Parser\ParserException;
+use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
@@ -30,96 +31,93 @@ class ParserTest extends TestCase
 
     public function testDelimiters()
     {
-        $this->assertCount(3, Tokenizer::tokenize("foo bar"));
-        $this->assertCount(3, Tokenizer::tokenize("foo \t bar"));
-        $this->assertCount(3, Tokenizer::tokenize("foo \r\n bar"));
+        $this->assertCount(2, Tokenizer::tokenize("foo bar"));
+        $this->assertCount(2, Tokenizer::tokenize("foo \t bar"));
+        $this->assertCount(2, Tokenizer::tokenize("foo \r\n bar"));
     }
 
     public function testUnescapedString()
     {
-        $lexemes = Parser\toLexemes('"hello world"');
-        $this->assertCount(1, $lexemes);
+        $tokens = Tokenizer::tokenize('"hello world"');
+        $this->assertCount(1, $tokens);
 
-        $lexeme = $lexemes[0];
+        $token = $tokens[0];
 
-        $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
-        $this->assertEquals("hello world", Lexer\getValue($lexeme));
+        $this->assertEquals("StringToken(hello world)", $token);
     }
 
     public function testEscapedString()
     {
-        $lexemes = Parser\toLexemes('"hello \"world\""');
-        $this->assertCount(1, $lexemes);
+        $tokens = Tokenizer::tokenize('"hello \"world\""');
+        $this->assertCount(1, $tokens);
 
-        $lexeme = $lexemes[0];
+        $token = $tokens[0];
 
-        $this->assertEquals(Lexer\LEXEME_STRING, Lexer\getType($lexeme));
-        $this->assertEquals("hello \"world\"", Lexer\getValue($lexeme));
+        $this->assertEquals("StringToken(hello \"world\")", $token);
     }
 
     public function testBrackets()
     {
-        $lexemes = Parser\toLexemes('()');
-        $this->assertCount(2, $lexemes);
+        $tokens = Tokenizer::tokenize('()');
+        $this->assertCount(2, $tokens);
 
-        $this->assertEquals(Lexer\LEXEME_OPEN_BRACKET, Lexer\getType($lexemes[0]));
-        $this->assertEquals(Lexer\LEXEME_CLOSE_BRACKET, Lexer\getType($lexemes[1]));
+        $this->assertEquals('OpenBracketToken CloseBracketToken', implode(' ', $tokens));
     }
 
     public function testUnclosedString()
     {
         try {
-            Parser\toLexemes('"hello');
+            Tokenizer::tokenize('"hello');
             $this->fail("Exception must be thrown");
-        } catch (ParserException $exception) {
-            $this->assertEquals("Unexpected end of string after \"hello\"", $exception->getMessage());
+        } catch (TokenizerException $exception) {
+            $this->assertEquals("Unexpected end of string", $exception->getMessage());
         }
     }
 
     public function testUnusedEscape()
     {
         try {
-            Parser\toLexemes('"hello\\');
+            Tokenizer::tokenize('"hello\\');
             $this->fail("Exception must be thrown");
-        } catch (ParserException $exception) {
-            $this->assertEquals("Unused escape character after \"hello\"", $exception->getMessage());
+        } catch (TokenizerException $exception) {
+            $this->assertEquals("Unused escape character", $exception->getMessage());
         }
     }
 
     public function testParseSimpleProgram()
     {
         $code = '(+ 5.6 2.7 (- 15 (/ 4 2)))';
-        $lexemes = Parser\toLexemes($code);
+        $tokens = Tokenizer::tokenize($code);
 
-        $this->assertCount(14, $lexemes);
+        $this->assertCount(14, $tokens);
 
-        $expectedLexemes = [
-            Lexer\LEXEME_OPEN_BRACKET,  // (
-            Lexer\LEXEME_SYMBOL,        // +
-            Lexer\LEXEME_SYMBOL,        // 5.6
-            Lexer\LEXEME_SYMBOL,        // 2.7
-            Lexer\LEXEME_OPEN_BRACKET,  // (
-            Lexer\LEXEME_SYMBOL,        // -
-            Lexer\LEXEME_SYMBOL,        // 15
-            Lexer\LEXEME_OPEN_BRACKET,  // (
-            Lexer\LEXEME_SYMBOL,        // /
-            Lexer\LEXEME_SYMBOL,        // 4
-            Lexer\LEXEME_SYMBOL,        // 2
-            Lexer\LEXEME_CLOSE_BRACKET, // )
-            Lexer\LEXEME_CLOSE_BRACKET, // )
-            Lexer\LEXEME_CLOSE_BRACKET  // )
+        $expectedTokens = [
+            'OpenBracketToken',
+            'SymbolToken(+)',
+            'SymbolToken(5.6)',
+            'SymbolToken(2.7)',
+            'OpenBracketToken',
+            'SymbolToken(-)',
+            'SymbolToken(15)',
+            'OpenBracketToken',
+            'SymbolToken(/)',
+            'SymbolToken(4)',
+            'SymbolToken(2)',
+            'CloseBracketToken',
+            'CloseBracketToken',
+            'CloseBracketToken'
         ];
 
-        $types = array_map('\PeacefulBit\LispMachine\Lexer\getType', $lexemes);
+        $expectedString = implode(' ', $expectedTokens);
 
-        $this->assertEquals($expectedLexemes, $types);
+        $this->assertEquals($expectedString, implode(' ', $tokens));
     }
 
     public function testComments()
     {
         $code = '(+ 1 2) ; This must be ignored';
-        $lexemes = Parser\toLexemes($code);
+        $lexemes = Tokenizer::tokenize($code);
 
-        $this->assertCount(5, $lexemes);
+        $this->assertCount(6, $lexemes);
     }
 }

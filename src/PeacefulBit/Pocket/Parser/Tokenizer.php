@@ -92,7 +92,7 @@ class Tokenizer
                 default:
                     // If current char is a delimiter, we just ignore it.
                     if (self::isDelimiter($head)) {
-                        return $delimiterIter($tail, $head, $acc);
+                        return $baseIter($tail, $acc);
                     }
                     // In all other cases we interpret current char as start
                     // of symbol and change our state to symbolIter
@@ -146,6 +146,7 @@ class Tokenizer
             return $baseIter($rest, array_merge($acc, [new CommentToken($buffer)]));
         };
 
+        // todo: be or not be
         $delimiterIter = function ($rest, $buffer, $acc) use (&$delimiterIter, &$baseIter) {
             if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
