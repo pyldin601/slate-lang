@@ -4,9 +4,44 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9ac29b3c0cf00ba079df9cef86bb950f",
-    "content-hash": "334af3195f32e8264913790e5cd957c2",
-    "packages": [],
+    "hash": "b2b824d1bd7eb71427641e67df465c76",
+    "content-hash": "aca7591673c9570f8602c3da7aec76d9",
+    "packages": [
+        {
+            "name": "nerd-components/common-functions",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nerd-components/common-functions.git",
+                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
+                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.6",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Nerd/Common/Arrays.php",
+                    "src/Nerd/Common/Classes.php",
+                    "src/Nerd/Common/Strings.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A lot of functions used in Nerd Framework applications.",
+            "time": "2016-10-21 08:44:09"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -1979,7 +2014,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "nerd-components/common-functions": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],

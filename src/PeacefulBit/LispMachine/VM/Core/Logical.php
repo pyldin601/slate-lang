@@ -2,7 +2,8 @@
 
 namespace PeacefulBit\LispMachine\VM\Core\Logical;
 
-use function PeacefulBit\LispMachine\VM\evaluateExpression;
+use function PeacefulBit\LispMachine\Calculus\evaluate;
+
 use PeacefulBit\LispMachine\VM\VMException;
 
 function export()
@@ -15,7 +16,7 @@ function export()
                 }
                 $head = $rest[0];
                 $tail = array_slice($rest, 1);
-                return evaluateExpression($env, $head) || $iter($tail);
+                return evaluate($env, $head) || $iter($tail);
             };
             return $iter($arguments);
         },
@@ -26,7 +27,7 @@ function export()
                 }
                 $head = $rest[0];
                 $tail = array_slice($rest, 1);
-                return evaluateExpression($env, $head) && $iter($tail);
+                return evaluate($env, $head) && $iter($tail);
             };
             return $iter($arguments);
         },
@@ -34,25 +35,25 @@ function export()
             if (sizeof($arguments) != 1) {
                 throw new VMException("Function 'not' accepts only one argument");
             }
-            return !evaluateExpression($env, $arguments[0]);
+            return !evaluate($env, $arguments[0]);
         },
         'if' => function ($env, array $arguments) {
             if (sizeof($arguments) != 3) {
                 throw new VMException("Function 'if' accepts only three arguments");
             }
             list ($expr, $onTrue, $onFalse) = $arguments;
-            return evaluateExpression($env, $expr)
-                ? evaluateExpression($env, $onTrue)
-                : evaluateExpression($env, $onFalse);
+            return evaluate($env, $expr)
+                ? evaluate($env, $onTrue)
+                : evaluate($env, $onFalse);
         },
         'unless' => function ($env, array $arguments) {
             if (sizeof($arguments) != 3) {
                 throw new VMException("Function 'unless' accepts only three arguments");
             }
             list ($expr, $onFalse, $onTrue) = $arguments;
-            return evaluateExpression($env, $expr)
-                ? evaluateExpression($env, $onTrue)
-                : evaluateExpression($env, $onFalse);
+            return evaluate($env, $expr)
+                ? evaluate($env, $onTrue)
+                : evaluate($env, $onFalse);
         }
     ];
 }

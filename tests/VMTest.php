@@ -8,29 +8,29 @@ class VMTest extends TestCase
 {
     public function testSimpleExpression()
     {
-        $this->assertEquals(10, $this->evaluate('10'));
-        $this->assertEquals(5, $this->evaluate('10 5'));
+        $this->assertEquals(10, $this->exec('10'));
+        $this->assertEquals(5, $this->exec('10 5'));
 
-        $this->assertEquals(7, $this->evaluate('(+ 2 5)'));
-        $this->assertEquals(6, $this->evaluate('(+ 1 2 3)'));
-        $this->assertEquals(0, $this->evaluate('(+)'));
+        $this->assertEquals(7, $this->exec('(+ 2 5)'));
+        $this->assertEquals(6, $this->exec('(+ 1 2 3)'));
+        $this->assertEquals(0, $this->exec('(+)'));
 
-        $this->assertEquals(7, $this->evaluate('(- 12 5)'));
-        $this->assertEquals(-5, $this->evaluate('(- 5)'));
-        $this->assertEquals(4, $this->evaluate('(- 10 2 4)'));
+        $this->assertEquals(7, $this->exec('(- 12 5)'));
+        $this->assertEquals(-5, $this->exec('(- 5)'));
+        $this->assertEquals(4, $this->exec('(- 10 2 4)'));
 
-        $this->assertEquals(8, $this->evaluate('(* 2 4)'));
-        $this->assertEquals(5, $this->evaluate('(* 5)'));
-        $this->assertEquals(1, $this->evaluate('(*)'));
+        $this->assertEquals(8, $this->exec('(* 2 4)'));
+        $this->assertEquals(5, $this->exec('(* 5)'));
+        $this->assertEquals(1, $this->exec('(*)'));
 
-        $this->assertEquals(6, $this->evaluate('(/ 24 4)'));
-        $this->assertEquals(1 / 5, $this->evaluate('(/ 5)'));
-        $this->assertEquals(2, $this->evaluate('(/ 24 2 6)'));
+        $this->assertEquals(6, $this->exec('(/ 24 4)'));
+        $this->assertEquals(1 / 5, $this->exec('(/ 5)'));
+        $this->assertEquals(2, $this->exec('(/ 24 2 6)'));
     }
 
     public function testNestedExpression()
     {
-        $this->assertEquals(23, $this->evaluate('
+        $this->assertEquals(23, $this->exec('
             (+ 5 
                10 
                (+ 1 
@@ -42,37 +42,54 @@ class VMTest extends TestCase
 
     public function testLogicalExpression()
     {
-        $this->assertTrue($this->evaluate('(or 5 10)'));
-        $this->assertTrue($this->evaluate('(or 0 10)'));
+        $this->assertTrue($this->exec('(or 5 10)'));
+        $this->assertTrue($this->exec('(or 0 10)'));
 
-        $this->assertTrue($this->evaluate('(and 5 15)'));
-        $this->assertFalse($this->evaluate('(and 0 15)'));
+        $this->assertTrue($this->exec('(and 5 15)'));
+        $this->assertFalse($this->exec('(and 0 15)'));
 
-        $this->assertTrue($this->evaluate('(not 0)'));
-        $this->assertFalse($this->evaluate('(not 15)'));
+        $this->assertTrue($this->exec('(not 0)'));
+        $this->assertFalse($this->exec('(not 15)'));
     }
 
     public function testRelations()
     {
-        $this->assertTrue($this->evaluate('(> 5 2)'));
-        $this->assertFalse($this->evaluate('(< 5 2)'));
-        $this->assertTrue($this->evaluate('(= 5 (+ 2 3))'));
-        $this->assertFalse($this->evaluate('(> 5 2 3)'));
-        $this->assertTrue($this->evaluate('(> 15 12 3)'));
-        $this->assertTrue($this->evaluate('(!= 5 6)'));
-        $this->assertTrue($this->evaluate('(!== "hello" 6)'));
+        $this->assertTrue($this->exec('(> 5 2)'));
+        $this->assertFalse($this->exec('(< 5 2)'));
+        $this->assertTrue($this->exec('(= 5 (+ 2 3))'));
+        $this->assertFalse($this->exec('(> 5 2 3)'));
+        $this->assertTrue($this->exec('(> 15 12 3)'));
+        $this->assertTrue($this->exec('(!= 5 6)'));
+        $this->assertTrue($this->exec('(!== "hello" 6)'));
     }
 
     public function testIfAndUnless()
     {
-        $this->assertEquals(3, $this->evaluate('(if (> 5 2) 3 5)'));
-        $this->assertEquals(5, $this->evaluate('(unless (> 5 2) 3 5)'));
+        $this->assertEquals(3, $this->exec('(if (> 5 2) 3 5)'));
+        $this->assertEquals(5, $this->exec('(unless (> 5 2) 3 5)'));
     }
 
-    private function evaluate($code)
+    public function testVariablesDeclaration()
     {
-        $lexemes = \PeacefulBit\LispMachine\Parser\toLexemes($code);
-        $ast = \PeacefulBit\LispMachine\Parser\toAst($lexemes);
-        return \PeacefulBit\LispMachine\VM\evaluate($ast);
+        $code = '(def pi 3.14) (* pi 2)';
+        $this->assertEquals(6.28, $this->exec($code));
+    }
+
+    public function testFunctionDeclaration()
+    {
+        $code = '(def (square x) (* x x)) (square 3)';
+        $this->assertEquals(9, $this->exec($code));
+    }
+
+
+    public function testFunctionOverrideTest()
+    {
+        $this->assertEquals(10, $this->exec('(+ 2 8)'));
+        $this->assertEquals(16, $this->exec('(def (+ x y) (* x y)) (+ 2 8)'));
+    }
+
+    private function exec($code)
+    {
+        return call_user_func(\PeacefulBit\LispMachine\VM\initDefaultModules(), $code);
     }
 }

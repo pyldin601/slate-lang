@@ -9,7 +9,7 @@ namespace PeacefulBit\LispMachine\Environment;
  */
 function makeEnvironment($content = [], $parent = null)
 {
-    return function ($caller) use ($content, $parent) {
+    return function ($caller) use (&$content, $parent) {
         return $caller($content, $parent);
     };
 }
@@ -43,5 +43,17 @@ function get(callable $environment, $symbol)
         return array_key_exists($symbol, $content)
             ? $content[$symbol]
             : (is_null($parent) ? null : get($parent, $symbol));
+    });
+}
+
+/**
+ * @param callable $environment
+ * @param $symbol
+ * @param $value
+ */
+function set(callable $environment, $symbol, $value)
+{
+    $environment(function (&$content) use ($symbol, $value) {
+        $content[$symbol] = $value;
     });
 }

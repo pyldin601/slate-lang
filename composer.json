@@ -9,7 +9,9 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "require": {},
+  "require": {
+    "nerd-components/common-functions": "dev-master"
+  },
   "autoload": {
     "files": [
       "src/PeacefulBit/LispMachine/Parser/Parser.php",
@@ -21,7 +23,10 @@
       "src/PeacefulBit/LispMachine/VM/Core/Standard.php",
       "src/PeacefulBit/LispMachine/VM/Core/Logical.php",
       "src/PeacefulBit/LispMachine/VM/Core/Relative.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Math.php"
+      "src/PeacefulBit/LispMachine/VM/Core/Math.php",
+
+      "src/PeacefulBit/LispMachine/Calculus.php",
+      "src/PeacefulBit/LispMachine/Tree.php"
     ],
     "psr-4": {
       "": "src/"

@@ -2,7 +2,10 @@
 
 namespace PeacefulBit\LispMachine\Parser;
 
+use function Nerd\Common\Arrays\toHeadTail;
+
 use PeacefulBit\LispMachine\Lexer;
+use PeacefulBit\LispMachine\Tree;
 
 const TOKEN_OPEN_BRACKET    = '(';
 const TOKEN_CLOSE_BRACKET   = ')';
@@ -151,7 +154,7 @@ function toLexemes($code)
 }
 
 /**
- * Convert list of lexemes to ast tree.
+ * Convert list of lexemes to abstract syntax tree.
  *
  * @param array $lexemes
  * @return array
@@ -162,8 +165,7 @@ function toAst($lexemes)
         if (empty($rest)) {
             return null;
         }
-        $head = $rest[0];
-        $tail = array_slice($rest, 1);
+        list($head, $tail) = toHeadTail($rest);
         switch (Lexer\getType($head)) {
             case Lexer\LEXEME_OPEN_BRACKET:
                 return $findCloseBracket($tail, $depth + 1, $offset + 1);
@@ -179,18 +181,28 @@ function toAst($lexemes)
         if (empty($rest)) {
             return $acc;
         }
-        $head = $rest[0];
-        $tail = array_slice($rest, 1);
-        if (Lexer\getType($head) == Lexer\LEXEME_OPEN_BRACKET) {
-            $closeIndex = $findCloseBracket($tail);
-            if (is_null($closeIndex)) {
-                throw new ParserException("Unclosed bracket found");
-            }
-            $expr = toAst(array_slice($tail, 0, $closeIndex));
-            $newTail = array_slice($tail, $closeIndex + 1);
-            return $iter($newTail, array_merge($acc, [$expr]));
+        list($head, $tail) = toHeadTail($rest);
+        switch(Lexer\getType($head)) {
+            case Lexer\LEXEME_OPEN_BRACKET:
+                $closeIndex = $findCloseBracket($tail);
+                if (is_null($closeIndex)) {
+                    throw new ParserException("Unclosed bracket found");
+                }
+                $sub = $iter(array_slice($tail, 0, $closeIndex), []);
+                $node = Tree\node(Tree\TYPE_EXPRESSION, $sub);
+                $newTail = array_slice($tail, $closeIndex + 1);
+                return $iter($newTail, array_merge($acc, [$node]));
+            case Lexer\LEXEME_SYMBOL:
+                $node = Tree\node(Tree\TYPE_SYMBOL, Lexer\getValue($head));
+                return $iter($tail, array_merge($acc, [$node]));
+            case Lexer\LEXEME_STRING:
+                $node = Tree\node(Tree\TYPE_STRING, Lexer\getValue($head));
+                return $iter($tail, array_merge($acc, [$node]));
+            case Lexer\LEXEME_CLOSE_BRACKET:
+                throw new ParserException("Superfluous bracket found");
+            default:
+                return $iter($tail, $acc);
         }
-        return $iter($tail, array_merge($acc, [$head]));
     };
-    return $iter($lexemes, []);
+    return Tree\node(Tree\TYPE_SEQUENCE, $iter($lexemes, []));
 }

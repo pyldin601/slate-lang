@@ -2,104 +2,28 @@
 
 namespace PeacefulBit\LispMachine\VM;
 
-use function PeacefulBit\LispMachine\Environment\get;
+use function PeacefulBit\LispMachine\Calculus\evaluate;
 use function PeacefulBit\LispMachine\Environment\makeEnvironment;
 
-use PeacefulBit\LispMachine\Lexer;
+use function PeacefulBit\LispMachine\Parser\toAst;
+use function PeacefulBit\LispMachine\Parser\toLexemes;
 
-/**
- * @param $expression
- * @return mixed
- */
-function evaluate($expression)
+function init(array $modules)
 {
-    return array_reduce($expression, function ($env, $expression) {
-        return evaluateExpression($env, $expression);
-    }, makeEnvironment());
+    $env = makeEnvironment($modules);
+    return function ($code) use ($env) {
+        $lexemes = toLexemes($code);
+        $tree = toAst($lexemes);
+        return evaluate($env, $tree);
+    };
 }
 
-/**
- * Evaluate single expression.
- *
- * @param $env
- * @param $expression
- * @return mixed
- * @throws VMException
- */
-function evaluateExpression($env, $expression)
+function initDefaultModules()
 {
-    if (Lexer\isLexeme($expression)) {
-        return evaluateLexeme($env, $expression);
-    }
-
-    if (sizeof($expression) == 0) {
-        throw new VMException("Empty expression");
-    }
-
-    return apply($env, $expression);
-}
-
-/**
- * Evaluate single lexeme.
- *
- * @param $env
- * @param $lexeme
- * @return mixed
- * @throws VMException
- */
-function evaluateLexeme($env, $lexeme)
-{
-    $type = Lexer\getType($lexeme);
-    switch ($type) {
-        case Lexer\LEXEME_SYMBOL:
-            $data = Lexer\getValue($lexeme);
-            if (is_numeric($data)) {
-                return is_float($data) ? floatval($data) : intval($data);
-            }
-            return get($env, $data);
-        case Lexer\LEXEME_STRING:
-            return Lexer\getValue($lexeme);
-        default:
-            throw new VMException("Unexpected token");
-    }
-}
-
-/**
- * @param $env
- * @param $expression
- * @return mixed
- * @throws VMException
- */
-function apply($env, $expression)
-{
-    $head = $expression[0];
-    $type = Lexer\getType($head);
-
-    if ($type != Lexer\LEXEME_SYMBOL) {
-        throw new VMException("Function name must be a symbol");
-    }
-
-    $symbol = Lexer\getValue($head);
-    $arguments = array_slice($expression, 1);
-
-    return runCoreFunction($env, $symbol, $arguments);
-}
-
-/**
- * Runs core function.
- *
- * @param $env
- * @param $name
- * @param $arguments
- * @return mixed
- */
-function runCoreFunction($env, $name, array $arguments)
-{
-    $modules = array_merge(
+    return init(array_merge(
         \PeacefulBit\LispMachine\VM\Core\Standard\export(),
         \PeacefulBit\LispMachine\VM\Core\Logical\export(),
         \PeacefulBit\LispMachine\VM\Core\Relative\export(),
         \PeacefulBit\LispMachine\VM\Core\Math\export()
-    );
-    return call_user_func($modules[$name], $env, $arguments);
+    ));
 }
