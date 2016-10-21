@@ -176,7 +176,10 @@ function callFunction($env, $name, $arguments)
  */
 function defineFunction($env, $name, $args, $expr)
 {
-    $function = function ($env, $argValues) use ($args, $expr) {
+    $function = function ($env, $argValues) use ($args, $expr, $name) {
+        if (sizeof($args) != sizeof($argValues)) {
+            throw new VMException("Incorrect number of arguments passed to function $name");
+        }
         $functionContext = array_combine($args, $argValues);
         $newEnv = makeEnvironment($functionContext, $env);
         return evaluate($newEnv, $expr);
