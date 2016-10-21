@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\LispMachine\Parser\ParserException;
+use PeacefulBit\Pocket\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
 use PeacefulBit\LispMachine\Parser;
@@ -19,20 +20,19 @@ class ParserTest extends TestCase
 
     public function testSymbol()
     {
-        $lexemes = Parser\toLexemes("some_symbol");
-        $this->assertCount(1, $lexemes);
+        $tokens = Tokenizer::tokenize("some_symbol");
+        $this->assertCount(1, $tokens);
 
-        $lexeme = $lexemes[0];
+        $token = $tokens[0];
 
-        $this->assertEquals(Lexer\LEXEME_SYMBOL, Lexer\getType($lexeme));
-        $this->assertEquals("some_symbol", Lexer\getValue($lexeme));
+        $this->assertEquals("SymbolToken(some_symbol)", (string) $token);
     }
 
     public function testDelimiters()
     {
-        $this->assertCount(2, Parser\toLexemes("foo bar"));
-        $this->assertCount(2, Parser\toLexemes("foo \t bar"));
-        $this->assertCount(2, Parser\toLexemes("foo \r\n bar"));
+        $this->assertCount(3, Tokenizer::tokenize("foo bar"));
+        $this->assertCount(3, Tokenizer::tokenize("foo \t bar"));
+        $this->assertCount(3, Tokenizer::tokenize("foo \r\n bar"));
     }
 
     public function testUnescapedString()

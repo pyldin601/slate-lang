@@ -9,7 +9,7 @@ abstract class SimpleToken implements Token
      */
     public function __toString()
     {
-        $name = explode('\\', __CLASS__);
+        $name = explode('\\', static::class);
         return end($name);
     }
 }

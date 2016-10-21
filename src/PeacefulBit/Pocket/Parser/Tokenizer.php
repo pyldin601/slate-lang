@@ -3,6 +3,7 @@
 namespace PeacefulBit\Pocket\Parser;
 
 use function Nerd\Common\Arrays\toHeadTail;
+
 use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Tokens\CloseBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\CommentToken;
@@ -68,8 +69,8 @@ class Tokenizer
     public static function tokenize($code)
     {
         // Initial state of parser
-        $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
-            if (strlen($rest) == 0) {
+        $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter, &$delimiterIter) {
+            if (sizeof($rest) == 0) {
                 return $acc;
             }
             list ($head, $tail) = toHeadTail($rest);
@@ -91,7 +92,7 @@ class Tokenizer
                 default:
                     // If current char is a delimiter, we just ignore it.
                     if (self::isDelimiter($head)) {
-                        return $baseIter($tail, array_merge($acc, [new DelimiterToken($head)]));
+                        return $delimiterIter($tail, $head, $acc);
                     }
                     // In all other cases we interpret current char as start
                     // of symbol and change our state to symbolIter
@@ -100,8 +101,8 @@ class Tokenizer
         };
 
         // State when parser parses any symbol
-        $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter) {
-            if (strlen($rest) > 0) {
+        $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$delimiterIter) {
+            if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
                 if (self::isSymbol($head)) {
                     return $symbolIter($tail, $buffer . $head, $acc);
@@ -112,7 +113,7 @@ class Tokenizer
 
         // State when parser parses string
         $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
-            if (strlen($rest) == 0) {
+            if (sizeof($rest) == 0) {
                 throw new TokenizerException("Unexpected end of string");
             }
             list ($head, $tail) = toHeadTail($rest);
@@ -127,7 +128,7 @@ class Tokenizer
 
         // State when parser parses escaped symbol
         $escapeIter = function ($rest, $buffer, $acc) use (&$stringIter) {
-            if (strlen($rest) == 0) {
+            if (sizeof($rest) == 0) {
                 throw new TokenizerException("Unused escape character");
             }
             list ($head, $tail) = toHeadTail($rest);
@@ -136,7 +137,7 @@ class Tokenizer
 
         // State when parser ignores comments
         $commentIter = function ($rest, $buffer, $acc) use (&$commentIter, &$baseIter) {
-            if (strlen($rest) > 0) {
+            if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
                 if ($head != Tokenizer::TOKEN_NEW_LINE) {
                     return $commentIter($tail, $buffer . $head, $acc);
@@ -145,6 +146,16 @@ class Tokenizer
             return $baseIter($rest, array_merge($acc, [new CommentToken($buffer)]));
         };
 
-        return $baseIter($code, []);
+        $delimiterIter = function ($rest, $buffer, $acc) use (&$delimiterIter, &$baseIter) {
+            if (sizeof($rest) > 0) {
+                list ($head, $tail) = toHeadTail($rest);
+                if (self::isDelimiter($head)) {
+                    return $delimiterIter($tail, $buffer . $head, $acc);
+                }
+            }
+            return $baseIter($rest, array_merge($acc, [new DelimiterToken($buffer)]));
+        };
+
+        return $baseIter(str_split($code), []);
     }
 }
