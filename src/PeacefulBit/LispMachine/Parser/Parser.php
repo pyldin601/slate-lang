@@ -182,7 +182,7 @@ function toAst($lexemes)
             return $acc;
         }
         list($head, $tail) = toHeadTail($rest);
-        switch(Lexer\getType($head)) {
+        switch (Lexer\getType($head)) {
             case Lexer\LEXEME_OPEN_BRACKET:
                 $closeIndex = $findCloseBracket($tail);
                 if (is_null($closeIndex)) {
