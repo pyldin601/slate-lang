@@ -4,7 +4,7 @@ namespace PeacefulBit\Pocket\Parser\Visitors;
 
 use PeacefulBit\Pocket\Parser\Nodes;
 
-class NodePrintVisitor implements NodeVisitor
+class NodePrinterVisitor implements NodeVisitor
 {
     use NodeDispatchingTrait;
 

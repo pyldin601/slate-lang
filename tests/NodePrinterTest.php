@@ -8,7 +8,7 @@ use PeacefulBit\Pocket\Parser\Nodes\InvokeNode;
 use PeacefulBit\Pocket\Parser\Nodes\SequenceNode;
 use PeacefulBit\Pocket\Parser\Nodes\StringNode;
 use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
-use PeacefulBit\Pocket\Parser\Visitors\NodePrintVisitor;
+use PeacefulBit\Pocket\Parser\Visitors\NodePrinterVisitor;
 use PHPUnit\Framework\TestCase;
 
 class NodePrinterTest extends TestCase
@@ -62,6 +62,6 @@ class NodePrinterTest extends TestCase
 
     private function str($node)
     {
-        return (new NodePrintVisitor)->visit($node);
+        return (new NodePrinterVisitor)->visit($node);
     }
 }
