@@ -4,7 +4,7 @@ namespace tests;
 
 use PHPUnit\Framework\TestCase;
 
-class VMTest extends TestCase
+abstract class VMTest extends TestCase
 {
     public function testSimpleExpression()
     {

@@ -4,12 +4,26 @@ namespace PeacefulBit\LispMachine\Calculus;
 
 use function Nerd\Common\Arrays\toHeadTail;
 use function PeacefulBit\LispMachine\Environment\get;
+use function PeacefulBit\LispMachine\Environment\has;
+use function PeacefulBit\LispMachine\Environment\makeEnvironment;
 use function PeacefulBit\LispMachine\Environment\set;
 
 use PeacefulBit\LispMachine\Tree;
 use PeacefulBit\LispMachine\VM\VMException;
 
-const NORMAL_ORDER_FUNCTIONS = ['if', 'unless', 'or', 'and'];
+const KEYWORD_DEF = 'def';
+
+/**
+ * @param $env
+ * @param $list
+ * @return mixed
+ */
+function evaluateList($env, $list)
+{
+    return array_reduce($list, function ($previous, $current) use ($env) {
+        return evaluate($env, $current);
+    });
+}
 
 /**
  * @param $env
@@ -55,74 +69,78 @@ function evaluateExpression($env, $node)
         throw new VMException("Empty expression");
     }
     list($function, $arguments) = toHeadTail($value);
-    if (Tree\typeOf($function) == Tree\TYPE_SYMBOL && isNormal(Tree\valueOf($function))) {
-        return normal($env, $function, $arguments);
-    }
-    $evaluatedFunction = evaluate($env, $function);
-    $evaluatedArguments = array_map(function ($argument) use ($env) {
-        return evaluate($env, $argument);
-    }, $arguments);
-    return apply($env, $evaluatedFunction, $evaluatedArguments);
+    return apply($env, $function, $arguments);
 }
 
 /**
- * @param $function
- * @return bool
- */
-function isNormal($function)
-{
-    return in_array($function, NORMAL_ORDER_FUNCTIONS);
-}
-
-/**
- * Normal order reduction.
- *
  * @param $env
  * @param $function
  * @param array $arguments
  * @return null
- */
-function normal($env, $function, array $arguments)
-{
-    return null;
-}
-
-/**
- * Applicative order reduction.
- *
- * @param $env
- * @param $function
- * @param array $arguments
- * @return null
+ * @throws VMException
  */
 function apply($env, $function, array $arguments)
 {
-    return null;
+    switch (Tree\typeOf($function)) {
+        case Tree\TYPE_SYMBOL:
+            switch (Tree\valueOf($function)) {
+                case KEYWORD_DEF:
+                    if (sizeof($arguments) < 3) {
+                        throw new VMException("Too few arguments passed to declaration block");
+                    }
+                    list($first, $rest) = toHeadTail($arguments);
+                    switch (Tree\typeOf($first)) {
+                        case Tree\TYPE_EXPRESSION:
+                            list($name, $arguments) = toHeadTail(Tree\valueOf($first));
+                            if (Tree\typeOf($name) != Tree\TYPE_SYMBOL) {
+                                throw new VMException("Function name must be a symbol");
+                            }
+                            array_walk($arguments, function ($argument) {
+                                if (Tree\typeOf($argument) != Tree\TYPE_SYMBOL) {
+                                    throw new VMException("Argument name must be a symbol");
+                                }
+                            });
+                            $argumentNames = array_map(function ($arg) {
+                                return Tree\typeOf($arg);
+                            }, $arguments);
+                            defineFunction($env, $name, $argumentNames, Tree\node(Tree\TYPE_EXPRESSION, $rest));
+                            break;
+                        case Tree\TYPE_SYMBOL:
+                            $name = Tree\valueOf($first);
+                            defineConst($env, $name, evaluate($env, Tree\node(Tree\TYPE_EXPRESSION, $rest)));
+                            break;
+                        default:
+                            throw new VMException("Incorrect syntax in declaration block");
+                    }
+                    return null;
+                default:
+                    $name = Tree\valueOf($function);
+                    if (has($env, $name)) {
+                        return call_user_func(get($env, $name), $env, $arguments);
+                    }
+            }
+            break;
+        case Tree\TYPE_EXPRESSION:
+            $evaluatedFunction = evaluate($env, $function);
+            if (has($env, $evaluatedFunction)) {
+                return call_user_func(get($env, $evaluatedFunction), $env, $arguments);
+            }
+            throw new VMException("Symbol $evaluatedFunction does not exist");
+        default:
+            throw new VMException("Unsupported type of expression passed as function name");
+    }
 }
 
-
-/**
- * Returns new expression where all entries of one terms
- * replaced by other terms depending on terms match table.
- *
- * @param mixed $env
- * @param mixed $expr
- * @param array $match
- */
-function substitute($env, $expr, $match)
+function callFunction($env, $name, $arguments)
 {
-    //
-}
-
-/**
- * Reduces expression in context of environment.
- *
- * @param mixed $env
- * @param mixed $expr
- */
-function reduce($env, $expr)
-{
-    //
+    if (!has($env, $name)) {
+        throw new VMException("Symbol $name does not exist");
+    }
+    $expression = get($env, $name);
+    if (is_callable($expression)) {
+        return call_user_func($expression, $env, $arguments);
+    }
+    throw new VMException("Symbol $name is not callable");
 }
 
 /**
@@ -136,7 +154,11 @@ function reduce($env, $expr)
  */
 function defineFunction($env, $name, $args, $expr)
 {
-    //
+    $function = function ($env, $argValues) use ($args, $expr) {
+        $newEnv = makeEnvironment(array_combine($args, $argValues), $env);
+        return evaluate($newEnv, $expr);
+    };
+    set($env, $name, $function);
 }
 
 /**
@@ -148,5 +170,5 @@ function defineFunction($env, $name, $args, $expr)
  */
 function defineConst($env, $name, $expr)
 {
-    //
+    set($env, $name, $expr);
 }

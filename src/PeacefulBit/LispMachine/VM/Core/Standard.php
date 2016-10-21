@@ -8,7 +8,5 @@ use PeacefulBit\LispMachine\VM\VMException;
 function export()
 {
     return [
-        'def' => function ($env, $args) {
-        }
     ];
 }
