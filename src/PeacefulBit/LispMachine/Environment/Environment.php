@@ -45,3 +45,15 @@ function get(callable $environment, $symbol)
             : (is_null($parent) ? null : get($parent, $symbol));
     });
 }
+
+/**
+ * @param callable $environment
+ * @param $symbol
+ * @param $value
+ */
+function set(callable $environment, $symbol, $value)
+{
+    $environment(function (&$content) use ($symbol, $value) {
+        $content[$symbol] = $value;
+    });
+}

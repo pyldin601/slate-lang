@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 use PeacefulBit\LispMachine\Parser;
 use PeacefulBit\LispMachine\Lexer;
+use PeacefulBit\LispMachine\Tree;
 
 class TreeTest extends TestCase
 {
@@ -29,8 +30,8 @@ class TreeTest extends TestCase
         $this->assertCount(2, $ast);
 
         $expected = [
-            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
-            Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
+            Tree\node(Tree\TYPE_SYMBOL, '1'),
+            Tree\node(Tree\TYPE_SYMBOL, '2'),
         ];
 
         $this->assertEquals($expected, $ast);
@@ -42,11 +43,11 @@ class TreeTest extends TestCase
         $ast = Parser\toAst($lexemes);
 
         $expected = [
-            [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
-            ]
+            Tree\node(Tree\TYPE_EXPRESSION, [
+                Tree\node(Tree\TYPE_SYMBOL, '+'),
+                Tree\node(Tree\TYPE_SYMBOL, '1'),
+                Tree\node(Tree\TYPE_SYMBOL, '2'),
+            ])
         ];
 
         $this->assertEquals($expected, $ast);
@@ -58,15 +59,15 @@ class TreeTest extends TestCase
         $ast = Parser\toAst($lexemes);
 
         $expected = [
-            [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
-                [
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '-'),
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '10'),
-                    Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2')
-                ]
-            ]
+            Tree\node(Tree\TYPE_EXPRESSION, [
+                Tree\node(Tree\TYPE_SYMBOL, '+'),
+                Tree\node(Tree\TYPE_SYMBOL, '1'),
+                Tree\node(Tree\TYPE_EXPRESSION, [
+                    Tree\node(Tree\TYPE_SYMBOL, '-'),
+                    Tree\node(Tree\TYPE_SYMBOL, '10'),
+                    Tree\node(Tree\TYPE_SYMBOL, '2')
+                ])
+            ])
         ];
 
         $this->assertEquals($expected, $ast);
@@ -78,15 +79,16 @@ class TreeTest extends TestCase
         $ast = Parser\toAst($lexemes);
 
         $expected = [
-            [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '+'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '1'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2')
-            ], [
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '-'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '10'),
-                Lexer\makeLexeme(Lexer\LEXEME_SYMBOL, '2'),
-            ]
+            Tree\node(Tree\TYPE_EXPRESSION, [
+                Tree\node(Tree\TYPE_SYMBOL, '+'),
+                Tree\node(Tree\TYPE_SYMBOL, '1'),
+                Tree\node(Tree\TYPE_SYMBOL, '2')
+            ]),
+            Tree\node(Tree\TYPE_EXPRESSION, [
+                Tree\node(Tree\TYPE_SYMBOL, '-'),
+                Tree\node(Tree\TYPE_SYMBOL, '10'),
+                Tree\node(Tree\TYPE_SYMBOL, '2'),
+            ])
         ];
 
         $this->assertEquals($expected, $ast);

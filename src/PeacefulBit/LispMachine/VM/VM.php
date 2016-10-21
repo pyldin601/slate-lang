@@ -85,6 +85,16 @@ function apply($env, $expression)
     return runCoreFunction($env, $symbol, $arguments);
 }
 
+
+
+function init(array $modules)
+{
+    return function ($code) use ($modules) {
+
+    };
+}
+
+
 /**
  * Runs core function.
  *
@@ -101,5 +111,6 @@ function runCoreFunction($env, $name, array $arguments)
         \PeacefulBit\LispMachine\VM\Core\Relative\export(),
         \PeacefulBit\LispMachine\VM\Core\Math\export()
     );
+
     return call_user_func($modules[$name], $env, $arguments);
 }
