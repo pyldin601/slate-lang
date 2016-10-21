@@ -2,27 +2,36 @@
 
 namespace tests;
 
+use function PeacefulBit\LispMachine\Calculus\evaluate;
+use function PeacefulBit\LispMachine\Environment\has;
+use function PeacefulBit\LispMachine\Environment\makeEnvironment;
+use function PeacefulBit\LispMachine\Parser\toAst;
+use function PeacefulBit\LispMachine\Parser\toLexemes;
+
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class CalculusTest
+ * @package tests
+ * @after tests\TreeTest
+ */
 class CalculusTest extends TestCase
 {
-    private $vm;
-
-    public function setUp()
+    public function testVariableDeclaration()
     {
-        $this->vm = \PeacefulBit\LispMachine\VM\initDefaultModules();
+        $lexemes = toLexemes("(def f 10)");
+        $ast = toAst($lexemes);
+        $env = makeEnvironment();
+        evaluate($env, $ast);
+        $this->assertTrue(has($env, 'f'));
     }
 
-    public function exec($code)
+    public function testFunctionDeclaration()
     {
-        return call_user_func($this->vm, $code);
-    }
-
-    public function testEmptyExpression()
-    {
-        $this->assertNull($this->exec(""));
-        $this->assertEquals(1, $this->exec("1"));
-        $this->assertEquals(5, $this->exec("1 5"));
-        $this->assertEquals(10, $this->exec("(+ 1 9)"));
+        $lexemes = toLexemes("(def (foo x) (/ x 2))");
+        $ast = toAst($lexemes);
+        $env = makeEnvironment();
+        evaluate($env, $ast);
+        $this->assertTrue(has($env, 'foo'));
     }
 }

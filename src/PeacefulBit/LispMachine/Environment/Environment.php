@@ -9,7 +9,7 @@ namespace PeacefulBit\LispMachine\Environment;
  */
 function makeEnvironment($content = [], $parent = null)
 {
-    return function ($caller) use ($content, $parent) {
+    return function ($caller) use (&$content, $parent) {
         return $caller($content, $parent);
     };
 }

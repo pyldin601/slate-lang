@@ -2,7 +2,7 @@
 
 namespace PeacefulBit\LispMachine\VM;
 
-use function PeacefulBit\LispMachine\Calculus\evaluateList;
+use function PeacefulBit\LispMachine\Calculus\evaluate;
 use function PeacefulBit\LispMachine\Environment\makeEnvironment;
 
 use function PeacefulBit\LispMachine\Parser\toAst;
@@ -14,7 +14,7 @@ function init(array $modules)
     return function ($code) use ($env) {
         $lexemes = toLexemes($code);
         $tree = toAst($lexemes);
-        return evaluateList($env, $tree);
+        return evaluate($env, $tree);
     };
 }
 

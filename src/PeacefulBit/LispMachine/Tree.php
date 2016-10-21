@@ -2,9 +2,10 @@
 
 namespace PeacefulBit\LispMachine\Tree;
 
-const TYPE_SYMBOL       = 301;
-const TYPE_STRING       = 302;
-const TYPE_EXPRESSION   = 303;
+const TYPE_SYMBOL       = 301; // variable name or number constant
+const TYPE_STRING       = 302; // "any text in double quotes"
+const TYPE_EXPRESSION   = 303; // (foo bar baz)
+const TYPE_SEQUENCE     = 304; // (foo bar baz) (def n 10)
 
 const NODE_ID           = '$$node$$';
 

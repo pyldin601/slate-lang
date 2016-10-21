@@ -15,28 +15,21 @@ const KEYWORD_DEF = 'def';
 
 /**
  * @param $env
- * @param $list
- * @return mixed
- */
-function evaluateList($env, $list)
-{
-    return array_reduce($list, function ($previous, $current) use ($env) {
-        return evaluate($env, $current);
-    });
-}
-
-/**
- * @param $env
  * @param $node
  * @return mixed
  * @throws VMException
  */
 function evaluate($env, $node)
 {
+    if (is_null($node)) {
+        return null;
+    }
     $type = Tree\typeOf($node);
     switch ($type) {
         case Tree\TYPE_SYMBOL:
             return evaluateSymbol($env, $node);
+        case Tree\TYPE_SEQUENCE:
+            return evaluateSequence($env, $node);
         case Tree\TYPE_STRING:
             return evaluateString($env, $node);
         case Tree\TYPE_EXPRESSION:
@@ -46,22 +39,50 @@ function evaluate($env, $node)
     }
 }
 
+/**
+ * @param $env
+ * @param $node
+ * @return mixed
+ */
+function evaluateSequence($env, $node)
+{
+    return array_reduce(Tree\valueOf($node), function ($_, $current) use ($env) {
+        return evaluate($env, $current);
+    });
+}
+
+/**
+ * @param $env
+ * @param $node
+ * @return mixed
+ */
 function evaluateString($env, $node)
 {
     return Tree\valueOf($node);
 }
 
+/**
+ * @param $env
+ * @param $node
+ * @return mixed
+ */
 function evaluateSymbol($env, $node)
 {
     $value = Tree\valueOf($node);
 
     if (is_numeric($value)) {
-        return is_float($value) ? floatval($value) : intval($value);
+        return (substr_count($value, '.') == 1) ? floatval($value) : intval($value);
     }
 
     return evaluate($env, get($env, $value));
 }
 
+/**
+ * @param $env
+ * @param $node
+ * @return null
+ * @throws VMException
+ */
 function evaluateExpression($env, $node)
 {
     $value = Tree\valueOf($node);
@@ -85,7 +106,7 @@ function apply($env, $function, array $arguments)
         case Tree\TYPE_SYMBOL:
             switch (Tree\valueOf($function)) {
                 case KEYWORD_DEF:
-                    if (sizeof($arguments) < 3) {
+                    if (sizeof($arguments) < 2) {
                         throw new VMException("Too few arguments passed to declaration block");
                     }
                     list($first, $rest) = toHeadTail($arguments);
@@ -100,14 +121,16 @@ function apply($env, $function, array $arguments)
                                     throw new VMException("Argument name must be a symbol");
                                 }
                             });
-                            $argumentNames = array_map(function ($arg) {
-                                return Tree\typeOf($arg);
+                            $names = array_map(function ($arg) {
+                                return Tree\valueOf($arg);
                             }, $arguments);
-                            defineFunction($env, $name, $argumentNames, Tree\node(Tree\TYPE_EXPRESSION, $rest));
+                            $body = Tree\node(Tree\TYPE_SEQUENCE, $rest);
+                            defineFunction($env, Tree\valueOf($name), $names, $body);
                             break;
                         case Tree\TYPE_SYMBOL:
                             $name = Tree\valueOf($first);
-                            defineConst($env, $name, evaluate($env, Tree\node(Tree\TYPE_EXPRESSION, $rest)));
+                            $body = Tree\node(Tree\TYPE_SEQUENCE, $rest);
+                            defineConst($env, $name, $body);
                             break;
                         default:
                             throw new VMException("Incorrect syntax in declaration block");
@@ -126,9 +149,8 @@ function apply($env, $function, array $arguments)
                 return call_user_func(get($env, $evaluatedFunction), $env, $arguments);
             }
             throw new VMException("Symbol $evaluatedFunction does not exist");
-        default:
-            throw new VMException("Unsupported type of expression passed as function name");
     }
+    throw new VMException("Unsupported type of expression passed as function name");
 }
 
 function callFunction($env, $name, $arguments)
@@ -155,7 +177,8 @@ function callFunction($env, $name, $arguments)
 function defineFunction($env, $name, $args, $expr)
 {
     $function = function ($env, $argValues) use ($args, $expr) {
-        $newEnv = makeEnvironment(array_combine($args, $argValues), $env);
+        $functionContext = array_combine($args, $argValues);
+        $newEnv = makeEnvironment($functionContext, $env);
         return evaluate($newEnv, $expr);
     };
     set($env, $name, $function);

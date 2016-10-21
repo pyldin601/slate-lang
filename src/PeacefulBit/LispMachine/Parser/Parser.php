@@ -188,7 +188,7 @@ function toAst($lexemes)
                 if (is_null($closeIndex)) {
                     throw new ParserException("Unclosed bracket found");
                 }
-                $sub = toAst(array_slice($tail, 0, $closeIndex));
+                $sub = $iter(array_slice($tail, 0, $closeIndex), []);
                 $node = Tree\node(Tree\TYPE_EXPRESSION, $sub);
                 $newTail = array_slice($tail, $closeIndex + 1);
                 return $iter($newTail, array_merge($acc, [$node]));
@@ -204,5 +204,5 @@ function toAst($lexemes)
                 return $iter($tail, $acc);
         }
     };
-    return $iter($lexemes, []);
+    return Tree\node(Tree\TYPE_SEQUENCE, $iter($lexemes, []));
 }
