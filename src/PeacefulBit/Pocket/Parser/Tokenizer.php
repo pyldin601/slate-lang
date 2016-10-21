@@ -69,7 +69,7 @@ class Tokenizer
     public static function tokenize($code)
     {
         // Initial state of parser
-        $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter, &$delimiterIter) {
+        $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
             if (sizeof($rest) == 0) {
                 return $acc;
             }
