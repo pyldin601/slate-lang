@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nerd-components/common-functions.git",
-                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a"
+                "reference": "219aa0601fd7442ca45831d556626c8047f6fb7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
-                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/219aa0601fd7442ca45831d556626c8047f6fb7b",
+                "reference": "219aa0601fd7442ca45831d556626c8047f6fb7b",
                 "shasum": ""
             },
             "require-dev": {
@@ -39,7 +39,7 @@
                 "MIT"
             ],
             "description": "A lot of functions used in Nerd Framework applications.",
-            "time": "2016-10-21 08:44:09"
+            "time": "2016-10-22 08:39:25"
         }
     ],
     "packages-dev": [

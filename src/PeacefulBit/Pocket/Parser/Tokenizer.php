@@ -2,9 +2,11 @@
 
 namespace PeacefulBit\Pocket\Parser;
 
+use function Nerd\Common\Arrays\append;
 use function Nerd\Common\Arrays\toHeadTail;
 
 use PeacefulBit\Pocket\Exception\TokenizerException;
+use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
 use PeacefulBit\Pocket\Parser\Tokens\CloseBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\CommentToken;
 use PeacefulBit\Pocket\Parser\Tokens\DelimiterToken;
@@ -77,10 +79,10 @@ class Tokenizer
             switch ($head) {
                 // We got '(', so we just add it to list of lexemes.
                 case self::TOKEN_OPEN_BRACKET:
-                    return $baseIter($tail, array_merge($acc, [new OpenBracketToken]));
+                    return $baseIter($tail, append($acc, new OpenBracketToken));
                 // We got ')' and doing the same as in previous case.
                 case self::TOKEN_CLOSE_BRACKET:
-                    return $baseIter($tail, array_merge($acc, [new CloseBracketToken]));
+                    return $baseIter($tail, append($acc, new CloseBracketToken));
                 // We got '"'! It means that we are at the beginning of the string
                 // and must switch our state to stringIter.
                 case self::TOKEN_DOUBLE_QUOTE:
@@ -108,7 +110,8 @@ class Tokenizer
                     return $symbolIter($tail, $buffer . $head, $acc);
                 }
             }
-            return $baseIter($rest, array_merge($acc, [new SymbolToken($buffer)]));
+            $symbolToken = new SymbolToken($buffer);
+            return $baseIter($rest, append($acc, $symbolToken));
         };
 
         // State when parser parses string
@@ -118,7 +121,7 @@ class Tokenizer
             }
             list ($head, $tail) = toHeadTail($rest);
             if ($head == self::TOKEN_DOUBLE_QUOTE) {
-                return $baseIter($tail, array_merge($acc, [new StringToken($buffer)]));
+                return $baseIter($tail, append($acc, new StringToken($buffer)));
             }
             if ($head == '\\') {
                 return $escapeIter($tail, $buffer, $acc);
@@ -143,10 +146,10 @@ class Tokenizer
                     return $commentIter($tail, $buffer . $head, $acc);
                 }
             }
-            return $baseIter($rest, array_merge($acc, [new CommentToken($buffer)]));
+            return $baseIter($rest, append($acc, new CommentToken($buffer)));
         };
 
-        // todo: be or not be
+        // todo: to be or not to be
         $delimiterIter = function ($rest, $buffer, $acc) use (&$delimiterIter, &$baseIter) {
             if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
@@ -154,7 +157,7 @@ class Tokenizer
                     return $delimiterIter($tail, $buffer . $head, $acc);
                 }
             }
-            return $baseIter($rest, array_merge($acc, [new DelimiterToken($buffer)]));
+            return $baseIter($rest, append($acc, new DelimiterToken($buffer)));
         };
 
         return $baseIter(str_split($code), []);
