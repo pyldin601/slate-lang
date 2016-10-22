@@ -123,7 +123,7 @@ class Tokenizer
             if ($head == self::TOKEN_DOUBLE_QUOTE) {
                 return $baseIter($tail, append($acc, new StringToken($buffer)));
             }
-            if ($head == '\\') {
+            if ($head == Tokenizer::TOKEN_BACK_SLASH) {
                 return $escapeIter($tail, $buffer, $acc);
             }
             return $stringIter($tail, $buffer . $head, $acc);
