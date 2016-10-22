@@ -4,6 +4,20 @@
 
 My own light lisp-interpreter written on PHP.
 
+```
+; Define constant
+(def pi 3.14)
+
+; Define function
+(def (square-of-circle r) (* pi (^ r 2)))
+
+; Make list
+; (list 1 2 3 4 5 6 7 8 9 10)
+
+; Call function
+; (print (square-of-circle 15))
+```
+
 ## checklist
 1. ~~Parse code into list of lexemes~~
 2. ~~Make ast tree from list of lexemes~~
