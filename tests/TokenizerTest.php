@@ -2,26 +2,31 @@
 
 namespace tests;
 
-use PeacefulBit\LispMachine\Parser\ParserException;
 use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
-use PeacefulBit\LispMachine\Parser;
-use PeacefulBit\LispMachine\Lexer;
-
-class ParserTest extends TestCase
+class TokenizerTest extends TestCase
 {
+    /**
+     * @var Tokenizer
+     */
+    private $tokenizer;
+
+    public function setUp()
+    {
+        $this->tokenizer = new Tokenizer();
+    }
+
     public function testEmptyExpression()
     {
-        $expression = "";
-        $result = Parser\toLexemes($expression);
+        $result = $this->tokenizer->tokenize("");
         $this->assertEmpty($result);
     }
 
     public function testSymbol()
     {
-        $tokens = Tokenizer::tokenize("some_symbol");
+        $tokens = $this->tokenizer->tokenize("some_symbol");
         $this->assertCount(1, $tokens);
 
         $token = $tokens[0];
@@ -31,14 +36,14 @@ class ParserTest extends TestCase
 
     public function testDelimiters()
     {
-        $this->assertCount(2, Tokenizer::tokenize("foo bar"));
-        $this->assertCount(2, Tokenizer::tokenize("foo \t bar"));
-        $this->assertCount(2, Tokenizer::tokenize("foo \r\n bar"));
+        $this->assertCount(2, $this->tokenizer->tokenize("foo bar"));
+        $this->assertCount(2, $this->tokenizer->tokenize("foo \t bar"));
+        $this->assertCount(2, $this->tokenizer->tokenize("foo \r\n bar"));
     }
 
     public function testUnescapedString()
     {
-        $tokens = Tokenizer::tokenize('"hello world"');
+        $tokens = $this->tokenizer->tokenize('"hello world"');
         $this->assertCount(1, $tokens);
 
         $token = $tokens[0];
@@ -48,7 +53,7 @@ class ParserTest extends TestCase
 
     public function testEscapedString()
     {
-        $tokens = Tokenizer::tokenize('"hello \"world\""');
+        $tokens = $this->tokenizer->tokenize('"hello \"world\""');
         $this->assertCount(1, $tokens);
 
         $token = $tokens[0];
@@ -58,7 +63,7 @@ class ParserTest extends TestCase
 
     public function testBrackets()
     {
-        $tokens = Tokenizer::tokenize('()');
+        $tokens = $this->tokenizer->tokenize('()');
         $this->assertCount(2, $tokens);
 
         $this->assertEquals('OpenBracketToken CloseBracketToken', implode(' ', $tokens));
@@ -67,7 +72,7 @@ class ParserTest extends TestCase
     public function testUnclosedString()
     {
         try {
-            Tokenizer::tokenize('"hello');
+            $this->tokenizer->tokenize('"hello');
             $this->fail("Exception must be thrown");
         } catch (TokenizerException $exception) {
             $this->assertEquals("Unexpected end of string", $exception->getMessage());
@@ -77,7 +82,7 @@ class ParserTest extends TestCase
     public function testUnusedEscape()
     {
         try {
-            Tokenizer::tokenize('"hello\\');
+            $this->tokenizer->tokenize('"hello\\');
             $this->fail("Exception must be thrown");
         } catch (TokenizerException $exception) {
             $this->assertEquals("Unused escape character", $exception->getMessage());
@@ -87,7 +92,7 @@ class ParserTest extends TestCase
     public function testParseSimpleProgram()
     {
         $code = '(+ 5.6 2.7 (- 15 (/ 4 2)))';
-        $tokens = Tokenizer::tokenize($code);
+        $tokens = $this->tokenizer->tokenize($code);
 
         $this->assertCount(14, $tokens);
 
@@ -113,10 +118,19 @@ class ParserTest extends TestCase
         $this->assertEquals($expectedString, implode(' ', $tokens));
     }
 
+    public function testDeflateProgram()
+    {
+        $code = '(+ 5.6 2.7 (- 15 (/ 4 2)))';
+        $tokens = $this->tokenizer->tokenize($code);
+        $tree = $this->tokenizer->deflate($tokens);
+
+        $this->assertCount(1, $tree);
+    }
+
     public function testComments()
     {
         $code = '(+ 1 2) ; This must be ignored';
-        $lexemes = Tokenizer::tokenize($code);
+        $lexemes = $this->tokenizer->tokenize($code);
 
         $this->assertCount(6, $lexemes);
     }
@@ -125,7 +139,7 @@ class ParserTest extends TestCase
     {
         $file = __DIR__ . '/fixtures/program.pt';
         $code = file_get_contents($file);
-        $tokens = Tokenizer::tokenize($code);
+        $tokens = $this->tokenizer->tokenize($code);
         $this->assertTrue(is_array($tokens));
     }
 }
