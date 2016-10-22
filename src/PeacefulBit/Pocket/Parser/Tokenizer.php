@@ -3,18 +3,16 @@
 namespace PeacefulBit\Pocket\Parser;
 
 use function Nerd\Common\Arrays\append;
-use function Nerd\Common\Arrays\arrayOf;
 use function Nerd\Common\Arrays\toHeadTail;
+use function Nerd\Common\Functional\tail;
 
 use PeacefulBit\Pocket\Exception\TokenizerException;
-use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
 use PeacefulBit\Pocket\Parser\Tokens\CloseBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\CommentToken;
 use PeacefulBit\Pocket\Parser\Tokens\DelimiterToken;
 use PeacefulBit\Pocket\Parser\Tokens\OpenBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\StringToken;
 use PeacefulBit\Pocket\Parser\Tokens\SymbolToken;
-use function PeacefulBit\Util\tail;
 
 class Tokenizer
 {

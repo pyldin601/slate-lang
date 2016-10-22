@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b2b824d1bd7eb71427641e67df465c76",
+    "hash": "19bfaa1b435453f9024cb361c6a60e0c",
     "content-hash": "aca7591673c9570f8602c3da7aec76d9",
     "packages": [
         {
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nerd-components/common-functions.git",
-                "reference": "d9a777e9504d224b86da3958305af2f0a459f7ec"
+                "reference": "6de3fd738dfd6556beb6b7ad445bf313d1cb8514"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/d9a777e9504d224b86da3958305af2f0a459f7ec",
-                "reference": "d9a777e9504d224b86da3958305af2f0a459f7ec",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/6de3fd738dfd6556beb6b7ad445bf313d1cb8514",
+                "reference": "6de3fd738dfd6556beb6b7ad445bf313d1cb8514",
                 "shasum": ""
             },
             "require-dev": {
@@ -31,7 +31,8 @@
                 "files": [
                     "src/Nerd/Common/Arrays.php",
                     "src/Nerd/Common/Classes.php",
-                    "src/Nerd/Common/Strings.php"
+                    "src/Nerd/Common/Strings.php",
+                    "src/Nerd/Common/Functional.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -39,7 +40,7 @@
                 "MIT"
             ],
             "description": "A lot of functions used in Nerd Framework applications.",
-            "time": "2016-10-22 08:43:51"
+            "time": "2016-10-22 11:36:42"
         }
     ],
     "packages-dev": [

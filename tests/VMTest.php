@@ -2,7 +2,6 @@
 
 namespace tests;
 
-use function PeacefulBit\Util\tail;
 use PHPUnit\Framework\TestCase;
 
 class VMTest extends TestCase
@@ -87,17 +86,6 @@ class VMTest extends TestCase
     {
         $this->assertEquals(10, $this->exec('(+ 2 8)'));
         $this->assertEquals(16, $this->exec('(def (+ x y) (* x y)) (+ 2 8)'));
-    }
-
-    public function testTailRec()
-    {
-        $func = tail(function ($max, $acc) use (&$func) {
-            if ($max == $acc) {
-                return $acc;
-            }
-            return $func($max, $acc + 1);
-        });
-        $this->assertEquals(1000, $func(1000, 0));
     }
 
     private function exec($code)
