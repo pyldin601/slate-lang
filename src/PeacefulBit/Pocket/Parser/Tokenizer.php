@@ -3,6 +3,7 @@
 namespace PeacefulBit\Pocket\Parser;
 
 use function Nerd\Common\Arrays\append;
+use function Nerd\Common\Arrays\arrayOf;
 use function Nerd\Common\Arrays\toHeadTail;
 
 use PeacefulBit\Pocket\Exception\TokenizerException;
@@ -72,61 +73,71 @@ class Tokenizer
     {
         // Initial state of parser
         $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
-            if (sizeof($rest) == 0) {
-                return $acc;
-            }
-            list ($head, $tail) = toHeadTail($rest);
-            switch ($head) {
-                // We got '(', so we just add it to list of lexemes.
-                case self::TOKEN_OPEN_BRACKET:
-                    return $baseIter($tail, append($acc, new OpenBracketToken));
-                // We got ')' and doing the same as in previous case.
-                case self::TOKEN_CLOSE_BRACKET:
-                    return $baseIter($tail, append($acc, new CloseBracketToken));
-                // We got '"'! It means that we are at the beginning of the string
-                // and must switch our state to stringIter.
-                case self::TOKEN_DOUBLE_QUOTE:
-                    return $stringIter($tail, '', $acc);
-                // We got ';'. It means that comment is starting here. So we
-                // change our state to commentIter.
-                case self::TOKEN_SEMICOLON:
-                    return $commentIter($tail, '', $acc);
-                default:
-                    // If current char is a delimiter, we just ignore it.
-                    if (self::isDelimiter($head)) {
-                        return $baseIter($tail, $acc);
-                    }
-                    // In all other cases we interpret current char as start
-                    // of symbol and change our state to symbolIter
-                    return $symbolIter($tail, $head, $acc);
+            while (true) {
+                if (sizeof($rest) == 0) {
+                    return $acc;
+                }
+                list ($head, $tail) = toHeadTail($rest);
+                switch ($head) {
+                    // We got '(', so we just add it to list of lexemes.
+                    case self::TOKEN_OPEN_BRACKET:
+                        list ($rest, $acc) = arrayOf($tail, append($acc, new OpenBracketToken));
+                        continue;
+                    // We got ')' and doing the same as in previous case.
+                    case self::TOKEN_CLOSE_BRACKET:
+                        list ($rest, $acc) = arrayOf($tail, append($acc, new CloseBracketToken));
+                        continue;
+                    // We got '"'! It means that we are at the beginning of the string
+                    // and must switch our state to stringIter.
+                    case self::TOKEN_DOUBLE_QUOTE:
+                        return $stringIter($tail, '', $acc);
+                    // We got ';'. It means that comment is starting here. So we
+                    // change our state to commentIter.
+                    case self::TOKEN_SEMICOLON:
+                        return $commentIter($tail, '', $acc);
+                    default:
+                        // If current char is a delimiter, we just ignore it.
+                        if (self::isDelimiter($head)) {
+                            list ($rest, $acc) = arrayOf($tail, $acc);
+                            continue;
+                        }
+                        // In all other cases we interpret current char as start
+                        // of symbol and change our state to symbolIter
+                        return $symbolIter($tail, $head, $acc);
+                }
             }
         };
 
         // State when parser parses any symbol
         $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$delimiterIter) {
-            if (sizeof($rest) > 0) {
-                list ($head, $tail) = toHeadTail($rest);
-                if (self::isSymbol($head)) {
-                    return $symbolIter($tail, $buffer . $head, $acc);
+            while (true) {
+                if (sizeof($rest) > 0) {
+                    list ($head, $tail) = toHeadTail($rest);
+                    if (self::isSymbol($head)) {
+                        list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
+                        continue;
+                    }
                 }
+                $symbolToken = new SymbolToken($buffer);
+                return $baseIter($rest, append($acc, $symbolToken));
             }
-            $symbolToken = new SymbolToken($buffer);
-            return $baseIter($rest, append($acc, $symbolToken));
         };
 
         // State when parser parses string
         $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
-            if (sizeof($rest) == 0) {
-                throw new TokenizerException("Unexpected end of string");
+            while (true) {
+                if (sizeof($rest) == 0) {
+                    throw new TokenizerException("Unexpected end of string");
+                }
+                list ($head, $tail) = toHeadTail($rest);
+                if ($head == self::TOKEN_DOUBLE_QUOTE) {
+                    return $baseIter($tail, append($acc, new StringToken($buffer)));
+                }
+                if ($head == Tokenizer::TOKEN_BACK_SLASH) {
+                    return $escapeIter($tail, $buffer, $acc);
+                }
+                list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
             }
-            list ($head, $tail) = toHeadTail($rest);
-            if ($head == self::TOKEN_DOUBLE_QUOTE) {
-                return $baseIter($tail, append($acc, new StringToken($buffer)));
-            }
-            if ($head == Tokenizer::TOKEN_BACK_SLASH) {
-                return $escapeIter($tail, $buffer, $acc);
-            }
-            return $stringIter($tail, $buffer . $head, $acc);
         };
 
         // State when parser parses escaped symbol
@@ -140,13 +151,16 @@ class Tokenizer
 
         // State when parser ignores comments
         $commentIter = function ($rest, $buffer, $acc) use (&$commentIter, &$baseIter) {
-            if (sizeof($rest) > 0) {
-                list ($head, $tail) = toHeadTail($rest);
-                if ($head != Tokenizer::TOKEN_NEW_LINE) {
-                    return $commentIter($tail, $buffer . $head, $acc);
+            while (true) {
+                if (sizeof($rest) > 0) {
+                    list ($head, $tail) = toHeadTail($rest);
+                    if ($head != Tokenizer::TOKEN_NEW_LINE) {
+                        list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
+                        continue;
+                    }
                 }
+                return $baseIter($rest, append($acc, new CommentToken($buffer)));
             }
-            return $baseIter($rest, append($acc, new CommentToken($buffer)));
         };
 
         // todo: to be or not to be
