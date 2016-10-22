@@ -18,15 +18,15 @@ use function PeacefulBit\Util\tail;
 
 class Tokenizer
 {
-    const TOKEN_OPEN_BRACKET    = '(';
-    const TOKEN_CLOSE_BRACKET   = ')';
-    const TOKEN_DOUBLE_QUOTE    = '"';
-    const TOKEN_BACK_SLASH      = '\\';
-    const TOKEN_SEMICOLON       = ';';
+    const TOKEN_OPEN_BRACKET = '(';
+    const TOKEN_CLOSE_BRACKET = ')';
+    const TOKEN_DOUBLE_QUOTE = '"';
+    const TOKEN_BACK_SLASH = '\\';
+    const TOKEN_SEMICOLON = ';';
 
-    const TOKEN_TAB             = "\t";
-    const TOKEN_SPACE           = " ";
-    const TOKEN_NEW_LINE        = "\n";
+    const TOKEN_TAB = "\t";
+    const TOKEN_SPACE = " ";
+    const TOKEN_NEW_LINE = "\n";
     const TOKEN_CARRIAGE_RETURN = "\r";
 
     /**
@@ -74,34 +74,34 @@ class Tokenizer
     {
         // Initial state of parser
         $baseIter = tail(function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
-                if (sizeof($rest) == 0) {
-                    return $acc;
-                }
-                list ($head, $tail) = toHeadTail($rest);
-                switch ($head) {
-                    // We got '(', so we just add it to list of lexemes.
-                    case self::TOKEN_OPEN_BRACKET:
-                        return $baseIter($tail, append($acc, new OpenBracketToken));
-                    // We got ')' and doing the same as in previous case.
-                    case self::TOKEN_CLOSE_BRACKET:
-                        return $baseIter($tail, append($acc, new CloseBracketToken));
-                    // We got '"'! It means that we are at the beginning of the string
-                    // and must switch our state to stringIter.
-                    case self::TOKEN_DOUBLE_QUOTE:
-                        return $stringIter($tail, '', $acc);
-                    // We got ';'. It means that comment is starting here. So we
-                    // change our state to commentIter.
-                    case self::TOKEN_SEMICOLON:
-                        return $commentIter($tail, '', $acc);
-                    default:
-                        // If current char is a delimiter, we just ignore it.
-                        if (self::isDelimiter($head)) {
-                            return $baseIter($tail, $acc);
-                        }
-                        // In all other cases we interpret current char as start
-                        // of symbol and change our state to symbolIter
-                        return $symbolIter($tail, $head, $acc);
-                }
+            if (sizeof($rest) == 0) {
+                return $acc;
+            }
+            list ($head, $tail) = toHeadTail($rest);
+            switch ($head) {
+                // We got '(', so we just add it to list of lexemes.
+                case self::TOKEN_OPEN_BRACKET:
+                    return $baseIter($tail, append($acc, new OpenBracketToken));
+                // We got ')' and doing the same as in previous case.
+                case self::TOKEN_CLOSE_BRACKET:
+                    return $baseIter($tail, append($acc, new CloseBracketToken));
+                // We got '"'! It means that we are at the beginning of the string
+                // and must switch our state to stringIter.
+                case self::TOKEN_DOUBLE_QUOTE:
+                    return $stringIter($tail, '', $acc);
+                // We got ';'. It means that comment is starting here. So we
+                // change our state to commentIter.
+                case self::TOKEN_SEMICOLON:
+                    return $commentIter($tail, '', $acc);
+                default:
+                    // If current char is a delimiter, we just ignore it.
+                    if (self::isDelimiter($head)) {
+                        return $baseIter($tail, $acc);
+                    }
+                    // In all other cases we interpret current char as start
+                    // of symbol and change our state to symbolIter
+                    return $symbolIter($tail, $head, $acc);
+            }
         });
 
         // State when parser parses any symbol
