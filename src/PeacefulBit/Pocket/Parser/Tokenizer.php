@@ -146,7 +146,7 @@ class Tokenizer
                     return $commentIter($tail, $buffer . $head, $acc);
                 }
             }
-            return $baseIter($rest, append($acc, new CommentToken($buffer)));
+            return $baseIter($rest, append($acc, new CommentToken(trim($buffer))));
         };
 
         // todo: to be or not to be

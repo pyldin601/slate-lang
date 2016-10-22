@@ -120,4 +120,12 @@ class ParserTest extends TestCase
 
         $this->assertCount(6, $lexemes);
     }
+
+    public function testSourceCode()
+    {
+        $file = __DIR__ . '/fixtures/program.pt';
+        $code = file_get_contents($file);
+        $tokens = Tokenizer::tokenize($code);
+        $this->assertTrue(is_array($tokens));
+    }
 }
