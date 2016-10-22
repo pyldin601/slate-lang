@@ -26,7 +26,9 @@
       "src/PeacefulBit/LispMachine/VM/Core/Math.php",
 
       "src/PeacefulBit/LispMachine/Calculus.php",
-      "src/PeacefulBit/LispMachine/Tree.php"
+      "src/PeacefulBit/LispMachine/Tree.php",
+
+      "src/PeacefulBit/Util.php"
     ],
     "psr-4": {
       "": "src/"

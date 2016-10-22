@@ -14,6 +14,7 @@ use PeacefulBit\Pocket\Parser\Tokens\DelimiterToken;
 use PeacefulBit\Pocket\Parser\Tokens\OpenBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\StringToken;
 use PeacefulBit\Pocket\Parser\Tokens\SymbolToken;
+use function PeacefulBit\Util\tail;
 
 class Tokenizer
 {
@@ -72,8 +73,7 @@ class Tokenizer
     public static function tokenize($code)
     {
         // Initial state of parser
-        $baseIter = function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
-            while (true) {
+        $baseIter = tail(function ($rest, $acc) use (&$baseIter, &$symbolIter, &$stringIter, &$commentIter) {
                 if (sizeof($rest) == 0) {
                     return $acc;
                 }
@@ -81,12 +81,10 @@ class Tokenizer
                 switch ($head) {
                     // We got '(', so we just add it to list of lexemes.
                     case self::TOKEN_OPEN_BRACKET:
-                        list ($rest, $acc) = arrayOf($tail, append($acc, new OpenBracketToken));
-                        continue;
+                        return $baseIter($tail, append($acc, new OpenBracketToken));
                     // We got ')' and doing the same as in previous case.
                     case self::TOKEN_CLOSE_BRACKET:
-                        list ($rest, $acc) = arrayOf($tail, append($acc, new CloseBracketToken));
-                        continue;
+                        return $baseIter($tail, append($acc, new CloseBracketToken));
                     // We got '"'! It means that we are at the beginning of the string
                     // and must switch our state to stringIter.
                     case self::TOKEN_DOUBLE_QUOTE:
@@ -98,46 +96,39 @@ class Tokenizer
                     default:
                         // If current char is a delimiter, we just ignore it.
                         if (self::isDelimiter($head)) {
-                            list ($rest, $acc) = arrayOf($tail, $acc);
-                            continue;
+                            return $baseIter($tail, $acc);
                         }
                         // In all other cases we interpret current char as start
                         // of symbol and change our state to symbolIter
                         return $symbolIter($tail, $head, $acc);
                 }
-            }
-        };
+        });
 
         // State when parser parses any symbol
-        $symbolIter = function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$delimiterIter) {
-            while (true) {
-                if (sizeof($rest) > 0) {
-                    list ($head, $tail) = toHeadTail($rest);
-                    if (self::isSymbol($head)) {
-                        list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
-                        continue;
-                    }
+        $symbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$delimiterIter) {
+            if (sizeof($rest) > 0) {
+                list ($head, $tail) = toHeadTail($rest);
+                if (self::isSymbol($head)) {
+                    return $symbolIter($tail, $buffer . $head, $acc);
                 }
-                $symbolToken = new SymbolToken($buffer);
-                return $baseIter($rest, append($acc, $symbolToken));
             }
-        };
+            $symbolToken = new SymbolToken($buffer);
+            return $baseIter($rest, append($acc, $symbolToken));
+        });
 
         // State when parser parses string
         $stringIter = function ($rest, $buffer, $acc) use (&$stringIter, &$baseIter, &$escapeIter) {
-            while (true) {
-                if (sizeof($rest) == 0) {
-                    throw new TokenizerException("Unexpected end of string");
-                }
-                list ($head, $tail) = toHeadTail($rest);
-                if ($head == self::TOKEN_DOUBLE_QUOTE) {
-                    return $baseIter($tail, append($acc, new StringToken($buffer)));
-                }
-                if ($head == Tokenizer::TOKEN_BACK_SLASH) {
-                    return $escapeIter($tail, $buffer, $acc);
-                }
-                list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
+            if (sizeof($rest) == 0) {
+                throw new TokenizerException("Unexpected end of string");
             }
+            list ($head, $tail) = toHeadTail($rest);
+            if ($head == self::TOKEN_DOUBLE_QUOTE) {
+                return $baseIter($tail, append($acc, new StringToken($buffer)));
+            }
+            if ($head == Tokenizer::TOKEN_BACK_SLASH) {
+                return $escapeIter($tail, $buffer, $acc);
+            }
+            return $stringIter($tail, $buffer . $head, $acc);
         };
 
         // State when parser parses escaped symbol
@@ -151,16 +142,13 @@ class Tokenizer
 
         // State when parser ignores comments
         $commentIter = function ($rest, $buffer, $acc) use (&$commentIter, &$baseIter) {
-            while (true) {
-                if (sizeof($rest) > 0) {
-                    list ($head, $tail) = toHeadTail($rest);
-                    if ($head != Tokenizer::TOKEN_NEW_LINE) {
-                        list ($rest, $buffer, $acc) = arrayOf($tail, $buffer . $head, $acc);
-                        continue;
-                    }
+            if (sizeof($rest) > 0) {
+                list ($head, $tail) = toHeadTail($rest);
+                if ($head != Tokenizer::TOKEN_NEW_LINE) {
+                    return $commentIter($tail, $buffer . $head, $acc);
                 }
-                return $baseIter($rest, append($acc, new CommentToken($buffer)));
             }
+            return $baseIter($rest, append($acc, new CommentToken($buffer)));
         };
 
         // todo: to be or not to be
