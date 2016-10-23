@@ -5,6 +5,7 @@ namespace tests;
 use PeacefulBit\Pocket\Parser\Nodes\ConstDeclareNode;
 use PeacefulBit\Pocket\Parser\Nodes\FunctionDeclareNode;
 use PeacefulBit\Pocket\Parser\Nodes\InvokeNode;
+use PeacefulBit\Pocket\Parser\Nodes\NativeNode;
 use PeacefulBit\Pocket\Parser\Nodes\SequenceNode;
 use PeacefulBit\Pocket\Parser\Nodes\StringNode;
 use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
@@ -58,6 +59,11 @@ class NodePrinterTest extends TestCase
         $node = new ConstDeclareNode(['a', 'b'], [new SymbolNode('10'), new SymbolNode('15')]);
 
         $this->assertEquals('(def a 10 b 15)', $this->str($node));
+    }
+
+    public function testNativeNode()
+    {
+        $this->assertEquals('(native)', $this->str(new NativeNode));
     }
 
     private function str($node)

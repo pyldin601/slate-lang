@@ -2,6 +2,8 @@
 
 namespace tests;
 
+use function Nerd\Common\Arrays\deepMap;
+
 use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
@@ -124,7 +126,27 @@ class TokenizerTest extends TestCase
         $tokens = $this->tokenizer->tokenize($code);
         $tree = $this->tokenizer->deflate($tokens);
 
+        $actualTree = deepMap($tree, 'strval');
+
+        $expectedTree = [
+            [
+                'SymbolToken(+)',
+                'SymbolToken(5.6)',
+                'SymbolToken(2.7)',
+                [
+                    'SymbolToken(-)',
+                    'SymbolToken(15)',
+                    [
+                        'SymbolToken(/)',
+                        'SymbolToken(4)',
+                        'SymbolToken(2)',
+                    ]
+                ]
+            ]
+        ];
+
         $this->assertCount(1, $tree);
+        $this->assertEquals($expectedTree, $actualTree);
     }
 
     public function testComments()
