@@ -10,11 +10,18 @@ class NativeNode extends AbstractNode
     private $name;
 
     /**
-     * @param string $name
+     * @var callable $callable
      */
-    public function __construct($name)
+    private $callable;
+
+    /**
+     * @param string $name
+     * @param callable $callable
+     */
+    public function __construct($name, callable $callable)
     {
         $this->name = $name;
+        $this->callable = $callable;
     }
 
     /**
@@ -23,5 +30,13 @@ class NativeNode extends AbstractNode
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getCallable()
+    {
+        return $this->callable;
     }
 }
