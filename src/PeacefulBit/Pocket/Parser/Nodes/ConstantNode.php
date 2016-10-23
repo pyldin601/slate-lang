@@ -2,7 +2,7 @@
 
 namespace PeacefulBit\Pocket\Parser\Nodes;
 
-class ConstDeclareNode extends AbstractNode
+class ConstantNode extends AbstractNode
 {
     /**
      * @var string[]

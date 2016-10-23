@@ -8,7 +8,7 @@ class NodePrinterVisitor implements NodeVisitor
 {
     use NodeDispatchingTrait;
 
-    public function visitConstDeclareNode(Nodes\ConstDeclareNode $node)
+    public function visitConstDeclareNode(Nodes\ConstantNode $node)
     {
         $names = $node->getNames();
         $values = $node->getValues();
@@ -20,7 +20,7 @@ class NodePrinterVisitor implements NodeVisitor
         return sprintf('(def %s)', implode(' ', $zippedArguments));
     }
 
-    public function visitFunctionDeclareNode(Nodes\FunctionDeclareNode $node)
+    public function visitFunctionDeclareNode(Nodes\FunctionNode $node)
     {
         $name = $node->getName();
         $args = implode(' ', $node->getArguments());

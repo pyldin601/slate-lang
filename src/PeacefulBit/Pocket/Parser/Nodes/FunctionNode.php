@@ -2,7 +2,7 @@
 
 namespace PeacefulBit\Pocket\Parser\Nodes;
 
-class FunctionDeclareNode extends AbstractNode
+class FunctionNode extends AbstractNode
 {
     /**
      * @var SymbolNode

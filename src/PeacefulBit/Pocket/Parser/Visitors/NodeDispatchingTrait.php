@@ -14,9 +14,9 @@ trait NodeDispatchingTrait
     {
         $type = get_class($node);
         switch ($type) {
-            case Nodes\ConstDeclareNode::class:
+            case Nodes\ConstantNode::class:
                 return $this->visitConstDeclareNode($node);
-            case Nodes\FunctionDeclareNode::class:
+            case Nodes\FunctionNode::class:
                 return $this->visitFunctionDeclareNode($node);
             case Nodes\InvokeNode::class:
                 return $this->visitInvokeNode($node);
@@ -34,16 +34,16 @@ trait NodeDispatchingTrait
     }
 
     /**
-     * @param Nodes\ConstDeclareNode $node
+     * @param Nodes\ConstantNode $node
      * @return mixed
      */
-    abstract public function visitConstDeclareNode(Nodes\ConstDeclareNode $node);
+    abstract public function visitConstDeclareNode(Nodes\ConstantNode $node);
 
     /**
-     * @param Nodes\FunctionDeclareNode $node
+     * @param Nodes\FunctionNode $node
      * @return mixed
      */
-    abstract public function visitFunctionDeclareNode(Nodes\FunctionDeclareNode $node);
+    abstract public function visitFunctionDeclareNode(Nodes\FunctionNode $node);
 
     /**
      * @param Nodes\InvokeNode $node
