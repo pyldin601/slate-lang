@@ -63,8 +63,7 @@ class NodePrinterTest extends TestCase
 
     public function testNativeNode()
     {
-        $this->assertEquals('(native foo)', $this->str(new NativeNode('foo', function () {
-        })));
+        $this->assertEquals('(native foo)', $this->str(new NativeNode('foo', null)));
     }
 
     private function str($node)
