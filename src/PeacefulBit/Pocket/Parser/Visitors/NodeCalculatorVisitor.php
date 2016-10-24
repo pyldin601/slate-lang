@@ -38,7 +38,25 @@ class NodeCalculatorVisitor implements NodeVisitor
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        // TODO: Implement visitInvokeNode() method.
+        $function = $this->visit($node->getFunction());
+        if (!$function instanceof Nodes\SymbolNode) {
+            throw new \RuntimeException("Invalid invocation");
+        }
+        $name = $function->getName();
+        if (!$this->context->has($name)) {
+            throw new \RuntimeException("Symbol \"$name\" not defined");
+        }
+        $callable = $this->context->get($name);
+        if ($callable instanceof Nodes\NativeNode) {
+            return call_user_func($callable->getCallable(), $this, $node->getArguments());
+        }
+        if ($callable instanceof Nodes\FunctionNode) {
+            $combined = array_combine($callable->getArguments(), $node->getArguments());
+            $childContext = $this->context->inherit($combined);
+            $childVisitor = new static($childContext);
+            return $childVisitor->visit($callable->getBody());
+        }
+        throw new \RuntimeException("Symbol \"$name\" is not callable");
     }
 
     public function visitSequenceNode(Nodes\SequenceNode $node)
@@ -61,11 +79,10 @@ class NodeCalculatorVisitor implements NodeVisitor
             return (false !== strpos($name, '.'))
                 ? floatval($name)
                 : intval($name);
-
         }
 
         if (!$this->context->has($name)) {
-            throw new RuntimeException("Symbol \"$name\" is not defined");
+            throw new RuntimeException("Symbol \"$name\" not defined");
         }
 
         return $this->visit($this->context->get($name));
