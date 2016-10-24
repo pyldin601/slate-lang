@@ -118,7 +118,8 @@ class NodeCalculatorVisitor implements NodeVisitor
         // Native code could not came from source
     }
 
-    public function valueOf($node) {
+    public function valueOf($node)
+    {
         if (is_null($node)) {
             return null;
         }
