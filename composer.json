@@ -1,6 +1,6 @@
 {
-  "name": "pldin601/lisp-vm",
-  "description": "Lisp parser and interpreter.",
+  "name": "peacefulbit/packet-lite",
+  "description": "My implementation of lisp-based language interpreter written on PHP.",
   "authors": [
     {
       "name": "Roman Gemini",
