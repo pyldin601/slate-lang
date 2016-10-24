@@ -109,7 +109,7 @@ class NodeMakerTest extends TestCase
         $this->assertEquals('foo', $node->getFunction()->getName());
         $this->assertCount(2, $node->getArguments());
         $this->assertTrue(all($node->getArguments(), function ($arg) {
-            return $arg instanceOf Nodes\SymbolNode;
+            return $arg instanceof Nodes\SymbolNode;
         }), 'All arguments must be a symbols');
         $this->assertEquals(['a', 'b'], array_map(function ($node) {
             return $node->getName();
