@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\Packet\Context\Context;
+use PeacefulBit\Packet\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
@@ -35,6 +36,7 @@ class EnvironmentTest extends TestCase
     /**
      * @depends testAccessors
      * @param Context $ctx
+     * @return Context
      */
     public function testInherit(Context $ctx)
     {
@@ -52,5 +54,17 @@ class EnvironmentTest extends TestCase
 
         $this->assertEquals('bar', $foo());
         $this->assertEquals('bas', $baz());
+
+        return $ctx2;
+    }
+
+    /**
+     * @depends testInherit
+     * @param Context $ctx
+     * @expectedException \PeacefulBit\Packet\Exception\RuntimeException
+     */
+    public function testOverwrite(Context $ctx)
+    {
+        $ctx->set('baz', null);
     }
 }

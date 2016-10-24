@@ -52,9 +52,13 @@ function export()
             return $visitor->visit($number) % $visitor->visit($div);
         }),
         'pow' => new NativeNode('pow', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            return array_reduce($arguments, function ($result, $argument) use ($visitor) {
+            if (sizeof($arguments) < 2) {
+                throw new RuntimeException("Function \"pow\" requires at least two arguments");
+            }
+            list ($head, $tail) = toHeadTail($arguments);
+            return array_reduce($tail, function ($result, $argument) use ($visitor) {
                 return pow($result, $visitor->visit($argument));
-            }, 1);
+            }, $visitor->visit($head));
         })
     ];
 }

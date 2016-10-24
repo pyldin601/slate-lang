@@ -50,4 +50,18 @@ class MathModuleTest extends TestCase
         $this->assertEquals(1 / 5, $this->calc->calculate('(/ 5)'));
         $this->assertEquals(2, $this->calc->calculate('(/ 24 2 6)'));
     }
+
+    public function testPow()
+    {
+        $this->assertEquals(9, $this->calc->calculate('(pow 3 2)'));
+        $this->assertEquals(27, $this->calc->calculate('(pow 3 3)'));
+        $this->assertEquals(729, $this->calc->calculate('(pow 3 3 2)'));
+    }
+
+    public function testMod()
+    {
+        $this->assertEquals(0, $this->calc->calculate('(% 9 3)'));
+        $this->assertEquals(1, $this->calc->calculate('(% 9 2)'));
+        $this->assertEquals(18, $this->calc->calculate('(% 18 27)'));
+    }
 }

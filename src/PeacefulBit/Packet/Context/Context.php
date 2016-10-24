@@ -52,7 +52,7 @@ class Context
     public function set($key, $value)
     {
         if (array_key_exists($key, $this->content)) {
-            throw new RuntimeException("Symbol $key already defined in this scope");
+            throw new RuntimeException("Symbol \"$key\" already defined in local context");
         }
         $this->content[$key] = $value;
     }
