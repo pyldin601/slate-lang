@@ -11,6 +11,7 @@ use PeacefulBit\Pocket\Exception\ParserException;
 use PeacefulBit\Pocket\Exception\SyntaxException;
 use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Nodes\ConstantNode;
+use PeacefulBit\Pocket\Parser\Nodes\FunctionNode;
 use PeacefulBit\Pocket\Parser\Nodes\SequenceNode;
 use PeacefulBit\Pocket\Parser\Nodes\StringNode;
 use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
@@ -246,17 +247,22 @@ class Tokenizer
 
     private function convertFunctionToNode($body)
     {
-        list ($head, $tail) = toHeadTail($body);
+        list ($head, $body) = toHeadTail($body);
+
         if (sizeof($head) < 1) {
             throw new ParserException("Function must have a name");
         }
-        array_walk($head, function ($token) {
-            if (!$token instanceof SymbolToken) {
-                throw new ParserException("Function name and arguments must be symbols");
-            }
-        });
-        list ($name, $args) = toHeadTail($head);
 
+        $headValues = array_map(function ($token) {
+            if (!$token instanceof SymbolToken) {
+                throw new ParserException("Function name and arguments must be a symbols");
+            }
+            return $token->getContent();
+        }, $head);
+
+        list ($name, $args) = toHeadTail($headValues);
+
+        return new FunctionNode($name, $args, $body);
     }
 
     private function convertConstantToNode($body)
