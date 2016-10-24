@@ -46,7 +46,7 @@ function export()
         }),
         '%' => new NativeNode('%', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) != 2) {
-                throw new RuntimeException("Modulo operator accepts exactly two arguments");
+                throw new RuntimeException("Modulo operation requires exactly two arguments");
             }
             list ($number, $div) = $arguments;
             return $visitor->visit($number) % $visitor->visit($div);
