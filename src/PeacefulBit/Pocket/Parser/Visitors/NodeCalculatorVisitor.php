@@ -20,8 +20,9 @@ class NodeCalculatorVisitor implements NodeVisitor
     public function visitConstantNode(Nodes\ConstantNode $node)
     {
         $combined = $node->getCombined();
+        $keys = array_keys($combined);
 
-        array_walk(array_keys($combined), function ($key) use ($node, $combined) {
+        array_walk($keys, function ($key) use ($node, $combined) {
             $value = $this->visit($combined[$key]);
             $this->context->set($key, $value);
         });
@@ -38,7 +39,8 @@ class NodeCalculatorVisitor implements NodeVisitor
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        $function = $this->visit($node->getFunction());
+        $function = $node->getFunction();
+
         if (!$function instanceof Nodes\SymbolNode) {
             throw new \RuntimeException("Invalid invocation");
         }
@@ -97,6 +99,11 @@ class NodeCalculatorVisitor implements NodeVisitor
             throw new RuntimeException("Symbol \"$name\" not defined");
         }
 
-        return $this->visit($this->context->get($name));
+        return $this->context->get($name);
+    }
+
+    public function visitNativeNode(Nodes\NativeNode $node)
+    {
+        // Native code could not came from source
     }
 }
