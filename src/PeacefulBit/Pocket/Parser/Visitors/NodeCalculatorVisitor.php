@@ -51,12 +51,24 @@ class NodeCalculatorVisitor implements NodeVisitor
             return call_user_func($callable->getCallable(), $this, $node->getArguments());
         }
         if ($callable instanceof Nodes\FunctionNode) {
-            $combined = array_combine($callable->getArguments(), $node->getArguments());
-            $childContext = $this->context->inherit($combined);
-            $childVisitor = new static($childContext);
-            return $childVisitor->visit($callable->getBody());
+            return $this->callFunctionNode($callable, $node->getArguments());
         }
         throw new \RuntimeException("Symbol \"$name\" is not callable");
+    }
+
+    private function callFunctionNode(Nodes\FunctionNode $node, $args)
+    {
+        $argNames = $node->getArguments();
+
+        if (sizeof($argNames) >= sizeof($args)) {
+            throw new \RuntimeException("Number of arguments mismatch");
+        }
+
+        $combined = array_combine($argNames, $args);
+        $childContext = $this->context->inherit($combined);
+        $childVisitor = new static($childContext);
+
+        return $childVisitor->visit($node->getBody());
     }
 
     public function visitSequenceNode(Nodes\SequenceNode $node)
