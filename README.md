@@ -25,4 +25,4 @@ My implementation of lisp-based language interpreter written on PHP.
 4. ~~Must support modules~~
 5. ~~Must support functions and variables definition~~
 6. ~~Implement using visitors and finite state machine~~ 
-7. Import PHP functions from pocket code
+7. Import PHP functions into Packet code
