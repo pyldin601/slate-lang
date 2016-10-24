@@ -37,4 +37,18 @@ class CalculatorTest extends TestCase
         $result = $calculator->calculate('(def foo "bar") foo');
         $this->assertEquals('bar', $result);
     }
+
+    public function testFunctionDefine()
+    {
+        $calculator = new Calculator();
+        $result = $calculator->calculate('(def (foo) "bar") (foo)');
+        $this->assertEquals('bar', $result);
+    }
+
+    public function testFunctionAsArgument()
+    {
+        $calculator = new Calculator();
+        $result = $calculator->calculate('(def (foo) "bar") (def (baz) foo) ((baz))');
+        $this->assertEquals('bar', $result);
+    }
 }

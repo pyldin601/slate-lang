@@ -39,30 +39,41 @@ class NodeCalculatorVisitor implements NodeVisitor
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        $function = $node->getFunction();
+        $callable = $this->getFunction($node->getFunction());
 
-        if (!$function instanceof Nodes\SymbolNode) {
-            throw new \RuntimeException("Invalid invocation");
-        }
-        $name = $function->getName();
-        if (!$this->context->has($name)) {
-            throw new \RuntimeException("Symbol \"$name\" not defined");
-        }
-        $callable = $this->context->get($name);
         if ($callable instanceof Nodes\NativeNode) {
             return call_user_func($callable->getCallable(), $this, $node->getArguments());
         }
+
         if ($callable instanceof Nodes\FunctionNode) {
             return $this->callFunctionNode($callable, $node->getArguments());
         }
-        throw new \RuntimeException("Symbol \"$name\" is not callable");
+
+        throw new \RuntimeException("Symbol is not callable");
+    }
+
+    private function getFunction(Nodes\Node $function)
+    {
+        if ($function instanceof Nodes\SymbolNode) {
+            $name = $function->getName();
+            if (!$this->context->has($name)) {
+                throw new \RuntimeException("Symbol \"$name\" is not defined");
+            }
+            return $this->context->get($name);
+        }
+
+        if ($function instanceof Nodes\InvokeNode) {
+            return $this->visitInvokeNode($function);
+        }
+
+        throw new \RuntimeException("Invalid function");
     }
 
     private function callFunctionNode(Nodes\FunctionNode $node, $args)
     {
         $argNames = $node->getArguments();
 
-        if (sizeof($argNames) >= sizeof($args)) {
+        if (sizeof($argNames) > sizeof($args)) {
             throw new \RuntimeException("Number of arguments mismatch");
         }
 
