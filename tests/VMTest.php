@@ -4,29 +4,9 @@ namespace tests;
 
 use PHPUnit\Framework\TestCase;
 
-class VMTest extends TestCase
+abstract class VMTest extends TestCase
 {
-    public function testSimpleExpression()
-    {
-        $this->assertEquals(10, $this->exec('10'));
-        $this->assertEquals(5, $this->exec('10 5'));
 
-        $this->assertEquals(7, $this->exec('(+ 2 5)'));
-        $this->assertEquals(6, $this->exec('(+ 1 2 3)'));
-        $this->assertEquals(0, $this->exec('(+)'));
-
-        $this->assertEquals(7, $this->exec('(- 12 5)'));
-        $this->assertEquals(-5, $this->exec('(- 5)'));
-        $this->assertEquals(4, $this->exec('(- 10 2 4)'));
-
-        $this->assertEquals(8, $this->exec('(* 2 4)'));
-        $this->assertEquals(5, $this->exec('(* 5)'));
-        $this->assertEquals(1, $this->exec('(*)'));
-
-        $this->assertEquals(6, $this->exec('(/ 24 4)'));
-        $this->assertEquals(1 / 5, $this->exec('(/ 5)'));
-        $this->assertEquals(2, $this->exec('(/ 24 2 6)'));
-    }
 
     public function testNestedExpression()
     {

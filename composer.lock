@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nerd-components/common-functions.git",
-                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a"
+                "reference": "237ac2dad177173dacde731a07e670328dd78308"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
-                "reference": "518a83895bbc8ab4afb72e19184b0bbd2ebdbf1a",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/237ac2dad177173dacde731a07e670328dd78308",
+                "reference": "237ac2dad177173dacde731a07e670328dd78308",
                 "shasum": ""
             },
             "require-dev": {
@@ -31,7 +31,8 @@
                 "files": [
                     "src/Nerd/Common/Arrays.php",
                     "src/Nerd/Common/Classes.php",
-                    "src/Nerd/Common/Strings.php"
+                    "src/Nerd/Common/Strings.php",
+                    "src/Nerd/Common/Functional.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -39,7 +40,7 @@
                 "MIT"
             ],
             "description": "A lot of functions used in Nerd Framework applications.",
-            "time": "2016-10-21 08:44:09"
+            "time": "2016-10-23 18:34:32"
         }
     ],
     "packages-dev": [

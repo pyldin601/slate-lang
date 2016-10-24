@@ -14,19 +14,9 @@
   },
   "autoload": {
     "files": [
-      "src/PeacefulBit/LispMachine/Parser/Parser.php",
-      "src/PeacefulBit/LispMachine/Lexer/Lexer.php",
-      "src/PeacefulBit/LispMachine/Environment/Environment.php",
-
-      "src/PeacefulBit/LispMachine/VM/VM.php",
-
-      "src/PeacefulBit/LispMachine/VM/Core/Standard.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Logical.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Relative.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Math.php",
-
-      "src/PeacefulBit/LispMachine/Calculus.php",
-      "src/PeacefulBit/LispMachine/Tree.php"
+      "src/PeacefulBit/Packet/Modules/Math.php",
+      "src/PeacefulBit/Packet/Modules/Logic.php",
+      "src/PeacefulBit/Packet/Modules/Relation.php"
     ],
     "psr-4": {
       "": "src/"
