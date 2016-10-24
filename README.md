@@ -9,7 +9,7 @@ My implementation of lisp-based language interpreter written on PHP.
 (def pi 3.14)
 
 ; Define function
-(def (square-of-circle r) (* pi (^ r 2)))
+(def (square-of-circle r) (* pi (pow r 2)))
 
 ; Make list
 (list 1 2 3 4 5 6 7 8 9 10)
