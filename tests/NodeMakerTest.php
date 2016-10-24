@@ -3,11 +3,11 @@
 namespace tests;
 
 use function Nerd\Common\Arrays\all;
-use PeacefulBit\Pocket\Parser\Tokenizer;
+use PeacefulBit\Packet\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
-use PeacefulBit\Pocket\Parser\Nodes;
-use PeacefulBit\Pocket\Parser\Tokens;
+use PeacefulBit\Packet\Parser\Nodes;
+use PeacefulBit\Packet\Parser\Tokens;
 
 class NodeMakerTest extends TestCase
 {

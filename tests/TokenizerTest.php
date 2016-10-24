@@ -4,8 +4,8 @@ namespace tests;
 
 use function Nerd\Common\Arrays\deepMap;
 
-use PeacefulBit\Pocket\Exception\TokenizerException;
-use PeacefulBit\Pocket\Parser\Tokenizer;
+use PeacefulBit\Packet\Exception\TokenizerException;
+use PeacefulBit\Packet\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
 class TokenizerTest extends TestCase
