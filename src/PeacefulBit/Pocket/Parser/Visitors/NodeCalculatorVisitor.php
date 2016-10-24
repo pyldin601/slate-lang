@@ -65,7 +65,7 @@ class NodeCalculatorVisitor implements NodeVisitor
         }
 
         $combined = array_combine($argNames, $args);
-        $childContext = $this->context->inherit($combined);
+        $childContext = $this->context->newContext($combined);
         $childVisitor = new static($childContext);
 
         return $childVisitor->visit($node->getBody());

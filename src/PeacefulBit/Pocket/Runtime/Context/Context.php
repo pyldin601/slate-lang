@@ -38,7 +38,7 @@ class Context
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->content[$key]
+        return array_key_exists($key, $this->content) ? $this->content[$key]
              : ($this->isRoot() ? null : $this->parent->get($key));
     }
 
@@ -63,7 +63,7 @@ class Context
      * @param array $content
      * @return Context
      */
-    public function inherit(array $content = [])
+    public function newContext(array $content = [])
     {
         $child = new Context($content);
         $child->parent = $this;
