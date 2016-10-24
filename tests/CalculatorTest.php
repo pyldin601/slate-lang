@@ -51,4 +51,12 @@ class CalculatorTest extends TestCase
         $result = $calculator->calculate('(def (foo) "bar") (def (baz) foo) ((baz))');
         $this->assertEquals('bar', $result);
     }
+
+    public function testRunProgram()
+    {
+        $calculator = new Calculator();
+        $file = __DIR__ . '/fixtures/program.pt';
+        $result = $calculator->run($file);
+        $this->assertTrue($result);
+    }
 }

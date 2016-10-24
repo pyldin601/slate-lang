@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\Packet\Calculator;
+use PeacefulBit\Packet\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 class MathModuleTest extends TestCase
@@ -63,5 +64,29 @@ class MathModuleTest extends TestCase
         $this->assertEquals(0, $this->calc->calculate('(% 9 3)'));
         $this->assertEquals(1, $this->calc->calculate('(% 9 2)'));
         $this->assertEquals(18, $this->calc->calculate('(% 18 27)'));
+    }
+
+    public function testBadSub()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(-)'));
+    }
+
+    public function testBadDiv()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(/)'));
+    }
+
+    public function testBadMod()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(%)'));
+    }
+
+    public function testBadPow()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(%)'));
     }
 }

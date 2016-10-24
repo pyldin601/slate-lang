@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\Packet\Calculator;
+use PeacefulBit\Packet\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 class RelationModuleTest extends TestCase
@@ -22,6 +23,9 @@ class RelationModuleTest extends TestCase
         $this->assertTrue($this->calc->calculate('(> 5 2)'));
         $this->assertFalse($this->calc->calculate('(> 2 5)'));
         $this->assertFalse($this->calc->calculate('(> 5 5)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(>)');
     }
 
     public function testLs()
@@ -29,6 +33,9 @@ class RelationModuleTest extends TestCase
         $this->assertFalse($this->calc->calculate('(< 5 2)'));
         $this->assertTrue($this->calc->calculate('(< 2 5)'));
         $this->assertFalse($this->calc->calculate('(< 5 5)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(<)');
     }
 
     public function testGeq()
@@ -36,6 +43,9 @@ class RelationModuleTest extends TestCase
         $this->assertTrue($this->calc->calculate('(>= 5 2)'));
         $this->assertFalse($this->calc->calculate('(>= 2 5)'));
         $this->assertTrue($this->calc->calculate('(>= 5 5)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(>=)');
     }
 
     public function testLeq()
@@ -43,6 +53,9 @@ class RelationModuleTest extends TestCase
         $this->assertFalse($this->calc->calculate('(<= 5 2)'));
         $this->assertTrue($this->calc->calculate('(<= 2 5)'));
         $this->assertTrue($this->calc->calculate('(<= 5 5)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(<=)');
     }
 
     public function testEq()
@@ -51,6 +64,9 @@ class RelationModuleTest extends TestCase
         $this->assertFalse($this->calc->calculate('(= 2 5)'));
         $this->assertTrue($this->calc->calculate('(= 5 5)'));
         $this->assertTrue($this->calc->calculate('(= "0" 0)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(=)');
     }
 
     public function testStrictEq()
@@ -59,6 +75,9 @@ class RelationModuleTest extends TestCase
         $this->assertFalse($this->calc->calculate('(== 2 5)'));
         $this->assertTrue($this->calc->calculate('(== 5 5)'));
         $this->assertFalse($this->calc->calculate('(== "0" 0)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(==)');
     }
 
     public function testNeq()
@@ -67,6 +86,9 @@ class RelationModuleTest extends TestCase
         $this->assertTrue($this->calc->calculate('(!= 2 5)'));
         $this->assertFalse($this->calc->calculate('(!= 5 5)'));
         $this->assertFalse($this->calc->calculate('(!= "0" 0)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(!=)');
     }
 
     public function testStrictNeq()
@@ -75,5 +97,8 @@ class RelationModuleTest extends TestCase
         $this->assertTrue($this->calc->calculate('(!== 2 5)'));
         $this->assertFalse($this->calc->calculate('(!== 5 5)'));
         $this->assertTrue($this->calc->calculate('(!== "0" 0)'));
+
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate('(!==)');
     }
 }

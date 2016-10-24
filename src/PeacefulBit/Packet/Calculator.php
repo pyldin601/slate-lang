@@ -16,6 +16,7 @@ class Calculator
             Modules\Math\export(),
             Modules\Logic\export(),
             Modules\Relation\export(),
+            Modules\Stdio\export(),
             $native
         );
         $this->rootContext = new Context($mainContext);
@@ -29,5 +30,11 @@ class Calculator
         $tree = $tokenizer->deflate($tokens);
         $node = $tokenizer->convertSequenceToNode($tree);
         return $visitor->visit($node);
+    }
+
+    public function run($file)
+    {
+        $code = file_get_contents($file);
+        return $this->calculate($code);
     }
 }

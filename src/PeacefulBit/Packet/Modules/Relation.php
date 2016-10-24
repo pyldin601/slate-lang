@@ -17,14 +17,14 @@ function relationReduce(NodeCalculatorVisitor $visitor, $callback, array $argume
             return true;
         }
         list ($head, $tail) = toHeadTail($rest);
-        $visitedHead = $visitor->visit($head);
+        $visitedHead = $visitor->valueOf($head);
         if ($callback($first, $visitedHead)) {
             return $iter($tail, $visitedHead);
         }
         return false;
     };
     list ($head, $tail) = toHeadTail($arguments);
-    return $iter($tail, $visitor->visit($head));
+    return $iter($tail, $visitor->valueOf($head));
 }
 
 function export()

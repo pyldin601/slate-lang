@@ -12,12 +12,12 @@ function export()
     return [
         '+' => new NativeNode('+', function (NodeCalculatorVisitor $visitor, array $arguments) {
             return array_reduce($arguments, function ($result, $argument) use ($visitor) {
-                return $result + $visitor->visit($argument);
+                return $result + $visitor->valueOf($argument);
             }, 0);
         }),
         '*' => new NativeNode('*', function (NodeCalculatorVisitor $visitor, array $arguments) {
             return array_reduce($arguments, function ($result, $argument) use ($visitor) {
-                return $result * $visitor->visit($argument);
+                return $result * $visitor->valueOf($argument);
             }, 1);
         }),
         '-' => new NativeNode('-', function (NodeCalculatorVisitor $visitor, array $arguments) {
@@ -26,11 +26,11 @@ function export()
             }
             list ($head, $tail) = toHeadTail($arguments);
             if (empty($tail)) {
-                return -$visitor->visit($head);
+                return -$visitor->valueOf($head);
             }
             return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return $result - $visitor->visit($argument);
-            }, $visitor->visit($head));
+                return $result - $visitor->valueOf($argument);
+            }, $visitor->valueOf($head));
         }),
         '/' => new NativeNode('/', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) == 0) {
@@ -38,18 +38,18 @@ function export()
             }
             list ($head, $tail) = toHeadTail($arguments);
             if (empty($tail)) {
-                return 1 / $visitor->visit($head);
+                return 1 / $visitor->valueOf($head);
             }
             return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return $result / $visitor->visit($argument);
-            }, $visitor->visit($head));
+                return $result / $visitor->valueOf($argument);
+            }, $visitor->valueOf($head));
         }),
         '%' => new NativeNode('%', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) != 2) {
                 throw new RuntimeException("Modulo operation requires exactly two arguments");
             }
             list ($number, $div) = $arguments;
-            return $visitor->visit($number) % $visitor->visit($div);
+            return $visitor->valueOf($number) % $visitor->valueOf($div);
         }),
         'pow' => new NativeNode('pow', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) < 2) {
@@ -57,8 +57,8 @@ function export()
             }
             list ($head, $tail) = toHeadTail($arguments);
             return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return pow($result, $visitor->visit($argument));
-            }, $visitor->visit($head));
+                return pow($result, $visitor->valueOf($argument));
+            }, $visitor->valueOf($head));
         })
     ];
 }

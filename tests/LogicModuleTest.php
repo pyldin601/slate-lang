@@ -3,6 +3,7 @@
 namespace tests;
 
 use PeacefulBit\Packet\Calculator;
+use PeacefulBit\Packet\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 class LogicModuleTest extends TestCase
@@ -50,5 +51,17 @@ class LogicModuleTest extends TestCase
         $this->assertEquals(3, $this->calc->calculate('(unless 1 2 3)'));
         $this->assertEquals(2, $this->calc->calculate('(unless 0 2 3)'));
         $this->assertEquals(3, $this->calc->calculate('(unless (unless 0 1 0) 2 3)'));
+    }
+
+    public function testBadIf()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(if)'));
+    }
+
+    public function testBadUnless()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->calc->calculate(('(unless)'));
     }
 }
