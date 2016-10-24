@@ -21,7 +21,7 @@ class Calculator
         $visitor = new NodeCalculatorVisitor($this->rootContext);
         $tokens = $tokenizer->tokenize($code);
         $tree = $tokenizer->deflate($tokens);
-        $node = $tokenizer->deflatedToNodes($tree);
+        $node = $tokenizer->convertSequenceToNode($tree);
         return $visitor->visit($node);
     }
 }

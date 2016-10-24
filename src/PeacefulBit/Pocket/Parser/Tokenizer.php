@@ -192,7 +192,7 @@ class Tokenizer
         return $iter($tokens, []);
     }
 
-    public function deflatedToNodes(array $tree)
+    public function convertSequenceToNode(array $tree)
     {
         return new SequenceNode(array_reduce($tree, function ($acc, $token) {
             return $this->isValuedToken($token)
@@ -206,7 +206,7 @@ class Tokenizer
         return !$token instanceof CommentToken && !$token instanceof DelimiterToken;
     }
 
-    private function convertToNode($token)
+    public function convertToNode($token)
     {
         if (is_array($token)) {
             return $this->convertExpressionToNode($token);
@@ -228,7 +228,7 @@ class Tokenizer
 
         list ($head, $tail) = toHeadTail($expression);
 
-        if ($head instanceof SymbolToken && $head == 'def') {
+        if ($head instanceof SymbolToken && $head->getContent() == 'def') {
             return $this->convertDefineToNode($tail);
         }
 
@@ -238,7 +238,7 @@ class Tokenizer
         return new InvokeNode($function, $arguments);
     }
 
-    private function convertDefineToNode($body)
+    private function convertDefineToNode($expression)
     {
         if (empty($expression)) {
             throw new ParserException("Define expression must have a body");
@@ -247,9 +247,9 @@ class Tokenizer
         $head = $expression[0];
 
         if (is_array($head)) {
-            return $this->convertFunctionToNode($body);
+            return $this->convertFunctionToNode($expression);
         }
-        return $this->convertConstantToNode($body);
+        return $this->convertConstantToNode($expression);
     }
 
     private function convertFunctionToNode($body)
@@ -269,7 +269,7 @@ class Tokenizer
 
         list ($name, $args) = toHeadTail($headValues);
 
-        return new FunctionNode($name, $args, $body);
+        return new FunctionNode($name, $args, $this->convertSequenceToNode($body));
     }
 
     private function convertConstantToNode($body)
