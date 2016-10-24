@@ -12,7 +12,12 @@ class Calculator
 
     public function __construct(array $native = [])
     {
-        $this->rootContext = new Context($native);
+        $mainContext = array_merge(
+            Modules\Math\export(),
+            Modules\Logic\export(),
+            $native
+        );
+        $this->rootContext = new Context($mainContext);
     }
 
     public function calculate($code)

@@ -21,12 +21,13 @@
       "src/PeacefulBit/LispMachine/VM/VM.php",
 
       "src/PeacefulBit/LispMachine/VM/Core/Standard.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Logical.php",
       "src/PeacefulBit/LispMachine/VM/Core/Relative.php",
-      "src/PeacefulBit/LispMachine/VM/Core/Math.php",
 
       "src/PeacefulBit/LispMachine/Calculus.php",
-      "src/PeacefulBit/LispMachine/Tree.php"
+      "src/PeacefulBit/LispMachine/Tree.php",
+
+      "src/PeacefulBit/Packet/Modules/Math.php",
+      "src/PeacefulBit/Packet/Modules/Logic.php"
     ],
     "psr-4": {
       "": "src/"
