@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Packet\Context;
 
+use PeacefulBit\Packet\Exception\RuntimeException;
+
 class Context
 {
     /**
@@ -45,9 +47,13 @@ class Context
     /**
      * @param string $key
      * @param mixed $value
+     * @throws RuntimeException
      */
     public function set($key, $value)
     {
+        if (array_key_exists($key, $this->content)) {
+            throw new RuntimeException("Symbol $key already defined in this scope");
+        }
         $this->content[$key] = $value;
     }
 
