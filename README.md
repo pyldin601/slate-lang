@@ -1,6 +1,6 @@
 # packet-lite
-[![Build Status](https://travis-ci.org/peacefulbit/lisp-machine.svg?branch=master)](https://travis-ci.org/peacefulbit/lisp-machine)
-[![Coverage Status](https://coveralls.io/repos/github/peacefulbit/lisp-machine/badge.svg?branch=master)](https://coveralls.io/github/peacefulbit/lisp-machine?branch=master)
+[![Build Status](https://travis-ci.org/peacefulbit/packet-lite.svg?branch=master)](https://travis-ci.org/peacefulbit/packet-lite)
+[![Coverage Status](https://coveralls.io/repos/github/peacefulbit/packet-lite/badge.svg?branch=master)](https://coveralls.io/github/peacefulbit/packet-lite?branch=master)
 
 My implementation of lisp-based language interpreter written on PHP.
 
