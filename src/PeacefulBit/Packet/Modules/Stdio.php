@@ -10,14 +10,14 @@ use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
 function export()
 {
     return [
-        'ask' => new NativeNode('ask', function (NodeCalculatorVisitor $visitor, array $arguments) {
+        'ask' => new NativeNode('input', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (empty($arguments)) {
                 throw new RuntimeException('Function expects one argument, but none given');
             }
             echo $visitor->valueOf($arguments[0]);
             return new StringNode(fgetc(STDIN));
         }),
-        'say' => new NativeNode('say', function (NodeCalculatorVisitor $visitor, array $arguments) {
+        'say' => new NativeNode('print', function (NodeCalculatorVisitor $visitor, array $arguments) {
             array_walk($arguments, function ($argument) use ($visitor) {
                 echo $visitor->valueOf($argument);
             });

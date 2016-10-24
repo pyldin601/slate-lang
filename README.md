@@ -11,9 +11,6 @@ My implementation of lisp-based language interpreter written on PHP.
 ; Define function
 (def (square-of-circle r) (* pi (pow r 2)))
 
-; Make list
-(list 1 2 3 4 5 6 7 8 9 10)
-
 ; Call function
 (print (square-of-circle 15))
 ```
