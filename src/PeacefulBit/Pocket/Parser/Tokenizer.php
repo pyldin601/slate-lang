@@ -12,11 +12,13 @@ use PeacefulBit\Pocket\Exception\SyntaxException;
 use PeacefulBit\Pocket\Exception\TokenizerException;
 use PeacefulBit\Pocket\Parser\Nodes\ConstantNode;
 use PeacefulBit\Pocket\Parser\Nodes\FunctionNode;
+use PeacefulBit\Pocket\Parser\Nodes\InvokeNode;
 use PeacefulBit\Pocket\Parser\Nodes\SequenceNode;
 use PeacefulBit\Pocket\Parser\Nodes\StringNode;
 use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
 use PeacefulBit\Pocket\Parser\Tokens\CloseBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\CommentToken;
+use PeacefulBit\Pocket\Parser\Tokens\DelimiterToken;
 use PeacefulBit\Pocket\Parser\Tokens\OpenBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\StringToken;
 use PeacefulBit\Pocket\Parser\Tokens\SymbolToken;
@@ -193,15 +195,15 @@ class Tokenizer
     public function deflatedToNodes(array $tree)
     {
         return new SequenceNode(array_reduce($tree, function ($acc, $token) {
-            return $this->isValueToken($token)
+            return $this->isValuedToken($token)
                 ? append($acc, $this->convertToNode($token))
                 : $acc;
         }, []));
     }
 
-    private function isValueToken($token)
+    private function isValuedToken($token)
     {
-        return is_array($token) || $token instanceof SymbolToken || $token instanceof StringToken;
+        return !$token instanceof CommentToken && !$token instanceof DelimiterToken;
     }
 
     private function convertToNode($token)
@@ -229,6 +231,11 @@ class Tokenizer
         if ($head instanceof SymbolToken && $head == 'def') {
             return $this->convertDefineToNode($tail);
         }
+
+        $function = $this->convertToNode($head);
+        $arguments = array_map([$this, 'convertToNode'], $tail);
+
+        return new InvokeNode($function, $arguments);
     }
 
     private function convertDefineToNode($body)
@@ -272,6 +279,7 @@ class Tokenizer
         }
 
         $chunks = array_chunk($body, 2);
+
         $constants = array_reduce($chunks, function ($acc, $chunk) {
             list ($name, $value) = $chunk;
             if (!$name instanceof SymbolToken) {
