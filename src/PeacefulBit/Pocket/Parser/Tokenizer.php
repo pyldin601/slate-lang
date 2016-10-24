@@ -7,8 +7,13 @@ use function Nerd\Common\Arrays\toHeadTail;
 use function Nerd\Common\Functional\tail;
 use function Nerd\Common\Strings\toArray;
 
+use PeacefulBit\Pocket\Exception\ParserException;
 use PeacefulBit\Pocket\Exception\SyntaxException;
 use PeacefulBit\Pocket\Exception\TokenizerException;
+use PeacefulBit\Pocket\Parser\Nodes\ConstantNode;
+use PeacefulBit\Pocket\Parser\Nodes\SequenceNode;
+use PeacefulBit\Pocket\Parser\Nodes\StringNode;
+use PeacefulBit\Pocket\Parser\Nodes\SymbolNode;
 use PeacefulBit\Pocket\Parser\Tokens\CloseBracketToken;
 use PeacefulBit\Pocket\Parser\Tokens\CommentToken;
 use PeacefulBit\Pocket\Parser\Tokens\OpenBracketToken;
@@ -182,6 +187,94 @@ class Tokenizer
             }
         });
         return $iter($tokens, []);
+    }
+
+    public function deflatedToNodes(array $tree)
+    {
+        return new SequenceNode(array_reduce($tree, function ($acc, $token) {
+            return $this->isValueToken($token)
+                ? append($acc, $this->convertToNode($token))
+                : $acc;
+        }, []));
+    }
+
+    private function isValueToken($token)
+    {
+        return is_array($token) || $token instanceof SymbolToken || $token instanceof StringToken;
+    }
+
+    private function convertToNode($token)
+    {
+        if (is_array($token)) {
+            return $this->convertExpressionToNode($token);
+        }
+        if ($token instanceof SymbolToken) {
+            return new SymbolNode($token->getContent());
+        }
+        if ($token instanceof StringToken) {
+            return new StringNode($token->getContent());
+        }
+        throw new TokenizerException("Unexpected type of token");
+    }
+
+    private function convertExpressionToNode($expression)
+    {
+        if (empty($expression)) {
+            throw new ParserException("Expression must have a body");
+        }
+
+        list ($head, $tail) = toHeadTail($expression);
+
+        if ($head instanceof SymbolToken && $head == 'def') {
+            return $this->convertDefineToNode($tail);
+        }
+    }
+
+    private function convertDefineToNode($body)
+    {
+        if (empty($expression)) {
+            throw new ParserException("Define expression must have a body");
+        }
+
+        $head = $expression[0];
+
+        if (is_array($head)) {
+            return $this->convertFunctionToNode($body);
+        }
+        return $this->convertConstantToNode($body);
+    }
+
+    private function convertFunctionToNode($body)
+    {
+        list ($head, $tail) = toHeadTail($body);
+        if (sizeof($head) < 1) {
+            throw new ParserException("Function must have a name");
+        }
+        array_walk($head, function ($token) {
+            if (!$token instanceof SymbolToken) {
+                throw new ParserException("Function name and arguments must be symbols");
+            }
+        });
+        list ($name, $args) = toHeadTail($head);
+
+    }
+
+    private function convertConstantToNode($body)
+    {
+        if (sizeof($body) % 2 != 0) {
+            throw new ParserException("Wrong number of arguments passed to constant define");
+        }
+
+        $chunks = array_chunk($body, 2);
+        $constants = array_reduce($chunks, function ($acc, $chunk) {
+            list ($name, $value) = $chunk;
+            if (!$name instanceof SymbolToken) {
+                throw new ParserException("Constant name must be a symbol");
+            }
+            return array_merge($acc, [$name->getContent() => $this->convertToNode($value)]);
+        }, []);
+
+        return new ConstantNode(array_keys($constants), array_values($constants));
     }
 
     private function findPairClosingBracketIndex(array $tokens)
