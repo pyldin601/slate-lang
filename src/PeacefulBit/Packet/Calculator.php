@@ -15,6 +15,7 @@ class Calculator
         $mainContext = array_merge(
             Modules\Math\export(),
             Modules\Logic\export(),
+            Modules\Relation\export(),
             $native
         );
         $this->rootContext = new Context($mainContext);
