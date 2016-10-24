@@ -87,6 +87,6 @@ class MathModuleTest extends TestCase
     public function testBadPow()
     {
         $this->expectException(RuntimeException::class);
-        $this->calc->calculate(('(%)'));
+        $this->calc->calculate(('(pow)'));
     }
 }
