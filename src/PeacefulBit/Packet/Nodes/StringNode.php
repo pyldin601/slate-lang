@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Nodes;
+namespace PeacefulBit\Packet\Nodes;
 
 class StringNode extends AbstractNode
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Visitors;
+namespace PeacefulBit\Packet\Visitors;
 
-use PeacefulBit\Packet\Parser\Nodes;
+use PeacefulBit\Packet\Nodes;
 
 class NodePrinterVisitor implements NodeVisitor
 {

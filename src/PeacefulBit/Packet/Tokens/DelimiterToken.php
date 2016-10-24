@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Tokens;
+namespace PeacefulBit\Packet\Tokens;
 
 class DelimiterToken extends TokenWithContent
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Visitors;
+namespace PeacefulBit\Packet\Visitors;
 
 use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Parser\Nodes;
-use PeacefulBit\Packet\Runtime\Context\Context;
+use PeacefulBit\Packet\Nodes;
+use PeacefulBit\Packet\Context\Context;
 
 class NodeCalculatorVisitor implements NodeVisitor
 {

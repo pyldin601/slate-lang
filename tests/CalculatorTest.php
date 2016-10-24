@@ -3,8 +3,8 @@
 namespace tests;
 
 use PeacefulBit\Packet\Calculator;
-use PeacefulBit\Packet\Parser\Nodes\NativeNode;
-use PeacefulBit\Packet\Parser\Visitors\NodeCalculatorVisitor;
+use PeacefulBit\Packet\Nodes\NativeNode;
+use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
 use PHPUnit\Framework\TestCase;
 
 class CalculatorTest extends TestCase

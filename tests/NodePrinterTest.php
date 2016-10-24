@@ -2,14 +2,14 @@
 
 namespace tests;
 
-use PeacefulBit\Packet\Parser\Nodes\ConstantNode;
-use PeacefulBit\Packet\Parser\Nodes\FunctionNode;
-use PeacefulBit\Packet\Parser\Nodes\InvokeNode;
-use PeacefulBit\Packet\Parser\Nodes\NativeNode;
-use PeacefulBit\Packet\Parser\Nodes\SequenceNode;
-use PeacefulBit\Packet\Parser\Nodes\StringNode;
-use PeacefulBit\Packet\Parser\Nodes\SymbolNode;
-use PeacefulBit\Packet\Parser\Visitors\NodePrinterVisitor;
+use PeacefulBit\Packet\Nodes\ConstantNode;
+use PeacefulBit\Packet\Nodes\FunctionNode;
+use PeacefulBit\Packet\Nodes\InvokeNode;
+use PeacefulBit\Packet\Nodes\NativeNode;
+use PeacefulBit\Packet\Nodes\SequenceNode;
+use PeacefulBit\Packet\Nodes\StringNode;
+use PeacefulBit\Packet\Nodes\SymbolNode;
+use PeacefulBit\Packet\Visitors\NodePrinterVisitor;
 use PHPUnit\Framework\TestCase;
 
 class NodePrinterTest extends TestCase

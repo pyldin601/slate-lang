@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Nodes;
+namespace PeacefulBit\Packet\Nodes;
 
 class InvokeNode extends AbstractNode
 {

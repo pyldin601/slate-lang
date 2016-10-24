@@ -3,8 +3,8 @@
 namespace PeacefulBit\Packet;
 
 use PeacefulBit\Packet\Parser\Tokenizer;
-use PeacefulBit\Packet\Parser\Visitors\NodeCalculatorVisitor;
-use PeacefulBit\Packet\Runtime\Context\Context;
+use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
+use PeacefulBit\Packet\Context\Context;
 
 class Calculator
 {

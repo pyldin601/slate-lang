@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Runtime\Context;
+namespace PeacefulBit\Packet\Context;
 
 class Context
 {

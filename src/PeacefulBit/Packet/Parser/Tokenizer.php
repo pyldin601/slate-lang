@@ -10,18 +10,18 @@ use function Nerd\Common\Strings\toArray;
 use PeacefulBit\Packet\Exception\ParserException;
 use PeacefulBit\Packet\Exception\SyntaxException;
 use PeacefulBit\Packet\Exception\TokenizerException;
-use PeacefulBit\Packet\Parser\Nodes\ConstantNode;
-use PeacefulBit\Packet\Parser\Nodes\FunctionNode;
-use PeacefulBit\Packet\Parser\Nodes\InvokeNode;
-use PeacefulBit\Packet\Parser\Nodes\SequenceNode;
-use PeacefulBit\Packet\Parser\Nodes\StringNode;
-use PeacefulBit\Packet\Parser\Nodes\SymbolNode;
-use PeacefulBit\Packet\Parser\Tokens\CloseBracketToken;
-use PeacefulBit\Packet\Parser\Tokens\CommentToken;
-use PeacefulBit\Packet\Parser\Tokens\DelimiterToken;
-use PeacefulBit\Packet\Parser\Tokens\OpenBracketToken;
-use PeacefulBit\Packet\Parser\Tokens\StringToken;
-use PeacefulBit\Packet\Parser\Tokens\SymbolToken;
+use PeacefulBit\Packet\Nodes\ConstantNode;
+use PeacefulBit\Packet\Nodes\FunctionNode;
+use PeacefulBit\Packet\Nodes\InvokeNode;
+use PeacefulBit\Packet\Nodes\SequenceNode;
+use PeacefulBit\Packet\Nodes\StringNode;
+use PeacefulBit\Packet\Nodes\SymbolNode;
+use PeacefulBit\Packet\Tokens\CloseBracketToken;
+use PeacefulBit\Packet\Tokens\CommentToken;
+use PeacefulBit\Packet\Tokens\DelimiterToken;
+use PeacefulBit\Packet\Tokens\OpenBracketToken;
+use PeacefulBit\Packet\Tokens\StringToken;
+use PeacefulBit\Packet\Tokens\SymbolToken;
 
 class Tokenizer
 {

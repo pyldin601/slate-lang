@@ -1,8 +1,8 @@
 <?php
 
-namespace PeacefulBit\Packet\Parser\Nodes;
+namespace PeacefulBit\Packet\Nodes;
 
-use PeacefulBit\Packet\Parser\Visitors\NodeVisitor;
+use PeacefulBit\Packet\Visitors\NodeVisitor;
 
 abstract class AbstractNode implements Node
 {

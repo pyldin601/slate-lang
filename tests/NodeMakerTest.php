@@ -6,8 +6,8 @@ use function Nerd\Common\Arrays\all;
 use PeacefulBit\Packet\Parser\Tokenizer;
 use PHPUnit\Framework\TestCase;
 
-use PeacefulBit\Packet\Parser\Nodes;
-use PeacefulBit\Packet\Parser\Tokens;
+use PeacefulBit\Packet\Nodes;
+use PeacefulBit\Packet\Tokens;
 
 class NodeMakerTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 namespace tests;
 
-use PeacefulBit\Packet\Runtime\Context\Context;
+use PeacefulBit\Packet\Context\Context;
 use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
