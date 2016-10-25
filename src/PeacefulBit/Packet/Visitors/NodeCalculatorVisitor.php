@@ -77,7 +77,7 @@ class NodeCalculatorVisitor implements NodeVisitor
             throw new \RuntimeException("Number of arguments mismatch");
         }
 
-        $combined = array_combine($argNames, array_map([$this, 'valueOf'], $args));
+        $combined = array_combine($argNames, array_map([$this, 'visit'], $args));
         $childContext = $this->context->newContext($combined);
         $childVisitor = new static($childContext);
 
