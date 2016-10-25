@@ -17,7 +17,8 @@
       "src/PeacefulBit/Packet/Modules/Math.php",
       "src/PeacefulBit/Packet/Modules/Logic.php",
       "src/PeacefulBit/Packet/Modules/Relation.php",
-      "src/PeacefulBit/Packet/Modules/Stdio.php"
+      "src/PeacefulBit/Packet/Modules/Stdio.php",
+      "src/PeacefulBit/Packet/Modules/Strings.php"
     ],
     "psr-4": {
       "": "src/"

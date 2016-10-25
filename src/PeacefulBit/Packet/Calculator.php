@@ -17,6 +17,7 @@ class Calculator
             Modules\Logic\export(),
             Modules\Relation\export(),
             Modules\Stdio\export(),
+            Modules\Strings\export(),
             $native
         );
         $this->rootContext = new Context($mainContext);
