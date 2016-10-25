@@ -45,8 +45,8 @@ class NodeCalculatorVisitor implements NodeVisitor
             return call_user_func($callable->getCallable(), $this, $node->getArguments());
         }
 
-        if ($callable instanceof Nodes\FunctionNode) {
-            return $this->callFunctionNode($callable, $node->getArguments());
+        if ($callable instanceof Nodes\LambdaNode) {
+            return $this->callLambdaNode($callable, $node->getArguments());
         }
 
         throw new \RuntimeException("Symbol is not callable");
@@ -69,7 +69,7 @@ class NodeCalculatorVisitor implements NodeVisitor
         throw new \RuntimeException("Invalid function");
     }
 
-    private function callFunctionNode(Nodes\FunctionNode $node, $args)
+    private function callLambdaNode(Nodes\LambdaNode $node, $args)
     {
         $argNames = $node->getArguments();
 
@@ -145,5 +145,10 @@ class NodeCalculatorVisitor implements NodeVisitor
         }
         $type = get_class($node);
         throw new RuntimeException("Node \"$type\" could not be represented as primitive");
+    }
+
+    public function visitLambdaNode(Nodes\LambdaNode $node)
+    {
+        return $node;
     }
 }

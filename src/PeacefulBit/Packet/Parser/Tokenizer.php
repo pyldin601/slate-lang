@@ -13,6 +13,7 @@ use PeacefulBit\Packet\Exception\TokenizerException;
 use PeacefulBit\Packet\Nodes\ConstantNode;
 use PeacefulBit\Packet\Nodes\FunctionNode;
 use PeacefulBit\Packet\Nodes\InvokeNode;
+use PeacefulBit\Packet\Nodes\LambdaNode;
 use PeacefulBit\Packet\Nodes\SequenceNode;
 use PeacefulBit\Packet\Nodes\StringNode;
 use PeacefulBit\Packet\Nodes\SymbolNode;
@@ -228,14 +229,37 @@ class Tokenizer
 
         list ($head, $tail) = toHeadTail($expression);
 
-        if ($head instanceof SymbolToken && $head->getContent() == 'def') {
-            return $this->convertDefineToNode($tail);
+        if ($head instanceof SymbolToken) {
+            switch ($head->getContent() == 'def') {
+                case 'def':
+                    return $this->convertDefineToNode($tail);
+                case 'lambda':
+                    return $this->convertLambdaToNode($tail);
+            }
         }
 
         $function = $this->convertToNode($head);
         $arguments = array_map([$this, 'convertToNode'], $tail);
 
         return new InvokeNode($function, $arguments);
+    }
+
+    private function convertLambdaToNode($expression)
+    {
+        if (is_array($expression)) {
+            list ($head, $body) = toHeadTail($expression);
+
+            $arguments = array_map(function ($token) {
+                if (!$token instanceof SymbolToken) {
+                    throw new ParserException("Lambda arguments must be a symbols");
+                }
+                return $token->getContent();
+            }, $head);
+
+            return new LambdaNode($arguments, $this->convertSequenceToNode($body));
+        }
+
+        return new LambdaNode([], $this->convertSequenceToNode($expression));
     }
 
     private function convertDefineToNode($expression)

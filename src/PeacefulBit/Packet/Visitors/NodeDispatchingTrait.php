@@ -28,6 +28,8 @@ trait NodeDispatchingTrait
                 return $this->visitSymbolNode($node);
             case Nodes\NativeNode::class:
                 return $this->visitNativeNode($node);
+            case Nodes\LambdaNode::class:
+                return $this->visitLambdaNode($node);
             default:
                 throw new \InvalidArgumentException("Unsupported type of node - $type");
         }
@@ -74,4 +76,10 @@ trait NodeDispatchingTrait
      * @return mixed
      */
     abstract public function visitNativeNode(Nodes\NativeNode $node);
+
+    /**
+     * @param Nodes\LambdaNode $node
+     * @return mixed
+     */
+    abstract public function visitLambdaNode(Nodes\LambdaNode $node);
 }
