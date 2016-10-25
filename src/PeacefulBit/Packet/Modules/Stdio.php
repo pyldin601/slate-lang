@@ -14,7 +14,7 @@ function export()
             if (empty($arguments)) {
                 throw new RuntimeException('Function expects one argument, but none given');
             }
-            echo $visitor->visit($arguments[0]);
+            echo $visitor->valueOf($arguments[0]);
             echo ' ';
             return new StringNode(trim(fgets(STDIN)));
         }),
