@@ -1,12 +1,7 @@
 ```php
-
-/**
- * Idea: Evaluate each argument in sequence and then apply
- *       $combinator to $results.
- */
-function evalApply(callable $combinator, callable ...$f)
+function evalApply(callable $operation, callable ...$arguments)
 {
-	$results = array_map(invoke(), $f)
-	return $combinator(...$results)
+	$evaluated = eval($arguments)
+	return apply($operation, ...$evaluated)
 }
 ```
