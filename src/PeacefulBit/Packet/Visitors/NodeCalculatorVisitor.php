@@ -77,7 +77,7 @@ class NodeCalculatorVisitor implements NodeVisitor
             throw new \RuntimeException("Number of arguments mismatch");
         }
 
-        $combined = array_combine($argNames, $args);
+        $combined = array_combine($argNames, array_map([$this, 'valueOf'], $args));
         $childContext = $this->context->newContext($combined);
         $childVisitor = new static($childContext);
 
@@ -123,6 +123,9 @@ class NodeCalculatorVisitor implements NodeVisitor
         if (is_null($node)) {
             return null;
         }
+        if (is_array($node)) {
+            return json_encode($node);
+        }
         if (is_scalar($node)) {
             return $node;
         }
@@ -130,10 +133,10 @@ class NodeCalculatorVisitor implements NodeVisitor
             return $node->getValue();
         }
         if ($node instanceof Nodes\SymbolNode) {
-            return $this->valueOf($this->visit($node));
+            return $this->valueOf($this->visitSymbolNode($node));
         }
         if ($node instanceof Nodes\InvokeNode) {
-            return $this->valueOf($this->visit($node));
+            return $this->valueOf($this->visitInvokeNode($node));
         }
         $type = get_class($node);
         throw new RuntimeException("Node \"$type\" could not be represented as primitive");
