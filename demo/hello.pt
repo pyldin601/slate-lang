@@ -1,0 +1,11 @@
+(def name (input "What is your name?"))
+(def age  (input "How old are you?"))
+
+(def hello (concat "Hello, "
+                   name
+                   ", "
+                   "You're so "
+                   (if (>= age 18) "old" "young")
+                   "!"))
+
+(print hello)

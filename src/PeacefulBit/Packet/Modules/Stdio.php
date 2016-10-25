@@ -16,11 +16,11 @@ function export()
             }
             echo $visitor->valueOf($arguments[0]);
             echo ' ';
-            return new StringNode(fgets(STDIN));
+            return new StringNode(trim(fgets(STDIN)));
         }),
         'print' => new NativeNode('print', function (NodeCalculatorVisitor $visitor, array $arguments) {
             array_walk($arguments, function ($argument) use ($visitor) {
-                echo $visitor->valueOf($argument);
+                echo $visitor->valueOf($argument), PHP_EOL;
             });
         })
     ];
