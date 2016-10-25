@@ -3,8 +3,8 @@
 
 (def (greet name) (println "Hello, " name "."))
 (def (think age)  (println "You're so "
-                        (if (> age 18) "old" "young")
-                        "."))
+                           (if (> age 18) "old" "young")
+                           "."))
 
 (greet name)
 (think age)
