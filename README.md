@@ -14,12 +14,3 @@ My implementation of lisp-based language interpreter written on PHP.
 ; Call function
 (print (square-of-circle 15))
 ```
-
-## checklist
-1. ~~Parse code into list of lexemes~~
-2. ~~Make ast tree from list of lexemes~~
-3. ~~Make interpreter that will run our ast~~
-4. ~~Must support modules~~
-5. ~~Must support functions and variables definition~~
-6. ~~Implement using visitors and finite state machine~~ 
-7. Import PHP functions into Packet code
