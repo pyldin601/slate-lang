@@ -59,4 +59,15 @@ class CalculatorTest extends TestCase
         $result = $calculator->run($file);
         $this->assertTrue($result);
     }
+
+    public function testBug01()
+    {
+        $calculator = new Calculator();
+        $calculator->calculate('
+            (def name "Foo")
+            (def (greet name) (print "Hello, " name))
+            (greet name)
+        ');
+        $this->expectOutputString("Hello, Foo");
+    }
 }

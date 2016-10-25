@@ -30,8 +30,13 @@ class Context
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->content)
-        || (!$this->isRoot() && $this->parent->has($key));
+        if (array_key_exists($key, $this->content)) {
+            return true;
+        }
+        if ($this->isRoot()) {
+            return false;
+        }
+        return $this->parent->has($key);
     }
 
     /**

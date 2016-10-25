@@ -10,7 +10,8 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "nerd-components/common-functions": "dev-master"
+    "nerd-components/common-functions": "dev-master",
+    "docopt/docopt": "^1.0"
   },
   "autoload": {
     "files": [
