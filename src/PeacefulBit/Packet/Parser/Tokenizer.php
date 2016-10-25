@@ -230,7 +230,7 @@ class Tokenizer
         list ($head, $tail) = toHeadTail($expression);
 
         if ($head instanceof SymbolToken) {
-            switch ($head->getContent() == 'def') {
+            switch ($head->getContent()) {
                 case 'def':
                     return $this->convertDefineToNode($tail);
                 case 'lambda':

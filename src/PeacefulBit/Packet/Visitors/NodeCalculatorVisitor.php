@@ -137,14 +137,10 @@ class NodeCalculatorVisitor implements NodeVisitor
         if ($node instanceof Nodes\StringNode) {
             return $node->getValue();
         }
-        if ($node instanceof Nodes\SymbolNode) {
-            return $this->valueOf($this->visitSymbolNode($node));
+        if ($node instanceof Nodes\LambdaNode) {
+            return '[function]';
         }
-        if ($node instanceof Nodes\InvokeNode) {
-            return $this->valueOf($this->visitInvokeNode($node));
-        }
-        $type = get_class($node);
-        throw new RuntimeException("Node \"$type\" could not be represented as primitive");
+        return $this->valueOf($this->visit($node));
     }
 
     public function visitLambdaNode(Nodes\LambdaNode $node)
