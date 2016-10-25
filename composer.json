@@ -22,7 +22,8 @@
       "src/PeacefulBit/Packet/Modules/Strings.php"
     ],
     "psr-4": {
-      "": "src/"
+      "": "src/",
+      "tests\\": "tests/"
     }
   },
   "require-dev": {

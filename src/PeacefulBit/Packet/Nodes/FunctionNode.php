@@ -2,22 +2,12 @@
 
 namespace PeacefulBit\Packet\Nodes;
 
-class FunctionNode extends AbstractNode
+class FunctionNode extends LambdaNode
 {
     /**
      * @var SymbolNode
      */
     private $name;
-
-    /**
-     * @var SymbolNode[]
-     */
-    private $arguments;
-
-    /**
-     * @var Node
-     */
-    private $body;
 
     /**
      * @param string $name
@@ -26,9 +16,8 @@ class FunctionNode extends AbstractNode
      */
     public function __construct($name, array $arguments, Node $body)
     {
+        parent::__construct($arguments, $body);
         $this->name = $name;
-        $this->arguments = $arguments;
-        $this->body = $body;
     }
 
     /**
@@ -37,21 +26,5 @@ class FunctionNode extends AbstractNode
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getArguments()
-    {
-        return $this->arguments;
-    }
-
-    /**
-     * @return Node
-     */
-    public function getBody()
-    {
-        return $this->body;
     }
 }

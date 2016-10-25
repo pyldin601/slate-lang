@@ -30,7 +30,7 @@ class Calculator
         $tokens = $tokenizer->tokenize($code);
         $tree = $tokenizer->deflate($tokens);
         $node = $tokenizer->convertSequenceToNode($tree);
-        return $visitor->visit($node);
+        return $visitor->valueOf($node);
     }
 
     public function run($file)

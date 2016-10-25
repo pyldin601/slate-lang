@@ -56,4 +56,9 @@ class NodePrinterVisitor implements NodeVisitor
     {
         return sprintf('(native %s)', $node->getName());
     }
+
+    public function visitLambdaNode(Nodes\LambdaNode $node)
+    {
+        return sprintf('(lambda)');
+    }
 }
