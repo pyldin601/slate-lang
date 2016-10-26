@@ -16,14 +16,14 @@ function export()
                 $visit = $visitor->getVisitor($item);
                 return !!$visit($item);
             };
-            return any($predicate, $arguments);
+            return any($arguments, $predicate);
         }),
         'and' => new NativeNode('and', function (NodeCalculatorVisitor $visitor, array $arguments) {
             $predicate = function ($item) use ($visitor) {
                 $visit = $visitor->getVisitor($item);
                 return !!$visit($item);
             };
-            return all($predicate, $arguments);
+            return all($arguments, $predicate);
         }),
         'not' => new NativeNode('not', function (NodeCalculatorVisitor $visitor, array $arguments) {
             return all($arguments, function ($argument) use ($visitor) {
