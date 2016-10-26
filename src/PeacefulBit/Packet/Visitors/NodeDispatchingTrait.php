@@ -36,6 +36,23 @@ trait NodeDispatchingTrait
     }
 
     /**
+     * @param Nodes\Node $node
+     * @return callable
+     */
+    public function getVisitor(Nodes\Node $node)
+    {
+        $type = explode('\\', get_class($node));
+        $class = end($type);
+        $method = 'visit' . $class;
+
+        if (method_exists($this, $method)) {
+            return [$this, $method];
+        }
+
+        throw new \InvalidArgumentException("Unsupported type of node - $class");
+    }
+
+    /**
      * @param Nodes\ConstantNode $node
      * @return mixed
      */
