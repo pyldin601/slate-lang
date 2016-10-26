@@ -11,7 +11,7 @@ class TailRec extends AbstractCalculatorTest
               (if (= x y) 
                   x
                   (iter (+ x 1) y)))
-            (iter 0 26)
+            (iter 0 25)
         ');
     }
 }
