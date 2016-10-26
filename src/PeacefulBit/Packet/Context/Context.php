@@ -2,6 +2,7 @@
 
 namespace PeacefulBit\Packet\Context;
 
+use function Nerd\Common\Functional\tail;
 use PeacefulBit\Packet\Exception\RuntimeException;
 
 class Context
@@ -30,13 +31,17 @@ class Context
      */
     public function has($key)
     {
-        if (array_key_exists($key, $this->content)) {
-            return true;
-        }
-        if ($this->isRoot()) {
-            return false;
-        }
-        return $this->parent->has($key);
+        $iter = tail(function ($key, Context $ctx) use (&$iter) {
+            if (array_key_exists($key, $ctx->content)) {
+                return true;
+            }
+            if ($ctx->isRoot()) {
+                return false;
+            }
+            return $iter($key, $ctx->parent);
+        });
+
+        return $iter($key, $this);
     }
 
     /**
@@ -45,8 +50,17 @@ class Context
      */
     public function get($key)
     {
-        return array_key_exists($key, $this->content) ? $this->content[$key]
-             : ($this->isRoot() ? null : $this->parent->get($key));
+        $iter = tail(function ($key, Context $ctx) use (&$iter) {
+            if (array_key_exists($key, $ctx->content)) {
+                return $ctx->content[$key];
+            }
+            if ($ctx->isRoot()) {
+                return null;
+            }
+            return $iter($key, $ctx->parent);
+        });
+
+        return $iter($key, $this);
     }
 
     /**
