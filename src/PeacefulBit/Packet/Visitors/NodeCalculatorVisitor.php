@@ -23,7 +23,8 @@ class NodeCalculatorVisitor implements NodeVisitor
         $keys = array_keys($combined);
 
         array_walk($keys, function ($key) use ($node, $combined) {
-            $value = $this->visit($combined[$key]);
+            $visitor = $this->getVisitor($combined[$key]);
+            $value = $visitor($combined[$key]);
             $this->context->set($key, $value);
         });
 
@@ -39,7 +40,7 @@ class NodeCalculatorVisitor implements NodeVisitor
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        $callable = $this->getFunction($node->getFunction());
+        $callable = $this->getFunction($node);
 
         if ($callable instanceof Nodes\NativeNode) {
             return call_user_func($callable->getCallable(), $this, $node->getArguments());
@@ -52,8 +53,10 @@ class NodeCalculatorVisitor implements NodeVisitor
         throw new \RuntimeException("Symbol is not callable");
     }
 
-    private function getFunction(Nodes\Node $function)
+    private function getFunction(Nodes\InvokeNode $node)
     {
+        $function = $node->getFunction();
+
         if ($function instanceof Nodes\SymbolNode) {
             $name = $function->getName();
             if (!$this->context->has($name)) {
@@ -81,7 +84,10 @@ class NodeCalculatorVisitor implements NodeVisitor
         $childContext = $this->context->newContext($combined);
         $childVisitor = new static($childContext);
 
-        return $childVisitor->visit($node->getBody());
+        $body = $node->getBody();
+        $visitor = $childVisitor->getVisitor($body);
+
+        return $visitor($body);
     }
 
     private function visitListOfNodes(array $listOfNodes)
@@ -92,7 +98,8 @@ class NodeCalculatorVisitor implements NodeVisitor
     public function visitSequenceNode(Nodes\SequenceNode $node)
     {
         return array_reduce($node->getNodes(), function ($prev, $next) {
-            return $this->visit($next);
+            $visitor = $this->getVisitor($next);
+            return $visitor($next);
         });
     }
 
@@ -140,7 +147,8 @@ class NodeCalculatorVisitor implements NodeVisitor
         if ($node instanceof Nodes\LambdaNode) {
             return '[function]';
         }
-        return $this->valueOf($this->visit($node));
+        $visitor = $this->getVisitor($node);
+        return $this->valueOf($visitor($node));
     }
 
     public function visitLambdaNode(Nodes\LambdaNode $node)
