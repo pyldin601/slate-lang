@@ -17,7 +17,8 @@ function export()
                     return false;
                 }
                 list ($head, $tail) = toHeadTail($rest);
-                return $visitor->visit($head) || $iter($tail);
+                $exactVisitor = $visitor->getVisitor($head);
+                return $exactVisitor($head) || $iter($tail);
             };
             return $iter($arguments);
         }),
@@ -41,9 +42,12 @@ function export()
                 throw new RuntimeException("Function 'if' accepts only three arguments");
             }
             list ($expr, $onTrue, $onFalse) = $arguments;
-            return $visitor->visit($expr)
-                ? $visitor->visit($onTrue)
-                : $visitor->visit($onFalse);
+            $expressionVisitor = $visitor->getVisitor($expr);
+            $trueVisitor = $visitor->getVisitor($onTrue);
+            $falseVisitor = $visitor->getVisitor($onFalse);
+            return $expressionVisitor($expr)
+                ? $trueVisitor($onTrue)
+                : $falseVisitor($onFalse);
         }),
         'unless' => new NativeNode('unless', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) != 3) {
