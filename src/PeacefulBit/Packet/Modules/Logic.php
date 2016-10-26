@@ -3,7 +3,7 @@
 namespace PeacefulBit\Packet\Modules\Logic;
 
 use function Nerd\Common\Arrays\all;
-use function Nerd\Common\Arrays\toHeadTail;
+use function Nerd\Common\Arrays\any;
 use PeacefulBit\Packet\Exception\RuntimeException;
 use PeacefulBit\Packet\Nodes\NativeNode;
 use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
@@ -12,51 +12,44 @@ function export()
 {
     return [
         'or' => new NativeNode('or', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            $iter = function ($rest) use (&$iter, $visitor) {
-                if (empty($rest)) {
-                    return false;
-                }
-                list ($head, $tail) = toHeadTail($rest);
-                $exactVisitor = $visitor->getVisitor($head);
-                return $exactVisitor($head) || $iter($tail);
+            $predicate = function ($item) use ($visitor) {
+                $visit = $visitor->getVisitor($item);
+                return !!$visit($item);
             };
-            return $iter($arguments);
+            return any($predicate, $arguments);
         }),
         'and' => new NativeNode('and', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            $iter = function ($rest) use (&$iter, $visitor) {
-                if (empty($rest)) {
-                    return true;
-                }
-                list ($head, $tail) = toHeadTail($rest);
-                return $visitor->visit($head) && $iter($tail);
+            $predicate = function ($item) use ($visitor) {
+                $visit = $visitor->getVisitor($item);
+                return !!$visit($item);
             };
-            return $iter($arguments);
+            return all($predicate, $arguments);
         }),
         'not' => new NativeNode('not', function (NodeCalculatorVisitor $visitor, array $arguments) {
             return all($arguments, function ($argument) use ($visitor) {
-                return !$visitor->visit($argument);
+                $visit = $visitor->getVisitor($argument);
+                return !$visit($argument);
             });
         }),
         'if' => new NativeNode('if', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) != 3) {
                 throw new RuntimeException("Function 'if' accepts only three arguments");
             }
-            list ($expr, $onTrue, $onFalse) = $arguments;
-            $expressionVisitor = $visitor->getVisitor($expr);
-            $trueVisitor = $visitor->getVisitor($onTrue);
-            $falseVisitor = $visitor->getVisitor($onFalse);
-            return $expressionVisitor($expr)
-                ? $trueVisitor($onTrue)
-                : $falseVisitor($onFalse);
+            list ($exp, $cons, $alt) = $arguments;
+            $visitExp = $visitor->getVisitor($exp);
+            $visitCons = $visitor->getVisitor($cons);
+            $visitAlt = $visitor->getVisitor($alt);
+            return $visitExp($exp) ? $visitCons($cons) : $visitAlt($alt);
         }),
         'unless' => new NativeNode('unless', function (NodeCalculatorVisitor $visitor, array $arguments) {
             if (sizeof($arguments) != 3) {
                 throw new RuntimeException("Function 'unless' accepts only three arguments");
             }
-            list ($expr, $onTrue, $onFalse) = $arguments;
-            return $visitor->visit($expr)
-                ? $visitor->visit($onFalse)
-                : $visitor->visit($onTrue);
+            list ($exp, $cons, $alt) = $arguments;
+            $visitExp = $visitor->getVisitor($exp);
+            $visitCons = $visitor->getVisitor($cons);
+            $visitAlt = $visitor->getVisitor($alt);
+            return $visitExp($exp) ? $visitAlt($alt) : $visitCons($cons);
         })
     ];
 }
