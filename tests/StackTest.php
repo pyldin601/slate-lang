@@ -52,4 +52,12 @@ class StackTest extends TestCase
         $this->expectExceptionMessage('Stack is empty');
         $stack->shift();
     }
+
+    public function testRecursiveCall()
+    {
+        $progression = function ($i) use (&$progression) {
+            return $i < 1 ? 0 : $i + $progression($i - 1);
+        };
+        $this->assertEquals(20100, $progression(200));
+    }
 }
