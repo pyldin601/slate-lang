@@ -10,14 +10,15 @@ use PHPUnit\Framework\TestCase;
 
 use PeacefulBit\Packet\Nodes;
 
-abstract class StackBasedVisitorTest extends TestCase
+class StackBasedVisitorTest extends TestCase
 {
     public function testStringValueOf()
     {
         $this->assertEquals('foo', $this->exec(new Nodes\StringNode('foo')));
-        $this->assertEquals('test message', $this->exec(new Nodes\SymbolNode('test')));
+        $this->assertInstanceOf(Nodes\StringNode::class, $this->exec(new Nodes\SymbolNode('test')));
         $this->assertEquals('second', $this->exec(new Nodes\SequenceNode([
-            new Nodes\StringNode('first')
+            new Nodes\StringNode('first'),
+            new Nodes\StringNode('second')
         ])));
     }
 
@@ -34,11 +35,11 @@ abstract class StackBasedVisitorTest extends TestCase
 
         $visitor    = new StackBasedNodeVisitor($stack, $queue, $context);
 
-        $visitor->valueOf($node);
+        $visitor->visit($node);
 
         $queue->run();
 
-        $this->assertEquals(1, $stack->size(), 'Stack must contain returned value.');
+        $this->assertGreaterThan(0, $stack->size(), 'Stack must contain returned value.');
 
         return $stack->shift();
     }

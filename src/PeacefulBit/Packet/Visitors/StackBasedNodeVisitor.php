@@ -59,9 +59,7 @@ class StackBasedNodeVisitor implements NodeVisitor
 
     public function visitFunctionNode(Nodes\FunctionNode $node)
     {
-//        $this->queue->push(function () use ($node) {
-//            $this->context->set($node->getName(), $node);
-//        });
+        $this->context->set($node->getName(), $node);
     }
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
@@ -74,7 +72,7 @@ class StackBasedNodeVisitor implements NodeVisitor
         $nodes = $seq->getNodes();
 
         array_walk($nodes, function (Nodes\Node $node) {
-            $this->enqueueVisit($node);
+            $this->visit($node);
         });
     }
 
@@ -107,39 +105,6 @@ class StackBasedNodeVisitor implements NodeVisitor
     {
         $this->queue->push(function () use ($node) {
             $this->stack->push($node);
-        });
-    }
-
-    public function valueOf($node)
-    {
-        if (is_null($node)) {
-            $this->stack->push(null);
-            return;
-        } elseif (is_array($node)) {
-            $this->stack->push(json_encode($node));
-            return;
-        } elseif (is_scalar($node)) {
-            $this->stack->push($node);
-            return;
-        } elseif ($node instanceof Nodes\SymbolNode) {
-            $this->enqueueVisit($node);
-        } elseif ($node instanceof Nodes\StringNode) {
-            $this->enqueueVisit($node);
-            return;
-        } elseif ($node instanceof Nodes\LambdaNode) {
-            throw new RuntimeException('Lambda could not be converted to string');
-        } else {
-            $this->enqueueVisit($node);
-        }
-        $this->queue->push(function () {
-            $this->valueOf($this->stack->shift());
-        });
-    }
-
-    private function enqueueVisit(Nodes\Node $node)
-    {
-        $this->queue->push(function () use ($node) {
-            $this->visit($node);
         });
     }
 }
