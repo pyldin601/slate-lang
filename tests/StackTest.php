@@ -63,6 +63,23 @@ class StackTest extends TestCase
         $this->assertEquals(35, $result);
     }
 
+    public function testApplyWithoutPush()
+    {
+        $stack = new Stack();
+
+        $sum = function ($a, $b) {
+            return $a + $b;
+        };
+
+        $stack->push(15, 20);
+
+        $this->assertEquals(2, $stack->size());
+
+        $stack->apply($sum, 2, false);
+
+        $this->assertEquals(0, $stack->size());
+    }
+
     public function testRecursiveCall()
     {
         $progression = function ($i) use (&$progression) {
