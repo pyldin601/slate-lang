@@ -18,10 +18,14 @@ class Stack
         return $this;
     }
 
-    public function apply($fn, $argCount = 0)
+    public function apply($fn, $argCount = 0, $pushResult = true)
     {
         $arguments = $this->shiftGroup($argCount);
-        $this->push($fn(...$arguments));
+        $result = $fn(...$arguments);
+
+        if ($pushResult) {
+            $this->push($result);
+        }
 
         return $this;
     }
@@ -37,14 +41,13 @@ class Stack
 
     public function shiftGroup($number)
     {
-        $iter = tail(function ($left, $acc) use (&$iter) {
-            if ($left == 0) {
-                return array_reverse($acc);
-            }
-            return $iter($left - 1, append($acc, $this->shift()));
-        });
+        if ($number > $this->size()) {
+            throw new RuntimeException("Not enough data in stack");
+        }
+        $fetched = array_slice($this->stack, $this->size() - $number);
+        $this->stack = array_slice($this->stack, 0, $this->size() - $number);
 
-        return $iter($number, []);
+        return $fetched;
     }
 
     /**
