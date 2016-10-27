@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Packet\Visitors;
 
+use PeacefulBit\Packet\Context\JobQueue;
+use PeacefulBit\Packet\Context\Stack;
 use PeacefulBit\Packet\Exception\RuntimeException;
 use PeacefulBit\Packet\Nodes;
 use PeacefulBit\Packet\Context\Context;
@@ -10,11 +12,31 @@ class NodeCalculatorVisitor implements NodeVisitor
 {
     use NodeDispatchingTrait;
 
+    /**
+     * @var Context
+     */
     private $context;
 
-    public function __construct(Context $context)
+    /**
+     * @var Stack
+     */
+    private $stack;
+
+    /**
+     * @var JobQueue
+     */
+    private $queue;
+
+    /**
+     * @param JobQueue $queue
+     * @param Stack $stack
+     * @param Context $context
+     */
+    public function __construct(JobQueue $queue, Stack $stack, Context $context)
     {
         $this->context = $context;
+        $this->stack = $stack;
+        $this->queue = $queue;
     }
 
     public function visitConstantNode(Nodes\ConstantNode $node)
@@ -82,7 +104,7 @@ class NodeCalculatorVisitor implements NodeVisitor
 
         $combined = array_combine($argNames, $this->visitListOfNodes($args));
         $childContext = $this->context->newContext($combined);
-        $childVisitor = new static($childContext);
+        $childVisitor = new static($this->queue, $this->stack, $childContext);
 
         $body = $node->getBody();
         $visitor = $childVisitor->getVisitor($body);
