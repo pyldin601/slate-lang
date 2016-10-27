@@ -37,12 +37,7 @@ class StackTest extends TestCase
 
         $stack->push('foo', 'bar', 'baz');
 
-        list ($foo, $bar, $baz) = $stack->shiftGroup(3);
-
-        $this->assertEquals('foo', $foo);
-        $this->assertEquals('bar', $bar);
-        $this->assertEquals('baz', $baz);
-
+        $this->assertEquals(['foo', 'bar', 'baz'], $stack->shiftGroup(3));
         $this->assertEquals('first', $stack->shift());
 
         $this->expectException(RuntimeException::class);
