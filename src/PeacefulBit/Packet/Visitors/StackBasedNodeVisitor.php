@@ -66,24 +66,21 @@ class StackBasedNodeVisitor implements NodeVisitor
 
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        //
+        // Get from stack
     }
 
-    public function visitSequenceNode(Nodes\SequenceNode $node)
+    public function visitSequenceNode(Nodes\SequenceNode $seq)
     {
-//        $nodes = $node->getNodes();
-//        array_walk($nodes, function (Nodes\Node $node) {
-//            $this->queue->push(function () use ($node) {
-//                $this->visit($node);
-//            });
-//        });
+        $nodes = $seq->getNodes();
+
+        array_walk($nodes, function (Nodes\Node $node) {
+            $this->enqueueVisit($node);
+        });
     }
 
     public function visitStringNode(Nodes\StringNode $node)
     {
-        $this->queue->push(function () use ($node) {
-            $this->stack->push($node->getValue());
-        });
+        $this->stack->push($node->getValue());
     }
 
     public function visitSymbolNode(Nodes\SymbolNode $node)
@@ -103,38 +100,46 @@ class StackBasedNodeVisitor implements NodeVisitor
 
     public function visitNativeNode(Nodes\NativeNode $node)
     {
-        // TODO: Implement visitNativeNode() method.
+        // Invisible
     }
 
     public function visitLambdaNode(Nodes\LambdaNode $node)
     {
-        // TODO: Implement visitLambdaNode() method.
+        $this->queue->push(function () use ($node) {
+            $this->stack->push($node);
+        });
     }
 
     public function valueOf($node)
     {
         if (is_null($node)) {
             $this->stack->push(null);
+            return;
         } elseif (is_array($node)) {
             $this->stack->push(json_encode($node));
+            return;
         } elseif (is_scalar($node)) {
             $this->stack->push($node);
+            return;
         } elseif ($node instanceof Nodes\SymbolNode) {
-            $this->queue->push(function () use ($node) {
-                $this->visitSymbolNode($node);
-            });
-            $this->queue->push(function () {
-                $this->valueOf($this->stack->shift());
-            });
+            $this->enqueueVisit($node);
         } elseif ($node instanceof Nodes\StringNode) {
-            $this->visitStringNode($node);
+            $this->enqueueVisit($node);
+            return;
         } elseif ($node instanceof Nodes\LambdaNode) {
-            $this->stack->push('[function]');
+            throw new RuntimeException('Lambda could not be converted to string');
         } else {
-            $this->queue->push(function () use ($node) {
-                $this->visit($node);
-                $this->stack->apply([$this, 'valueOf'], 1);
-            });
+            $this->enqueueVisit($node);
         }
+        $this->queue->push(function () {
+            $this->valueOf($this->stack->shift());
+        });
+    }
+
+    private function enqueueVisit(Nodes\Node $node)
+    {
+        $this->queue->push(function () use ($node) {
+            $this->visit($node);
+        });
     }
 }

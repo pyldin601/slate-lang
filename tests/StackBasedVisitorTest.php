@@ -10,12 +10,15 @@ use PHPUnit\Framework\TestCase;
 
 use PeacefulBit\Packet\Nodes;
 
-class StackBasedVisitorTest extends TestCase
+abstract class StackBasedVisitorTest extends TestCase
 {
     public function testStringValueOf()
     {
         $this->assertEquals('foo', $this->exec(new Nodes\StringNode('foo')));
         $this->assertEquals('test message', $this->exec(new Nodes\SymbolNode('test')));
+        $this->assertEquals('second', $this->exec(new Nodes\SequenceNode([
+            new Nodes\StringNode('first')
+        ])));
     }
 
     private function exec(Nodes\Node $node)
