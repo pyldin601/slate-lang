@@ -12,15 +12,14 @@ class StackTest extends TestCase
     {
         $stack = new Stack();
 
-        $this->assertInstanceOf(Stack::class, $stack);
+        $this->assertEquals(0, $stack->size());
     }
 
     public function testPushShift()
     {
         $stack = new Stack();
 
-        $stack->push('foo');
-        $stack->push('bar');
+        $stack->push('foo', 'bar');
 
         $this->assertEquals('bar', $stack->shift());
         $this->assertEquals('foo', $stack->shift());
