@@ -94,4 +94,14 @@ class Context
         $child->parent = $this;
         return $child;
     }
+
+    /**
+     * @param array $content
+     * @return Context
+     */
+    public function changeContext(array $content = [])
+    {
+        $this->content = $content;
+        return $this;
+    }
 }

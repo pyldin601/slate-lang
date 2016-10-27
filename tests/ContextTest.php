@@ -59,6 +59,19 @@ class EnvironmentTest extends TestCase
     }
 
     /**
+     * @depends testAccessors
+     * @param Context $ctx
+     * @return Context
+     */
+    public function testChange(Context $ctx)
+    {
+        $ctx2 = $ctx->changeContext(['a' => 'b']);
+
+        $this->assertTrue($ctx2->has('a'));
+        $this->assertSame($ctx2, $ctx);
+    }
+
+    /**
      * @depends testInherit
      * @param Context $ctx
      * @expectedException \PeacefulBit\Packet\Exception\RuntimeException
