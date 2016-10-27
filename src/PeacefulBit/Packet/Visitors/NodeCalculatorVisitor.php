@@ -46,8 +46,14 @@ class NodeCalculatorVisitor implements NodeVisitor
 
         array_walk($keys, function ($key) use ($node, $combined) {
             $visitor = $this->getVisitor($combined[$key]);
-            $value = $visitor($combined[$key]);
-            $this->context->set($key, $value);
+
+            $this->queue->push(function () use ($visitor, $combined, $key) {
+                $this->stack->push($visitor($combined[$key]));
+            });
+
+            $this->queue->push(function () use ($key) {
+                $this->context->set($key, $this->stack->shift());
+            });
         });
 
         return null;
