@@ -21,17 +21,18 @@ class JobQueue
 
     /**
      * @param callable $job
+     * @param array $args
      * @return void
      */
-    public function push(callable $job)
+    public function push(callable $job, array $args = [])
     {
-        array_push($this->queue, $job);
+        array_push($this->queue, [$job, $args]);
 
         if (!$this->working) {
             $this->working = true;
             while (sizeof($this->queue) > 0) {
-                $callable = array_shift($this->queue);
-                $this->result = $callable();
+                list ($callable, $args) = array_shift($this->queue);
+                $this->result = $callable(...$args);
             }
             $this->working = false;
         }
