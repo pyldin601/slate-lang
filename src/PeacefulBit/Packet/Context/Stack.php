@@ -2,9 +2,6 @@
 
 namespace PeacefulBit\Packet\Context;
 
-use function Nerd\Common\Arrays\append;
-use function Nerd\Common\Functional\tail;
-
 use PeacefulBit\Packet\Exception\RuntimeException;
 
 class Stack
