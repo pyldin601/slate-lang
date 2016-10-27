@@ -11,14 +11,7 @@ class CalculatorTest extends TestCase
 {
     public function testNativeCall()
     {
-        $calculator = new Calculator([
-            '+' => new NativeNode('+', function (NodeCalculatorVisitor $visitor, array $arguments) {
-                return array_reduce($arguments, function ($acc, $argument) use ($visitor) {
-                    return $acc + $visitor->visit($argument);
-                }, 0);
-            })
-        ]);
-
+        $calculator = new Calculator();
         $result = $calculator->calculate("(+ 1 2)");
 
         $this->assertEquals(3, $result);

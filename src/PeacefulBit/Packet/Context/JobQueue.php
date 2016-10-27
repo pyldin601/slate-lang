@@ -14,7 +14,10 @@ class JobQueue
      */
     private $result = null;
 
-    private function proceed()
+    /**
+     * @return void
+     */
+    public function run()
     {
         while (sizeof($this->queue) > 0) {
             list ($job, $args) = array_shift($this->queue);
@@ -37,8 +40,15 @@ class JobQueue
      */
     public function getLastResult()
     {
-        $this->proceed();
-
+        $this->run();
         return $this->result;
+    }
+
+    /**
+     * @return int
+     */
+    public function size()
+    {
+        return sizeof($this->queue);
     }
 }

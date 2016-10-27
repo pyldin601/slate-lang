@@ -46,4 +46,12 @@ class Stack
 
         return $iter($number, []);
     }
+
+    /**
+     * @return int
+     */
+    public function size()
+    {
+        return sizeof($this->stack);
+    }
 }
