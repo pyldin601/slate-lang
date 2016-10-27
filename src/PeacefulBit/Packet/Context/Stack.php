@@ -11,9 +11,19 @@ class Stack
 {
     private $stack = [];
 
-    public function push($value)
+    public function push(...$values)
     {
-        array_push($this->stack, $value);
+        $this->stack = array_merge($this->stack, $values);
+
+        return $this;
+    }
+
+    public function apply($fn, $argCount = 0)
+    {
+        $arguments = $this->shiftGroup($argCount);
+        $this->push($fn(...$arguments));
+
+        return $this;
     }
 
     public function shift()

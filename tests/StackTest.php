@@ -36,9 +36,7 @@ class StackTest extends TestCase
 
         $stack->push('first');
 
-        $stack->push('foo');
-        $stack->push('bar');
-        $stack->push('baz');
+        $stack->push('foo', 'bar', 'baz');
 
         list ($foo, $bar, $baz) = $stack->shiftGroup(3);
 
@@ -51,6 +49,19 @@ class StackTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Stack is empty');
         $stack->shift();
+    }
+
+    public function testApply()
+    {
+        $stack = new Stack();
+
+        $sum = function ($a, $b) {
+            return $a + $b;
+        };
+
+        $result = $stack->push(15, 20)->apply($sum, 2)->shift();
+
+        $this->assertEquals(35, $result);
     }
 
     public function testRecursiveCall()
