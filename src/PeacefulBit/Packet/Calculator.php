@@ -30,7 +30,7 @@ class Calculator
         $tokenizer = new Tokenizer;
         $queue = new JobQueue();
         $stack = new Stack();
-        $visitor = new NodeCalculatorVisitor($queue, $stack, $this->rootContext);
+        $visitor = new NodeCalculatorVisitor($this->rootContext);
         $tokens = $tokenizer->tokenize($code);
         $tree = $tokenizer->deflate($tokens);
         $node = $tokenizer->convertSequenceToNode($tree);

@@ -2,7 +2,7 @@
 
 namespace tests;
 
-class TailRec extends AbstractCalculatorTest
+class TailRecursionTest extends AbstractCalculatorTest
 {
     public function testTailRecursion()
     {

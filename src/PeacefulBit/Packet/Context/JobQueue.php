@@ -10,14 +10,17 @@ class JobQueue
     private $queue = [];
 
     /**
-     * @var bool
-     */
-    private $working = false;
-
-    /**
      * @var mixed
      */
     private $result = null;
+
+    private function proceed()
+    {
+        while (sizeof($this->queue) > 0) {
+            list ($job, $args) = array_shift($this->queue);
+            $this->result = $job(...$args);
+        }
+    }
 
     /**
      * @param callable $job
@@ -27,15 +30,6 @@ class JobQueue
     public function push(callable $job, array $args = [])
     {
         array_push($this->queue, [$job, $args]);
-
-        if (!$this->working) {
-            $this->working = true;
-            while (sizeof($this->queue) > 0) {
-                list ($callable, $args) = array_shift($this->queue);
-                $this->result = $callable(...$args);
-            }
-            $this->working = false;
-        }
     }
 
     /**
@@ -43,6 +37,8 @@ class JobQueue
      */
     public function getLastResult()
     {
+        $this->proceed();
+
         return $this->result;
     }
 }
