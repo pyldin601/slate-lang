@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Packet;
 
+use PeacefulBit\Packet\Context\JobQueue;
+use PeacefulBit\Packet\Context\Stack;
 use PeacefulBit\Packet\Parser\Tokenizer;
 use PeacefulBit\Packet\Context\Context;
 use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
@@ -29,18 +31,12 @@ class Calculator
     public function calculate($code)
     {
         $tokenizer  = new Tokenizer();
-//        $queue      = new JobQueue();
-//        $stack      = new Stack();
 
         $visitor    = new NodeCalculatorVisitor($this->rootContext);
 
         $tokens     = $tokenizer->tokenize($code);
         $tree       = $tokenizer->deflate($tokens);
         $node       = $tokenizer->convertSequenceToNode($tree);
-
-//        $visitor->valueOf($node);
-
-//        $queue->run();
 
         return $visitor->valueOf($node);
     }

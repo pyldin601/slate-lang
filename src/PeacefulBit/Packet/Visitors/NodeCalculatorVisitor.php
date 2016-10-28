@@ -41,6 +41,9 @@ class NodeCalculatorVisitor implements NodeVisitor
         return null;
     }
 
+    /*
+     * Warning! Causes recursion!
+     */
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
         $callable = $this->getFunction($node);

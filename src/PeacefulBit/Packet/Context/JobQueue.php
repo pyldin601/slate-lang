@@ -35,6 +35,11 @@ class JobQueue
         array_push($this->queue, [$job, $args]);
     }
 
+    public function prepend(callable $job, array $args = [])
+    {
+        array_unshift($this->queue, [$job, $args]);
+    }
+
     /**
      * @return mixed
      */
