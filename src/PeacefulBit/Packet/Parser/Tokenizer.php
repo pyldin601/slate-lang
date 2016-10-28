@@ -193,6 +193,31 @@ class Tokenizer
         return $iter($tokens, []);
     }
 
+    /**
+     * @param array $tokens
+     * @return mixed
+     */
+    private function findPairClosingBracketIndex(array $tokens)
+    {
+        $iter = tail(function ($rest, $depth, $position) use (&$iter) {
+            if (empty($rest)) {
+                throw new SyntaxException("Unpaired closing bracket found");
+            }
+            list ($head, $tail) = toHeadTail($rest);
+            if ($head instanceof CloseBracketToken) {
+                if ($depth == 0) {
+                    return $position;
+                }
+                return $iter($tail, $depth - 1, $position + 1);
+            }
+            if ($head instanceof OpenBracketToken) {
+                return $iter($tail, $depth + 1, $position + 1);
+            }
+            return $iter($tail, $depth, $position + 1);
+        });
+        return $iter($tokens, 0, 0);
+    }
+
     public function convertSequenceToNode(array $tree)
     {
         return new SequenceNode(array_reduce($tree, function ($acc, $token) {
@@ -313,26 +338,5 @@ class Tokenizer
         }, []);
 
         return new ConstantNode(array_keys($constants), array_values($constants));
-    }
-
-    private function findPairClosingBracketIndex(array $tokens)
-    {
-        $iter = tail(function ($rest, $depth, $position) use (&$iter) {
-            if (empty($rest)) {
-                throw new SyntaxException("Unpaired closing bracket found");
-            }
-            list ($head, $tail) = toHeadTail($rest);
-            if ($head instanceof CloseBracketToken) {
-                if ($depth == 0) {
-                    return $position;
-                }
-                return $iter($tail, $depth - 1, $position + 1);
-            }
-            if ($head instanceof OpenBracketToken) {
-                return $iter($tail, $depth + 1, $position + 1);
-            }
-            return $iter($tail, $depth, $position + 1);
-        });
-        return $iter($tokens, 0, 0);
     }
 }
