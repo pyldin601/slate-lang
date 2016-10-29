@@ -46,17 +46,25 @@ class NodeCalculatorVisitor implements NodeVisitor
      */
     public function visitInvokeNode(Nodes\InvokeNode $node)
     {
-        $callable = $this->getFunction($node);
+        $result = $node;
 
-        if ($callable instanceof Nodes\NativeNode) {
-            return call_user_func($callable->getCallable(), $this, $node->getArguments());
+        while ($result instanceof Nodes\InvokeNode) {
+
+            $callable = $this->getFunction($result);
+
+            if ($callable instanceof Nodes\NativeNode) {
+                $result = call_user_func($callable->getCallable(), $this, $result->getArguments());
+            } elseif ($callable instanceof Nodes\NativeMacroNode) {
+                $result = $this->visit(call_user_func($callable->getCallable(), $this, $result->getArguments()));
+            } elseif ($callable instanceof Nodes\LambdaNode) {
+                $result = $this->callLambdaNode($callable, $result->getArguments());
+            } else {
+                throw new \RuntimeException("Symbol is not callable");
+            }
+
         }
 
-        if ($callable instanceof Nodes\LambdaNode) {
-            return $this->callLambdaNode($callable, $node->getArguments());
-        }
-
-        throw new \RuntimeException("Symbol is not callable");
+        return $result;
     }
 
     private function getFunction(Nodes\InvokeNode $node)
