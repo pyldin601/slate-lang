@@ -11,6 +11,7 @@ $tokenizer = new \PeacefulBit\Slate\Parser\Tokenizer();
 $parser = new \PeacefulBit\Slate\Parser\Parser();
 
 $code = <<<CODE
+(def a 10 b 12 c 200)
 (def (iter x y)
      (if (= x y) 
          x
@@ -23,4 +24,4 @@ $tokens = $tokenizer->tokenize($code);
 
 $ast = $parser->parse($tokens);
 
-var_dump((string) $ast);
+echo $ast, PHP_EOL;

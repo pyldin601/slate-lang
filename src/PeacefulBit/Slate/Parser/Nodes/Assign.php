@@ -2,6 +2,10 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use function Nerd\Common\Arrays\rotate;
+use function Nerd\Common\Arrays\toHeadTail;
+use function Nerd\Common\Strings\indent;
+
 class Assign extends Node
 {
     /**
@@ -40,8 +44,23 @@ class Assign extends Node
         return $this->values;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        //
+        $prefix = '(def ';
+        $indentSize = strlen($prefix);
+
+        $rotated = array_map('strval', rotate($this->getIds(), $this->getValues()));
+        $chunks = array_chunk($rotated, 2);
+
+        $groups = array_map(function ($index) use (&$chunks, $indentSize) {
+            $merged = implode(' ', $chunks[$index]);
+            return ($index == 0) ? $merged : indent($indentSize, $merged);
+        }, array_keys($chunks));
+
+        $suffix = ')';
+        return $prefix . implode(PHP_EOL, $groups) . $suffix;
     }
 }
