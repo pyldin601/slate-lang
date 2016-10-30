@@ -38,13 +38,9 @@ class FunctionExpression extends LambdaExpression
     {
         $prefix = '(def ';
 
-        return $prefix
-        . '('
-        . strval($this->getId())
-        . ' '
-        . implode(' ', array_map('strval', $this->getParams()))
-        . ')'
-        .  ' '
-        . strval($this->getBody());
+        $signature = array_merge([$this->getId()], $this->getParams());
+        $signatureString = '(' . implode(' ', array_map('strval', $signature)) . ')';
+
+        return $prefix . $signatureString .  ' ' . strval($this->getBody()) . ')';
     }
 }
