@@ -31,6 +31,9 @@ class FunctionExpression extends LambdaExpression
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $prefix = '(def ';

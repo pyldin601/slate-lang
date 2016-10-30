@@ -25,6 +25,9 @@ class NativeExpression extends Node
         return $this->callable;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return '(native-call)';

@@ -22,6 +22,9 @@ class Program extends Node
         return $this->body;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return implode(PHP_EOL, array_map('strval', $this->getBody()));

@@ -8,7 +8,9 @@ use function Nerd\Common\Functional\tail;
 use function Nerd\Common\Strings\toArray;
 
 use PeacefulBit\Slate\Exceptions\TokenizerException;
-use PeacefulBit\Slate\Parser\Tokens\{ Token, OpenBracketToken, CloseBracketToken, IdentifierToken, StringToken };
+use PeacefulBit\Slate\Parser\Tokens\{
+    NumericToken, Token, OpenBracketToken, CloseBracketToken, IdentifierToken, StringToken
+};
 
 class Tokenizer
 {
@@ -22,6 +24,9 @@ class Tokenizer
     const TOKEN_SPACE           = " ";
     const TOKEN_NEW_LINE        = "\n";
     const TOKEN_CARRIAGE_RETURN = "\r";
+
+    const CHAR_DIGITS           = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const CHAR_DOT              = '.';
 
     /**
      * @param $char
@@ -58,6 +63,15 @@ class Tokenizer
     private function isSymbol($char)
     {
         return !$this->isDelimiter($char) && !$this->isStructural($char);
+    }
+
+    /**
+     * @param $char
+     * @return bool
+     */
+    private function isNumber($char)
+    {
+        return in_array($char, self::CHAR_DIGITS);
     }
 
     /**
@@ -108,7 +122,11 @@ class Tokenizer
                     return $symbolIter($tail, $buffer . $head, $acc);
                 }
             }
-            $symbolToken = new IdentifierToken($buffer);
+            if (is_numeric($buffer)) {
+                $symbolToken = new NumericToken($buffer);
+            } else {
+                $symbolToken = new IdentifierToken($buffer);
+            }
             return $baseIter($rest, append($acc, $symbolToken));
         });
 

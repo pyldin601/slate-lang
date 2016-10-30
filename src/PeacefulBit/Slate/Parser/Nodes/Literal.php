@@ -25,6 +25,9 @@ class Literal extends Node
         return $this->value;
     }
 
+    /**
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->getValue();

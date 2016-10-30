@@ -40,6 +40,9 @@ class LambdaExpression extends Node
         return $this->body;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return '(lambda '

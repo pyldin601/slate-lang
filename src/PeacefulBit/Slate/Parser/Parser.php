@@ -150,7 +150,7 @@ class Parser
 
         $headValues = array_map(function ($token) {
             if (!$token instanceof Tokens\IdentifierToken) {
-                throw new ParserException("Macro name and arguments must be valid identifiers.");
+                throw new ParserException("Macro name and arguments must be valid identifiers");
             }
             return $token->getValue();
         }, $head);
@@ -171,16 +171,16 @@ class Parser
             throw new ParserException("Bad assign declaration");
         }
 
-        $assigns = array_chunk($tokens, 2);
+        $assignments = array_chunk($tokens, 2);
 
-        $variables = array_reduce($assigns, function ($result, $assign) {
+        $result = array_map(function ($assign) {
             if (!$assign[0] instanceof Tokens\IdentifierToken) {
-                throw new ParserException("Bad type of identifier in assign declaration.");
+                throw new ParserException("Bad type of identifier in assign declaration");
             }
-            return array_merge($result, [$assign[0]->getValue() => $this->parseToken($assign[1])]);
-        }, []);
+            return array_map([$this, 'parseToken'], $assign);
+        }, $assignments);
 
-        return new Nodes\Assign(array_keys($variables), array_values($variables));
+        return new Nodes\Assign($result);
     }
 
     /**

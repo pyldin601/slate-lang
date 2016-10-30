@@ -2,46 +2,27 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
-use function Nerd\Common\Arrays\rotate;
-use function Nerd\Common\Arrays\toHeadTail;
-use function Nerd\Common\Strings\indent;
-
 class Assign extends Node
 {
     /**
      * @var array
      */
-    private $ids;
+    private $assigns;
 
     /**
-     * @var array
+     * @param array $assigns
      */
-    private $values;
-
-    /**
-     * @param array $ids
-     * @param array $values
-     */
-    public function __construct(array $ids, array $values)
+    public function __construct(array $assigns)
     {
-        $this->ids = $ids;
-        $this->values = $values;
+        $this->assigns = $assigns;
     }
 
     /**
      * @return array
      */
-    public function getIds(): array
+    public function getAssigns(): array
     {
-        return $this->ids;
-    }
-
-    /**
-     * @return array
-     */
-    public function getValues(): array
-    {
-        return $this->values;
+        return $this->assigns;
     }
 
     /**
@@ -50,16 +31,12 @@ class Assign extends Node
     public function __toString()
     {
         $prefix = '(def ';
-        $indentSize = strlen($prefix);
-
-        $rotated = array_map('strval', rotate($this->getIds(), $this->getValues()));
-        $chunks = array_chunk($rotated, 2);
-
-        $groups = array_map(function ($index) use (&$chunks, $indentSize) {
-            return implode(' ', $chunks[$index]);
-        }, array_keys($chunks));
-
         $suffix = ')';
+
+        $groups = array_map(function ($assign) {
+            return implode(' ', array_map('strval', $assign));
+        }, $this->getAssigns());
+
         return $prefix . implode(' ', $groups) . $suffix;
     }
 }

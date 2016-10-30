@@ -22,6 +22,9 @@ class SequenceExpression extends Node
         return $this->expressions;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return implode(' ', array_map('strval', $this->getExpressions()));
