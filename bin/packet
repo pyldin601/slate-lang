@@ -13,6 +13,7 @@ $parser = new \PeacefulBit\Slate\Parser\Parser();
 $code = <<<CODE
 (def a 10 b 12 c 200)
 (def (iter x y)
+     (def (id x) x)
      (if (= x y) 
          x
          (iter (+ x 1) y)))

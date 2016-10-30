@@ -56,11 +56,10 @@ class Assign extends Node
         $chunks = array_chunk($rotated, 2);
 
         $groups = array_map(function ($index) use (&$chunks, $indentSize) {
-            $merged = implode(' ', $chunks[$index]);
-            return ($index == 0) ? $merged : indent($indentSize, $merged);
+            return implode(' ', $chunks[$index]);
         }, array_keys($chunks));
 
         $suffix = ')';
-        return $prefix . implode(PHP_EOL, $groups) . $suffix;
+        return $prefix . implode(' ', $groups) . $suffix;
     }
 }

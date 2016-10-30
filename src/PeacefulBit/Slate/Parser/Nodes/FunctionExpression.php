@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use function Nerd\Common\Strings\indent;
+
 class FunctionExpression extends LambdaExpression
 {
     /**
@@ -31,12 +33,15 @@ class FunctionExpression extends LambdaExpression
 
     public function __toString()
     {
-        return '(def '
+        $prefix = '(def ';
+
+        return $prefix
         . '('
         . strval($this->getId())
         . ' '
         . implode(' ', array_map('strval', $this->getParams()))
-        . ') '
+        . ')'
+        .  ' '
         . strval($this->getBody());
     }
 }

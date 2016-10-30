@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use function Nerd\Common\Strings\indent;
+
 class CallExpression extends Node
 {
     /**
@@ -42,10 +44,11 @@ class CallExpression extends Node
 
     public function __toString()
     {
-        return '('
-        . strval($this->getCallee())
-        . ' '
-        . implode(' ', array_map('strval', $this->getArguments()))
-        . ')';
+        $prefix = '(' . strval($this->getCallee()) . ' ';
+        $suffix = ')';
+
+        $arguments = array_map('strval', $this->getArguments());
+
+        return $prefix . implode(' ', $arguments) . $suffix;
     }
 }
