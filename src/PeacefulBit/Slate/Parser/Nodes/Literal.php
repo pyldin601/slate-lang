@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 class Literal extends Node
 {
@@ -23,5 +23,10 @@ class Literal extends Node
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function __toString()
+    {
+        return $this->getValue();
     }
 }

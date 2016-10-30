@@ -6,7 +6,7 @@
  * Time: 21:07
  */
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 
 class Identifier extends Node
@@ -30,5 +30,13 @@ class Identifier extends Node
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

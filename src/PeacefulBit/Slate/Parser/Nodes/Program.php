@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 class Program extends Node
 {
@@ -20,5 +20,10 @@ class Program extends Node
     private function getBody()
     {
         return $this->body;
+    }
+
+    public function __toString()
+    {
+        return implode('', array_map('strval', $this->getBody()));
     }
 }

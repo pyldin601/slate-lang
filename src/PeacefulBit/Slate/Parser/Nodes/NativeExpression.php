@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 class NativeExpression extends Node
 {
@@ -23,5 +23,10 @@ class NativeExpression extends Node
     public function getCallable(): callable
     {
         return $this->callable;
+    }
+
+    public function __toString()
+    {
+        return '(native-call)';
     }
 }

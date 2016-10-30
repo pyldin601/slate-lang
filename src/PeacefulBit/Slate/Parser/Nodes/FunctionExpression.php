@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 class FunctionExpression extends LambdaExpression
 {
@@ -27,5 +27,16 @@ class FunctionExpression extends LambdaExpression
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return '(def '
+        . '('
+        . strval($this->getId())
+        . ' '
+        . implode(' ', array_map('strval', $this->getParams()))
+        . ') '
+        . strval($this->getBody());
     }
 }

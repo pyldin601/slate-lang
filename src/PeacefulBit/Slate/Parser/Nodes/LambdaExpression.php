@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Ast;
+namespace PeacefulBit\Slate\Parser\Nodes;
 
 class LambdaExpression extends Node
 {
@@ -38,5 +38,14 @@ class LambdaExpression extends Node
     public function getBody(): Node
     {
         return $this->body;
+    }
+
+    public function __toString()
+    {
+        return '(lambda '
+        . '('
+        . implode(' ', array_map('strval', $this->getParams()))
+        . ') '
+        . strval($this->getBody());
     }
 }
