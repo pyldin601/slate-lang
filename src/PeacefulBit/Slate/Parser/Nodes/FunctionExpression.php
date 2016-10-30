@@ -37,10 +37,15 @@ class FunctionExpression extends LambdaExpression
     public function __toString()
     {
         $prefix = '(def ';
+        $suffix = ')';
 
         $signature = array_merge([$this->getId()], $this->getParams());
         $signatureString = '(' . implode(' ', array_map('strval', $signature)) . ')';
 
-        return $prefix . $signatureString .  ' ' . strval($this->getBody()) . ')';
+        $body = strval($this->getBody());
+
+        $indentedBody = strlen($body) <= self::INLINE_THRESHOLD ? ' '  . $body : PHP_EOL . indent(2, $body);
+
+        return $prefix . $signatureString . $indentedBody . $suffix;
     }
 }

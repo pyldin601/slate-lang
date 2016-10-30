@@ -27,6 +27,6 @@ class SequenceExpression extends Node
      */
     public function __toString()
     {
-        return implode(' ', array_map('strval', $this->getExpressions()));
+        return implode(PHP_EOL, array_map('strval', $this->getExpressions()));
     }
 }
