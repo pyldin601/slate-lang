@@ -3,6 +3,7 @@
 namespace PeacefulBit\Slate\Parser\Nodes;
 
 use function Nerd\Common\Strings\indent;
+use function Nerd\Common\Strings\toString;
 use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
@@ -66,7 +67,7 @@ class CallExpression extends Node
         $callee = $application->evaluate($this->getCallee(), $frame);
 
         if (!$callee instanceof CallableNode) {
-            throw new EvaluatorException("Not callable");
+            throw new EvaluatorException(sprintf("%s is not callable", toString($callee)));
         }
 
         return $callee->call($application, $frame, $this->getArguments());

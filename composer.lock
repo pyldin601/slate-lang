@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nerd-components/common-functions.git",
-                "reference": "ae51d753aa9d635e9d43078368199eba696b9ab2"
+                "reference": "77bffcaa7c2906488cde59f91d258168a94a489c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/ae51d753aa9d635e9d43078368199eba696b9ab2",
-                "reference": "ae51d753aa9d635e9d43078368199eba696b9ab2",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/77bffcaa7c2906488cde59f91d258168a94a489c",
+                "reference": "77bffcaa7c2906488cde59f91d258168a94a489c",
                 "shasum": ""
             },
             "require-dev": {
@@ -86,7 +86,7 @@
                 "MIT"
             ],
             "description": "A lot of functions used in Nerd Framework applications.",
-            "time": "2016-10-30 08:38:31"
+            "time": "2016-10-31 20:58:21"
         }
     ],
     "packages-dev": [
@@ -242,16 +242,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.5.4",
+            "version": "1.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "ea74994a3dc7f8d2f65a06009348f2d63c81e61f"
+                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/ea74994a3dc7f8d2f65a06009348f2d63c81e61f",
-                "reference": "ea74994a3dc7f8d2f65a06009348f2d63c81e61f",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/399c1f9781e222f6eb6cc238796f5200d1b7f108",
+                "reference": "399c1f9781e222f6eb6cc238796f5200d1b7f108",
                 "shasum": ""
             },
             "require": {
@@ -280,7 +280,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2016-09-16 13:37:59"
+            "time": "2016-10-31 17:19:45"
         },
         {
             "name": "phpdocumentor/reflection-common",

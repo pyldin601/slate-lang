@@ -2,6 +2,8 @@
 
 namespace PeacefulBit\Slate\Core;
 
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
+
 class Frame
 {
     /**
@@ -46,6 +48,7 @@ class Frame
     /**
      * @param string $key
      * @return mixed|null
+     * @throws EvaluatorException
      */
     public function get(string $key)
     {
@@ -53,7 +56,7 @@ class Frame
             return $this->table[$key];
         }
         if ($this->isRoot()) {
-            return null;
+            throw new EvaluatorException("Symbol $key not defined");
         }
         return $this->parent->get($key);
     }

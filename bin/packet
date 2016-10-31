@@ -3,6 +3,7 @@
 
 use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
+use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -28,10 +29,20 @@ CODE;
  *
  */
 
-$tokens = $tokenizer->tokenize('(def (f x) x) (f 10)');
+$tokens = $tokenizer->tokenize($code);
 
 $ast = $parser->parse($tokens);
 
-$e = new Evaluator();
+$e = new Evaluator([
+    'if' => new NativeExpression(function (Evaluator $evaluator, Frame $frame, array $arguments) {
+        if (sizeof($arguments) != 3) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($test, $cons, $alt) = $arguments;
+
+        return $test->evaluate($evaluator, $frame) ? $cons : $alt;
+    })
+]);
 
 echo $e->valueOf($ast), PHP_EOL;
