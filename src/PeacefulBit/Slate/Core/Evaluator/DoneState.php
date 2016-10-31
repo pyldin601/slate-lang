@@ -1,30 +1,28 @@
 <?php
 
-namespace PeacefulBit\Slate\Parser\Evaluator;
+namespace PeacefulBit\Slate\Core\Evaluator;
 
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
 
-class ProgressState implements RunState
+class DoneState implements RunState
 {
-    private $state;
+    private $result;
 
     /**
-     * ProgressState constructor.
-     * @param $state
+     * @param $result
      */
-    public function __construct($state)
+    public function __construct($result)
     {
-        $this->state = $state;
+        $this->result = $result;
     }
 
     /**
      * Is this evaluation has next step.
-     *
-     * @return boolean
+     * @return bool
      */
     public function hasNext(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -35,16 +33,17 @@ class ProgressState implements RunState
      */
     public function next(): RunState
     {
-        // TODO: Implement next() method.
+        throw new EvaluatorException("Illegal state");
     }
 
     /**
      * Get result of evaluation.
+     *
      * @return mixed
      * @throws EvaluatorException
      */
     public function getResult()
     {
-        throw new EvaluatorException("Illegal state");
+        return $this->result;
     }
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 //$calculator = new \PeacefulBit\Packet\Calculator();
@@ -25,8 +28,10 @@ CODE;
  *
  */
 
-$tokens = $tokenizer->tokenize($code);
+$tokens = $tokenizer->tokenize('(def (f a) a) (f "foo")');
 
 $ast = $parser->parse($tokens);
 
-echo $ast, PHP_EOL;
+$e = new Evaluator();
+
+echo $e->evaluate($ast, new Frame()), PHP_EOL;

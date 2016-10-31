@@ -2,6 +2,9 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+
 class Literal extends Node
 {
     /**
@@ -29,6 +32,16 @@ class Literal extends Node
      * @return mixed
      */
     public function __toString()
+    {
+        return $this->getValue();
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return mixed
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
     {
         return $this->getValue();
     }

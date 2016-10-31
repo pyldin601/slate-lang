@@ -3,6 +3,8 @@
 namespace PeacefulBit\Slate\Parser\Nodes;
 
 use function Nerd\Common\Strings\indent;
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
 
 class FunctionExpression extends LambdaExpression
 {
@@ -47,5 +49,17 @@ class FunctionExpression extends LambdaExpression
         $indentedBody = strlen($body) <= self::INLINE_THRESHOLD ? ' '  . $body : PHP_EOL . indent(2, $body);
 
         return $prefix . $signatureString . $indentedBody . $suffix;
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return null
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
+    {
+        $frame->set($this->getId(), $this);
+
+        return null;
     }
 }

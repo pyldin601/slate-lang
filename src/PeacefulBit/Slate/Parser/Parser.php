@@ -68,10 +68,6 @@ class Parser
                 return $this->parseDeclaration($tail);
             }
 
-            if ($id == 'def-macro') {
-                return $this->parseMacroDeclaration($tail);
-            }
-
             if ($id == 'lambda') {
                 return $this->parseLambdaDeclaration($tail);
             }
@@ -138,26 +134,6 @@ class Parser
         list ($name, $args) = toHeadTail($headValues);
 
         return new Nodes\FunctionExpression($name, $args, $this->parseSequence($body));
-    }
-
-    private function parseMacroDeclaration($tokens): Nodes\Node
-    {
-        list ($head, $body) = toHeadTail($tokens);
-
-        if (sizeof($head) < 1) {
-            throw new ParserException("Macro must have identifier.");
-        }
-
-        $headValues = array_map(function ($token) {
-            if (!$token instanceof Tokens\IdentifierToken) {
-                throw new ParserException("Macro name and arguments must be valid identifiers");
-            }
-            return $token->getValue();
-        }, $head);
-
-        list ($name, $args) = toHeadTail($headValues);
-
-        return new Nodes\MacroExpression($name, $args, $this->parseSequence($body));
     }
 
     /**

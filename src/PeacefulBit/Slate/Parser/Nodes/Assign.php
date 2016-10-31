@@ -2,6 +2,9 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+
 class Assign extends Node
 {
     /**
@@ -38,5 +41,23 @@ class Assign extends Node
         }, $this->getAssigns());
 
         return $prefix . implode(' ', $groups) . $suffix;
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return null
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
+    {
+        $pairs = $this->getAssigns();
+
+        array_walk($pairs, function ($pair) use ($application, $frame) {
+            $value = $application->evaluate($pair[1], $frame);
+            $key = $pair[0]->getName();
+            $frame->set($key, $value);
+        });
+
+        return null;
     }
 }

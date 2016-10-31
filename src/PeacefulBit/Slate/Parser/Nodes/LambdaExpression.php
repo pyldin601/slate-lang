@@ -2,6 +2,9 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+
 class LambdaExpression extends Node
 {
     /**
@@ -50,5 +53,15 @@ class LambdaExpression extends Node
         . implode(' ', array_map('strval', $this->getParams()))
         . ') '
         . strval($this->getBody());
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return $this
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
+    {
+        return $this;
     }
 }

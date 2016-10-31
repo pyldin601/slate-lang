@@ -3,6 +3,8 @@
 namespace PeacefulBit\Slate\Parser\Nodes;
 
 use function Nerd\Common\Strings\indent;
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
 
 class CallExpression extends Node
 {
@@ -50,5 +52,18 @@ class CallExpression extends Node
         $arguments = array_map('strval', $this->getArguments());
 
         return $prefix . implode(' ', $arguments) . $suffix;
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return mixed
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
+    {
+        $newFrame = $frame->extend($this->getArguments());
+        $callee = $application->evaluate($this->getCallee(), $frame);
+
+        return $application->evaluate($this->getCallee(), $newFrame);
     }
 }

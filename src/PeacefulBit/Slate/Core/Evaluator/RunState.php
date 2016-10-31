@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Slate\Parser\Evaluator;
+namespace PeacefulBit\Slate\Core\Evaluator;
 
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
 

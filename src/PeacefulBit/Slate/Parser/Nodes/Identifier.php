@@ -9,6 +9,9 @@
 namespace PeacefulBit\Slate\Parser\Nodes;
 
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+
 class Identifier extends Node
 {
     /**
@@ -38,5 +41,15 @@ class Identifier extends Node
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @return mixed|null
+     */
+    public function evaluate(Evaluator $application, Frame $frame)
+    {
+        return $frame->get($this->getName());
     }
 }
