@@ -63,32 +63,12 @@ class CallExpression extends Node
      */
     public function evaluate(Evaluator $application, Frame $frame)
     {
-        $callable = $application->evaluate($this->getCallee(), $frame);
+        $callee = $application->evaluate($this->getCallee(), $frame);
 
-        if (!$callable instanceof CallableNode) {
-            throw new EvaluatorException("Callee must be Callable");
+        if (!$callee instanceof CallableNode) {
+            throw new EvaluatorException("Not callable");
         }
 
-        $result = $callable->call($this->getArguments());
-
-        var_dump($result);
-
-        $newFrame = $frame->extend($this->getArguments());
-
-        return $application->evaluate($this->getCallee(), $newFrame);
-    }
-
-    /**
-     * @param $id
-     * @param $value
-     * @return CallExpression
-     */
-    public function assign($id, $value)
-    {
-        $callee = $this->getCallee()->assign($id, $value);
-        $arguments = array_map(function ($argument) use ($id, $value) {
-            return $argument->assign($id, $value);
-        }, $this->getArguments());
-        return new self($callee, $arguments);
+        return $callee->call($application, $frame, $this->getArguments());
     }
 }

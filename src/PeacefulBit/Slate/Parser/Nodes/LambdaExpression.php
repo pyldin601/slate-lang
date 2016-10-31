@@ -6,6 +6,7 @@ use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
 
 use Nerd\Common\Arrays;
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
 
 class LambdaExpression extends Node implements CallableNode
 {
@@ -68,22 +69,21 @@ class LambdaExpression extends Node implements CallableNode
         return $this;
     }
 
-    public function call($arguments)
+    /**
+     * @param Evaluator $application
+     * @param Frame $frame
+     * @param array $arguments
+     * @return mixed
+     * @throws EvaluatorException
+     */
+    public function call(Evaluator $application, Frame $frame, array $arguments = [])
     {
-        //
-    }
+        if (sizeof($this->getParams()) != sizeof($arguments)) {
+            throw new EvaluatorException("Number of arguments mismatch");
+        }
 
-    public function assign($id, $value)
-    {
-        return new self($this->getParams(), $this->isFree($id)
-            ? $this->getBody()->assign($id, $value)
-            : $this->getBody());
-    }
+        $newFrame = array_combine($this->getParams(), $arguments);
 
-    public function isFree($id): bool
-    {
-        return ! Arrays\any($this->getParams(), function ($node) use ($id) {
-            return $node->getName() == $id;
-        });
+        return $application->evaluate($this->getBody(), $frame->extend($newFrame));
     }
 }

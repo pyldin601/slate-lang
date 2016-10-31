@@ -60,16 +60,4 @@ class Assign extends Node
 
         return null;
     }
-
-    /**
-     * @param string $id
-     * @param mixed $value
-     * @return Assign
-     */
-    public function assign(string $id, $value)
-    {
-        return new self(array_map(function ($assign) use ($id, $value) {
-            return [$assign[0], $assign[1]->assign($id, $value)];
-        }, $this->assigns));
-    }
 }

@@ -86,4 +86,9 @@ class Frame
         $this->table = $table;
         return $this;
     }
+
+    public function __toString()
+    {
+        return json_encode(array_keys($this->table));
+    }
 }

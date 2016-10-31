@@ -28,12 +28,10 @@ CODE;
  *
  */
 
-$tokens = $tokenizer->tokenize('(def (f x) (+ x x))');
+$tokens = $tokenizer->tokenize('(def (f x) x) (f 10)');
 
 $ast = $parser->parse($tokens);
 
-echo $ast->assign('x', new \PeacefulBit\Slate\Parser\Nodes\Literal(100)), PHP_EOL;
+$e = new Evaluator();
 
-//$e = new Evaluator();
-
-//echo $e->evaluate($ast, new Frame()), PHP_EOL;
+echo $e->valueOf($ast), PHP_EOL;

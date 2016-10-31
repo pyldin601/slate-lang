@@ -12,6 +12,4 @@ abstract class Node
     abstract public function __toString();
 
     abstract public function evaluate(Evaluator $application, Frame $frame);
-
-    abstract public function assign($id, $value);
 }

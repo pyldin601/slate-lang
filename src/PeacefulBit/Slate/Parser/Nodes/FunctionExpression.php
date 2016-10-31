@@ -62,9 +62,4 @@ class FunctionExpression extends LambdaExpression
 
         return null;
     }
-
-    public function assign($id, $value)
-    {
-        return new self($this->getId(), $this->getParams(), $this->getBody()->assign($id, $value));
-    }
 }

@@ -44,11 +44,4 @@ class Program extends Node
             return $application->evaluate($expression, $frame);
         }, null);
     }
-
-    public function assign($id, $value)
-    {
-        return new self(array_reduce($this->getBody(), function ($result, $expression) use ($id, $value) {
-            return array_merge($result, [$expression->assign($id, $value)]);
-        }, []));
-    }
 }

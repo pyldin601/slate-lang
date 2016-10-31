@@ -45,9 +45,4 @@ class Literal extends Node
     {
         return $this->getValue();
     }
-
-    public function assign($id, $value)
-    {
-        return $this;
-    }
 }
