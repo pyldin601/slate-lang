@@ -33,7 +33,7 @@ class Literal extends Node
      */
     public function __toString()
     {
-        return $this->getValue();
+        return strval($this->getValue());
     }
 
     /**
@@ -44,5 +44,10 @@ class Literal extends Node
     public function evaluate(Evaluator $application, Frame $frame)
     {
         return $this->getValue();
+    }
+
+    public function assign($id, $value)
+    {
+        return $this;
     }
 }

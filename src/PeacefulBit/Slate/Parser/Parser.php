@@ -108,7 +108,9 @@ class Parser
             throw new ParserException("Lambda arguments must be valid identifiers.");
         }
 
-        return new Nodes\LambdaExpression($head, $this->parseSequence($body));
+        $params = array_map([$this, 'parseToken'], $head);
+
+        return new Nodes\LambdaExpression($params, $this->parseSequence($body));
     }
 
     /**
@@ -124,16 +126,19 @@ class Parser
             throw new ParserException("Function must have identifier.");
         }
 
-        $headValues = array_map(function ($token) {
-            if (!$token instanceof Tokens\IdentifierToken) {
-                throw new ParserException("Function name and arguments must be valid identifiers.");
-            }
-            return $token->getValue();
-        }, $head);
+        $test = all($head, function ($token) {
+            return $token instanceof Tokens\IdentifierToken;
+        });
 
-        list ($name, $args) = toHeadTail($headValues);
+        if (!$test) {
+            throw new ParserException("Function name and arguments must be valid identifiers.");
+        }
 
-        return new Nodes\FunctionExpression($name, $args, $this->parseSequence($body));
+        list ($name, $args) = toHeadTail($head);
+
+        $params = array_map([$this, 'parseToken'], $args);
+
+        return new Nodes\FunctionExpression($name->getValue(), $params, $this->parseSequence($body));
     }
 
     /**

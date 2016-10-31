@@ -5,6 +5,7 @@ namespace PeacefulBit\Slate\Parser\Nodes;
 use function Nerd\Common\Strings\indent;
 use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
 
 class CallExpression extends Node
 {
@@ -58,12 +59,36 @@ class CallExpression extends Node
      * @param Evaluator $application
      * @param Frame $frame
      * @return mixed
+     * @throws EvaluatorException
      */
     public function evaluate(Evaluator $application, Frame $frame)
     {
+        $callable = $application->evaluate($this->getCallee(), $frame);
+
+        if (!$callable instanceof CallableNode) {
+            throw new EvaluatorException("Callee must be Callable");
+        }
+
+        $result = $callable->call($this->getArguments());
+
+        var_dump($result);
+
         $newFrame = $frame->extend($this->getArguments());
-        $callee = $application->evaluate($this->getCallee(), $frame);
 
         return $application->evaluate($this->getCallee(), $newFrame);
+    }
+
+    /**
+     * @param $id
+     * @param $value
+     * @return CallExpression
+     */
+    public function assign($id, $value)
+    {
+        $callee = $this->getCallee()->assign($id, $value);
+        $arguments = array_map(function ($argument) use ($id, $value) {
+            return $argument->assign($id, $value);
+        }, $this->getArguments());
+        return new self($callee, $arguments);
     }
 }

@@ -44,4 +44,16 @@ class SequenceExpression extends Node
             return $application->evaluate($expression, $frame);
         }, null);
     }
+
+    /**
+     * @param $id
+     * @param $value
+     * @return SequenceExpression
+     */
+    public function assign($id, $value)
+    {
+        return new self(array_reduce($this->getExpressions(), function ($result, $expression) use ($id, $value) {
+            return array_merge($result, [$expression->assign($id, $value)]);
+        }, []));
+    }
 }

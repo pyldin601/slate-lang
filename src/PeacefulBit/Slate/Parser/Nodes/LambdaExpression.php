@@ -5,7 +5,9 @@ namespace PeacefulBit\Slate\Parser\Nodes;
 use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
 
-class LambdaExpression extends Node
+use Nerd\Common\Arrays;
+
+class LambdaExpression extends Node implements CallableNode
 {
     /**
      * @var array
@@ -52,7 +54,8 @@ class LambdaExpression extends Node
         . '('
         . implode(' ', array_map('strval', $this->getParams()))
         . ') '
-        . strval($this->getBody());
+        . strval($this->getBody())
+        . ')';
     }
 
     /**
@@ -63,5 +66,24 @@ class LambdaExpression extends Node
     public function evaluate(Evaluator $application, Frame $frame)
     {
         return $this;
+    }
+
+    public function call($arguments)
+    {
+        //
+    }
+
+    public function assign($id, $value)
+    {
+        return new self($this->getParams(), $this->isFree($id)
+            ? $this->getBody()->assign($id, $value)
+            : $this->getBody());
+    }
+
+    public function isFree($id): bool
+    {
+        return ! Arrays\any($this->getParams(), function ($node) use ($id) {
+            return $node->getName() == $id;
+        });
     }
 }

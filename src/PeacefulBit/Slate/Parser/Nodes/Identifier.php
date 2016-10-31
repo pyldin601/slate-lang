@@ -52,4 +52,17 @@ class Identifier extends Node
     {
         return $frame->get($this->getName());
     }
+
+    /**
+     * @param $id
+     * @param $value
+     * @return $this
+     */
+    public function assign($id, $value)
+    {
+        if ($this->getName() == $id) {
+            return $value;
+        }
+        return $this;
+    }
 }
