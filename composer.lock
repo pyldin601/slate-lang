@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nerd-components/common-functions.git",
-                "reference": "77bffcaa7c2906488cde59f91d258168a94a489c"
+                "reference": "0915bf9e0381020504c4a230c3514796b349b62e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/77bffcaa7c2906488cde59f91d258168a94a489c",
-                "reference": "77bffcaa7c2906488cde59f91d258168a94a489c",
+                "url": "https://api.github.com/repos/nerd-components/common-functions/zipball/0915bf9e0381020504c4a230c3514796b349b62e",
+                "reference": "0915bf9e0381020504c4a230c3514796b349b62e",
                 "shasum": ""
             },
             "require-dev": {
@@ -79,14 +79,17 @@
                     "src/Nerd/Common/Classes.php",
                     "src/Nerd/Common/Strings.php",
                     "src/Nerd/Common/Functional.php"
-                ]
+                ],
+                "psr-4": {
+                    "tests\\": "tests/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "A lot of functions used in Nerd Framework applications.",
-            "time": "2016-10-31 20:58:21"
+            "time": "2016-11-01 07:19:04"
         }
     ],
     "packages-dev": [
@@ -492,16 +495,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "5f3f7e736d6319d5f1fc402aff8b026da26709a3"
+                "reference": "6cba06ff75a1a63a71033e1a01b89056f3af1e8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/5f3f7e736d6319d5f1fc402aff8b026da26709a3",
-                "reference": "5f3f7e736d6319d5f1fc402aff8b026da26709a3",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/6cba06ff75a1a63a71033e1a01b89056f3af1e8d",
+                "reference": "6cba06ff75a1a63a71033e1a01b89056f3af1e8d",
                 "shasum": ""
             },
             "require": {
@@ -551,7 +554,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-07-26 14:39:29"
+            "time": "2016-11-01 05:06:24"
         },
         {
             "name": "phpunit/php-file-iterator",

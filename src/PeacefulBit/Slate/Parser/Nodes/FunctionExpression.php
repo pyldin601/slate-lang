@@ -52,11 +52,10 @@ class FunctionExpression extends LambdaExpression
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @return null
      */
-    public function evaluate(Evaluator $application, Frame $frame)
+    public function evaluate(Frame $frame)
     {
         $frame->set($this->getId(), $this);
 

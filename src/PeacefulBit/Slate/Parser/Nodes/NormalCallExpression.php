@@ -2,13 +2,12 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
-use function Nerd\Common\Strings\indent;
 use function Nerd\Common\Strings\toString;
-use PeacefulBit\Slate\Core\Evaluator;
+
 use PeacefulBit\Slate\Core\Frame;
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
 
-class CallExpression extends Node
+class NormalCallExpression extends Node implements MustEvaluateExpression
 {
     /**
      * @var Node
@@ -46,6 +45,9 @@ class CallExpression extends Node
         return $this->arguments;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $prefix = '(' . strval($this->getCallee()) . ' ';
@@ -57,19 +59,18 @@ class CallExpression extends Node
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @return mixed
      * @throws EvaluatorException
      */
-    public function evaluate(Evaluator $application, Frame $frame)
+    public function evaluate(Frame $frame)
     {
-        $callee = $application->evaluate($this->getCallee(), $frame);
+        $callee = $frame->evaluate($this->getCallee());
 
         if (!$callee instanceof CallableNode) {
             throw new EvaluatorException(sprintf("%s is not callable", toString($callee)));
         }
 
-        return $callee->call($application, $frame, $this->getArguments());
+        return $callee->call($frame, $this->getArguments());
     }
 }

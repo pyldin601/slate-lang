@@ -2,10 +2,19 @@
 
 namespace PeacefulBit\Slate\Core;
 
+use function Nerd\Common\Arrays\toString;
+use function Nerd\Common\Functional\tail;
+
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
+use PeacefulBit\Slate\Parser\Nodes;
 
 class Frame
 {
+    /**
+     * @var Evaluator
+     */
+    private $evaluator;
+
     /**
      * @var self
      */
@@ -16,10 +25,50 @@ class Frame
      */
     private $table = [];
 
-    public function __construct(array $table = [], Frame $parent = null)
+    /**
+     * @param Evaluator $evaluator
+     * @param array $table
+     * @param Frame|null $parent
+     */
+    public function __construct(Evaluator $evaluator, array $table = [], Frame $parent = null)
     {
+        $this->evaluator = $evaluator;
         $this->table = $table;
         $this->parent = $parent;
+    }
+
+    /**
+     * @param Nodes\NodeInterface $node
+     * @return mixed
+     */
+    public function evaluate(Nodes\NodeInterface $node)
+    {
+        $iter = tail(function ($node) use (&$iter) {
+            if ($node instanceof Nodes\MustEvaluateExpression) {
+                return $iter($node->evaluate($this));
+            }
+            return $node;
+        });
+
+        $result = $iter($node->evaluate($this));
+
+        return $result;
+    }
+
+    /**
+     * @param Nodes\NodeInterface $node
+     * @return mixed
+     */
+    public function valueOf(Nodes\NodeInterface $node)
+    {
+        $iter = tail(function ($node) use (&$iter) {
+            if ($node instanceof Nodes\Node) {
+                return $iter($node->evaluate($this));
+            }
+            return $node;
+        });
+
+        return $iter($node);
     }
 
     /**
@@ -36,13 +85,17 @@ class Frame
      */
     public function has(string $key): bool
     {
-        if (array_key_exists($key, $this->table)) {
-            return true;
-        }
-        if ($this->isRoot()) {
-            return false;
-        }
-        return $this->parent->has($key);
+        $iter = tail(function ($key, Frame $frame) use (&$iter) {
+            if (array_key_exists($key, $frame->table)) {
+                return true;
+            }
+            if ($frame->isRoot()) {
+                return false;
+            }
+            return $iter($key, $frame->parent);
+        });
+
+        return $iter($key, $this);
     }
 
     /**
@@ -52,13 +105,17 @@ class Frame
      */
     public function get(string $key)
     {
-        if (array_key_exists($key, $this->table)) {
-            return $this->table[$key];
-        }
-        if ($this->isRoot()) {
-            throw new EvaluatorException("Symbol $key not defined");
-        }
-        return $this->parent->get($key);
+        $iter = tail(function ($key, Frame $frame) use (&$iter) {
+            if (array_key_exists($key, $frame->table)) {
+                return $frame->table[$key];
+            }
+            if ($frame->isRoot()) {
+                return null;
+            }
+            return $iter($key, $frame->parent);
+        });
+
+        return $iter($key, $this);
     }
 
     /**
@@ -77,7 +134,7 @@ class Frame
      */
     public function extend(array $table = []): Frame
     {
-        return new self($table, $this);
+        return new self($this->evaluator, $table, $this);
     }
 
     /**
@@ -90,8 +147,11 @@ class Frame
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
-        return json_encode(array_keys($this->table));
+        return toString(array_keys($this->table));
     }
 }

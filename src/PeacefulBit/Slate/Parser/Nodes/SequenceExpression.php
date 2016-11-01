@@ -34,14 +34,13 @@ class SequenceExpression extends Node
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @return mixed
      */
-    public function evaluate(Evaluator $application, Frame $frame)
+    public function evaluate(Frame $frame)
     {
-        return array_reduce($this->getExpressions(), function ($result, $expression) use ($application, $frame) {
-            return $application->evaluate($expression, $frame);
+        return array_reduce($this->getExpressions(), function ($result, $expression) use ($frame) {
+            return $frame->evaluate($expression);
         }, null);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace PeacefulBit\Slate\Core;
 
-use function Nerd\Common\Functional\tail;
-
-use PeacefulBit\Slate\Parser\Nodes;
+use PeacefulBit\Slate\Parser\Parser;
+use PeacefulBit\Slate\Parser\Tokenizer;
 
 class Evaluator
 {
@@ -22,37 +21,19 @@ class Evaluator
     }
 
     /**
-     * @param Nodes\Node $node
-     * @param Frame $frame
+     * @param string $code
      * @return mixed
      */
-    public function evaluate(Nodes\Node $node, Frame $frame)
+    public function evaluate(string $code)
     {
-        $iter = tail(function ($node) use (&$iter, $frame) {
-            if ($node instanceof Nodes\CallExpression) {
-                return $iter($node->evaluate($this, $frame));
-            }
-            return $node;
-        });
+        $tokenizer = new Tokenizer();
+        $tokens = $tokenizer->tokenize($code);
 
-        return $iter($node->evaluate($this, $frame));
-    }
+        $parser = new Parser();
+        $ast = $parser->parse($tokens);
 
-    /**
-     * @param Nodes\Node $node
-     * @return mixed
-     */
-    public function valueOf(Nodes\Node $node)
-    {
-        $frame = new Frame();
+        $frame = new Frame($this, $this->modules);
 
-        $iter = tail(function ($node, Frame $frame) use (&$iter) {
-            if ($node instanceof Nodes\Node) {
-                return $iter($node->evaluate($this, $frame), $frame);
-            }
-            return $node;
-        });
-
-        return $iter($node, $frame);
+        return $frame->valueOf($ast);
     }
 }

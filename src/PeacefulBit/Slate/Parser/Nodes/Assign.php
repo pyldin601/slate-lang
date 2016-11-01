@@ -44,16 +44,15 @@ class Assign extends Node
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @return null
      */
-    public function evaluate(Evaluator $application, Frame $frame)
+    public function evaluate(Frame $frame)
     {
         $pairs = $this->getAssigns();
 
-        array_walk($pairs, function ($pair) use ($application, $frame) {
-            $value = $application->evaluate($pair[1], $frame);
+        array_walk($pairs, function ($pair) use ($frame) {
+            $value = $frame->evaluate($pair[1]);
             $key = $pair[0]->getName();
             $frame->set($key, $value);
         });

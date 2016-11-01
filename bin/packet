@@ -7,42 +7,42 @@ use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-//$calculator = new \PeacefulBit\Packet\Calculator();
-
-//$calculator->run($argv[1]);
-
-$tokenizer = new \PeacefulBit\Slate\Parser\Tokenizer();
-$parser = new \PeacefulBit\Slate\Parser\Parser();
-
 $code = <<<CODE
 (def (iter x y)
   (if (= x y) 
       x
       (iter (+ x 1) y)))
-(iter 0 500)
+(iter 0 1)
 CODE;
 
-/*
- * Postfix notation.
- *
- * 0 500 iter -> (iter 1 500)
- *
- */
-
-$tokens = $tokenizer->tokenize($code);
-
-$ast = $parser->parse($tokens);
-
-$e = new Evaluator([
-    'if' => new NativeExpression(function (Evaluator $evaluator, Frame $frame, array $arguments) {
+$eval = new Evaluator([
+    'if' => new NativeExpression(function (Frame $frame, array $arguments) {
         if (sizeof($arguments) != 3) {
             throw new \Exception('Incorrect number of arguments');
         }
 
         list ($test, $cons, $alt) = $arguments;
 
-        return $test->evaluate($evaluator, $frame) ? $cons : $alt;
+        return $frame->valueOf($test) ? $cons : $alt;
+    }),
+    '=' => new NativeExpression(function (Frame $frame, array $arguments) {
+        if (sizeof($arguments) != 2) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($left, $right) = $arguments;
+
+        return $frame->valueOf($left) == $frame->valueOf($right);
+    }),
+    '+' => new NativeExpression(function (Frame $frame, array $arguments) {
+        if (sizeof($arguments) != 2) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($left, $right) = $arguments;
+
+        return $frame->valueOf($left) + $frame->valueOf($right);
     })
 ]);
 
-echo $e->valueOf($ast), PHP_EOL;
+echo $eval->evaluate($code), PHP_EOL;

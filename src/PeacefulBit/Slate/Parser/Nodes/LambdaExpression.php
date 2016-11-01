@@ -60,23 +60,21 @@ class LambdaExpression extends Node implements CallableNode
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @return $this
      */
-    public function evaluate(Evaluator $application, Frame $frame)
+    public function evaluate(Frame $frame)
     {
         return $this;
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @param array $arguments
      * @return mixed
      * @throws EvaluatorException
      */
-    public function call(Evaluator $application, Frame $frame, array $arguments = [])
+    public function call(Frame $frame, array $arguments = [])
     {
         if (sizeof($this->getParams()) != sizeof($arguments)) {
             throw new EvaluatorException("Number of arguments mismatch");
@@ -84,6 +82,6 @@ class LambdaExpression extends Node implements CallableNode
 
         $newFrame = array_combine($this->getParams(), $arguments);
 
-        return $application->evaluate($this->getBody(), $frame->extend($newFrame));
+        return $frame->extend($newFrame)->evaluate($this->getBody());
     }
 }

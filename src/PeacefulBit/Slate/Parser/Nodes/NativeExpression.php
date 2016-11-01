@@ -2,7 +2,6 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
-use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
 
 class NativeExpression implements CallableNode
@@ -18,13 +17,20 @@ class NativeExpression implements CallableNode
     }
 
     /**
-     * @param Evaluator $application
      * @param Frame $frame
      * @param array $arguments
      * @return mixed
      */
-    public function call(Evaluator $application, Frame $frame, array $arguments = [])
+    public function call(Frame $frame, array $arguments = [])
     {
-        return call_user_func($this->callable, $application, $frame, $arguments);
+        return call_user_func($this->callable, $frame, $arguments);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return '(native call)';
     }
 }

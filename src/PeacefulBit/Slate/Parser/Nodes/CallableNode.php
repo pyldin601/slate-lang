@@ -7,5 +7,5 @@ use PeacefulBit\Slate\Core\Frame;
 
 interface CallableNode
 {
-    public function call(Evaluator $application, Frame $frame, array $arguments = []);
+    public function call(Frame $frame, array $arguments = []);
 }
