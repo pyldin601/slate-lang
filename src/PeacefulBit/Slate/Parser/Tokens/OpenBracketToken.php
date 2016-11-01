@@ -6,6 +6,6 @@ class OpenBracketToken extends Token
 {
     public function __construct()
     {
-        parent::__construct('Bracket', '(');
+        parent::__construct('bracket', '(');
     }
 }

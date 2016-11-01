@@ -9,6 +9,6 @@ class StringToken extends Token
      */
     public function __construct($value)
     {
-        parent::__construct('String', $value);
+        parent::__construct('string', $value);
     }
 }

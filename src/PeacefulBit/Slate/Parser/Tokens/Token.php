@@ -39,4 +39,12 @@ class Token
     {
         return $this->value;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getType() . ':' . strval($this->getValue());
+    }
 }

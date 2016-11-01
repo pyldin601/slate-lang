@@ -9,6 +9,6 @@ class NumericToken extends Token
      */
     public function __construct($value)
     {
-        parent::__construct('Numeric', $value);
+        parent::__construct('numeric', $value);
     }
 }

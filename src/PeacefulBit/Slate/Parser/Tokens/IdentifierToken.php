@@ -9,6 +9,6 @@ class IdentifierToken extends Token
      */
     public function __construct($value)
     {
-        parent::__construct('Identifier', $value);
+        parent::__construct('id', $value);
     }
 }

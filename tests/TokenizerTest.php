@@ -2,10 +2,13 @@
 
 namespace tests;
 
-use function Nerd\Common\Arrays\deepMap;
-
-use PeacefulBit\Packet\Exception\TokenizerException;
-use PeacefulBit\Packet\Parser\Tokenizer;
+use PeacefulBit\Slate\Exceptions\TokenizerException;
+use PeacefulBit\Slate\Parser\Tokenizer;
+use PeacefulBit\Slate\Parser\Tokens\CloseBracketToken;
+use PeacefulBit\Slate\Parser\Tokens\IdentifierToken;
+use PeacefulBit\Slate\Parser\Tokens\NumericToken;
+use PeacefulBit\Slate\Parser\Tokens\OpenBracketToken;
+use PeacefulBit\Slate\Parser\Tokens\StringToken;
 use PHPUnit\Framework\TestCase;
 
 class TokenizerTest extends TestCase
@@ -28,67 +31,83 @@ class TokenizerTest extends TestCase
 
     public function testSymbol()
     {
-        $tokens = $this->tokenizer->tokenize("some_symbol");
+        $tokens = $this->tokenizer->tokenize("some");
         $this->assertCount(1, $tokens);
-
-        $token = $tokens[0];
-
-        $this->assertEquals("SymbolToken(some_symbol)", (string) $token);
+        $this->assertInstanceOf(IdentifierToken::class, $tokens[0]);
+        $this->assertEquals('id:some', $tokens[0]);
     }
 
-    public function testDelimiters()
+    public function testString()
     {
-        $this->assertCount(2, $this->tokenizer->tokenize("foo bar"));
-        $this->assertCount(2, $this->tokenizer->tokenize("foo \t bar"));
-        $this->assertCount(2, $this->tokenizer->tokenize("foo \r\n bar"));
-    }
-
-    public function testUnescapedString()
-    {
-        $tokens = $this->tokenizer->tokenize('"hello world"');
+        $tokens = $this->tokenizer->tokenize("\"some\"");
         $this->assertCount(1, $tokens);
-
-        $token = $tokens[0];
-
-        $this->assertEquals("StringToken(hello world)", $token);
+        $this->assertInstanceOf(StringToken::class, $tokens[0]);
+        $this->assertEquals('string:some', $tokens[0]);
     }
 
     public function testEscapedString()
     {
-        $tokens = $this->tokenizer->tokenize('"hello \"world\""');
+        $tokens = $this->tokenizer->tokenize('"\"world\""');
         $this->assertCount(1, $tokens);
 
-        $token = $tokens[0];
-
-        $this->assertEquals("StringToken(hello \"world\")", $token);
+        $this->assertEquals("string:\"world\"", $tokens[0]);
     }
 
-    public function testBrackets()
+    public function testNumeric()
     {
-        $tokens = $this->tokenizer->tokenize('()');
+        $tokens = $this->tokenizer->tokenize("123");
+        $this->assertCount(1, $tokens);
+        $this->assertInstanceOf(NumericToken::class, $tokens[0]);
+        $this->assertEquals('numeric:123', $tokens[0]);
+    }
+
+    public function testOpenBracket()
+    {
+        $tokens = $this->tokenizer->tokenize("(");
+        $this->assertCount(1, $tokens);
+        $this->assertInstanceOf(OpenBracketToken::class, $tokens[0]);
+        $this->assertEquals('bracket:(', $tokens[0]);
+    }
+
+    public function testCloseBracket()
+    {
+        $tokens = $this->tokenizer->tokenize(")");
+        $this->assertCount(1, $tokens);
+        $this->assertInstanceOf(CloseBracketToken::class, $tokens[0]);
+        $this->assertEquals('bracket:)', $tokens[0]);
+    }
+
+    public function testMultipleTokens()
+    {
+        $tokens = $this->tokenizer->tokenize("foo bar");
         $this->assertCount(2, $tokens);
 
-        $this->assertEquals('OpenBracketToken CloseBracketToken', implode(' ', $tokens));
+        $this->assertInstanceOf(IdentifierToken::class, $tokens[0]);
+        $this->assertInstanceOf(IdentifierToken::class, $tokens[1]);
+
+        $this->assertEquals('id:foo', $tokens[0]);
+        $this->assertEquals('id:bar', $tokens[1]);
+    }
+
+    public function testIgnoringDelimiters()
+    {
+        $this->assertCount(2, $this->tokenizer->tokenize("foo      bar"));
+        $this->assertCount(2, $this->tokenizer->tokenize("foo \t   bar"));
+        $this->assertCount(2, $this->tokenizer->tokenize("foo \r\n bar"));
     }
 
     public function testUnclosedString()
     {
-        try {
-            $this->tokenizer->tokenize('"hello');
-            $this->fail("Exception must be thrown");
-        } catch (TokenizerException $exception) {
-            $this->assertEquals("Unexpected end of string", $exception->getMessage());
-        }
+        $this->expectException(TokenizerException::class);
+        $this->expectExceptionMessage("Unexpected end of string");
+        $this->tokenizer->tokenize('"hello');
     }
 
     public function testUnusedEscape()
     {
-        try {
-            $this->tokenizer->tokenize('"hello\\');
-            $this->fail("Exception must be thrown");
-        } catch (TokenizerException $exception) {
-            $this->assertEquals("Unused escape character", $exception->getMessage());
-        }
+        $this->expectException(TokenizerException::class);
+        $this->expectExceptionMessage("Unused escape character");
+        $this->tokenizer->tokenize('"hello\\');
     }
 
     public function testParseSimpleProgram()
@@ -99,20 +118,20 @@ class TokenizerTest extends TestCase
         $this->assertCount(14, $tokens);
 
         $expectedTokens = [
-            'OpenBracketToken',
-            'SymbolToken(+)',
-            'SymbolToken(5.6)',
-            'SymbolToken(2.7)',
-            'OpenBracketToken',
-            'SymbolToken(-)',
-            'SymbolToken(15)',
-            'OpenBracketToken',
-            'SymbolToken(/)',
-            'SymbolToken(4)',
-            'SymbolToken(2)',
-            'CloseBracketToken',
-            'CloseBracketToken',
-            'CloseBracketToken'
+            'bracket:(',
+            'id:+',
+            'numeric:5.6',
+            'numeric:2.7',
+            'bracket:(',
+            'id:-',
+            'numeric:15',
+            'bracket:(',
+            'id:/',
+            'numeric:4',
+            'numeric:2',
+            'bracket:)',
+            'bracket:)',
+            'bracket:)'
         ];
 
         $expectedString = implode(' ', $expectedTokens);
@@ -120,41 +139,12 @@ class TokenizerTest extends TestCase
         $this->assertEquals($expectedString, implode(' ', $tokens));
     }
 
-    public function testDeflateProgram()
-    {
-        $code = '(+ 5.6 2.7 (- 15 (/ 4 2)))';
-        $tokens = $this->tokenizer->tokenize($code);
-        $tree = $this->tokenizer->deflate($tokens);
-
-        $actualTree = deepMap($tree, 'strval');
-
-        $expectedTree = [
-            [
-                'SymbolToken(+)',
-                'SymbolToken(5.6)',
-                'SymbolToken(2.7)',
-                [
-                    'SymbolToken(-)',
-                    'SymbolToken(15)',
-                    [
-                        'SymbolToken(/)',
-                        'SymbolToken(4)',
-                        'SymbolToken(2)',
-                    ]
-                ]
-            ]
-        ];
-
-        $this->assertCount(1, $tree);
-        $this->assertEquals($expectedTree, $actualTree);
-    }
-
     public function testComments()
     {
-        $code = '(+ 1 2) ; This must be ignored';
-        $lexemes = $this->tokenizer->tokenize($code);
+        $code = '; This must be ignored';
+        $tokens = $this->tokenizer->tokenize($code);
 
-        $this->assertCount(6, $lexemes);
+        $this->assertEmpty($tokens);
     }
 
     public function testSourceCode()
