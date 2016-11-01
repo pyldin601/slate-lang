@@ -25,6 +25,11 @@ class Frame
     private $table = [];
 
     /**
+     * @var array
+     */
+    private $modules = [];
+
+    /**
      * @param Evaluator $evaluator
      * @param array $table
      * @param Frame|null $parent
@@ -173,5 +178,30 @@ class Frame
     public function getEvaluator(): Evaluator
     {
         return $this->evaluator;
+    }
+
+    /**
+     * @param $name
+     * @param null|string $alias
+     */
+    public function useModule(string $name, string $alias = null)
+    {
+        $module = $this->getEvaluator()->getModule($name);
+        $this->modules[$alias ?? $name] = $module;
+    }
+
+    /**
+     * @param string $name
+     * @param array|null $functions
+     */
+    public function importModule(string $name, array $functions = null)
+    {
+        $module = $this->getEvaluator()->getModule($name);
+
+        $importFunctions = $functions ?? array_keys($module);
+
+        array_walk($importFunctions, function ($fn) use (&$module) {
+            $this->set($fn, $module[$fn]);
+        });
     }
 }

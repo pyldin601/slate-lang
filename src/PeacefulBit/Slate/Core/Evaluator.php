@@ -2,6 +2,7 @@
 
 namespace PeacefulBit\Slate\Core;
 
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
 use PeacefulBit\Slate\Parser\Parser;
 use PeacefulBit\Slate\Parser\Tokenizer;
 
@@ -59,5 +60,18 @@ class Evaluator
     public function __invoke(string $code)
     {
         return $this->evaluate($code);
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     * @throws EvaluatorException
+     */
+    public function getModule($name)
+    {
+        if (!array_key_exists($name, $this->modules)) {
+            throw new EvaluatorException("Module \"$name\" not found");
+        }
+        return $this->modules[$name];
     }
 }
