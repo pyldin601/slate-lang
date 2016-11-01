@@ -63,14 +63,15 @@ class Parser
         list ($head, $tail) = toHeadTail($tokens);
 
         if ($head instanceof Tokens\IdentifierToken) {
-            $id = $head->getValue();
-
-            if ($id == 'def') {
-                return $this->parseDeclaration($tail);
-            }
-
-            if ($id == 'lambda') {
-                return $this->parseLambdaDeclaration($tail);
+            switch ($head->getValue()) {
+                case 'def':
+                    return $this->parseDeclaration($tail);
+                case 'lambda':
+                    return $this->parseLambdaDeclaration($tail);
+                case 'if':
+                    return $this->parseIfExpression($tail);
+                case 'or':
+                    return $this->parseOrExpression($tail);
             }
         }
 
@@ -90,6 +91,38 @@ class Parser
         }
 
         return $this->parseFunctionDeclaration($tokens);
+    }
+
+    /**
+     * @param $tokens
+     * @return Nodes\Node
+     * @throws ParserException
+     */
+    private function parseIfExpression($tokens): Nodes\Node
+    {
+        if (sizeof($tokens) != 3) {
+            throw new ParserException("'if' requires exactly three arguments");
+        }
+
+        list ($test, $cons, $alt) = array_map([$this, 'parseToken'], $tokens);
+
+        return new Nodes\IfExpression($test, $cons, $alt);
+    }
+
+    /**
+     * @param $tokens
+     * @return Nodes\Node
+     * @throws ParserException
+     */
+    private function parseOrExpression($tokens): Nodes\Node
+    {
+        if (empty($tokens)) {
+            throw new ParserException("'or' requires at least one argument");
+        }
+
+        $expressions = array_map([$this, 'parseToken'], $tokens);
+
+        return new Nodes\OrExpression($expressions);
     }
 
     /**

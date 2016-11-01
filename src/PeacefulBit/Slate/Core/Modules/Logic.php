@@ -28,22 +28,6 @@ function export()
                 return all($arguments, function ($argument) use ($eval) {
                     return !$eval($argument);
                 });
-            }),
-            'if' => new NativeExpression(function ($eval, array $arguments) {
-                if (sizeof($arguments) != 3) {
-                    throw new EvaluatorException('Incorrect number of arguments');
-                }
-                list ($test, $cons, $alt) = $arguments;
-                $result = $eval($test) ? $cons : $alt;
-                return $eval($result);
-            }),
-            'unless' => new NativeExpression(function ($eval, array $arguments) {
-                if (sizeof($arguments) != 3) {
-                    throw new EvaluatorException('Incorrect number of arguments');
-                }
-                list ($test, $cons, $alt) = $arguments;
-                $result = $eval($test) ? $alt : $cons;
-                return $eval($result);
             })
         ]
     ];

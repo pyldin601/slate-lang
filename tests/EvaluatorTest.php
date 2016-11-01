@@ -2,7 +2,7 @@
 
 namespace tests;
 
-class CalculatorTest extends AbstractEvaluatorTestCase
+class EvaluatorTest extends AbstractEvaluatorTestCase
 {
     public function testNativeCall()
     {
@@ -62,5 +62,19 @@ class CalculatorTest extends AbstractEvaluatorTestCase
             (func "bar")
         ');
         $this->assertEquals('bar ? bar', $result);
+    }
+
+    public function testIfExpression()
+    {
+        $this->assertEquals('2', $this->evaluate("(if 0 3 2)"));
+        $this->assertEquals('3', $this->evaluate("(if 1 3 2)"));
+    }
+
+    public function testOrExpression()
+    {
+        $this->assertEquals('2', $this->evaluate("(or 0 0 2)"));
+        $this->assertEquals('3', $this->evaluate("(or 0 3 2)"));
+        $this->assertEquals('1', $this->evaluate("(or 1 3 2)"));
+        $this->assertFalse($this->evaluate("(or 0 0)"));
     }
 }
