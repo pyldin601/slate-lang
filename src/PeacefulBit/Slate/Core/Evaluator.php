@@ -2,6 +2,7 @@
 
 namespace PeacefulBit\Slate\Core;
 
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
 use PeacefulBit\Slate\Parser\Parser;
 use PeacefulBit\Slate\Parser\Tokenizer;
 
@@ -30,7 +31,7 @@ class Evaluator
 
     private function loadModules(array $modules)
     {
-        $this->modules = array_merge($modules, ...array_map(function ($export) {
+        $this->modules = array_merge_recursive($modules, ...array_map(function ($export) {
             return $export();
         }, self::$moduleExports));
     }
@@ -49,6 +50,9 @@ class Evaluator
 
         $frame = new Frame($this, $this->modules);
 
+        // Import functions from @ module
+        $frame->importModule('@');
+
         return $frame->valueOf($ast);
     }
 
@@ -59,5 +63,18 @@ class Evaluator
     public function __invoke(string $code)
     {
         return $this->evaluate($code);
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     * @throws EvaluatorException
+     */
+    public function getModule($name)
+    {
+        if (!array_key_exists($name, $this->modules)) {
+            throw new EvaluatorException("Module \"$name\" not found");
+        }
+        return $this->modules[$name];
     }
 }

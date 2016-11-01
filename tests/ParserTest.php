@@ -2,6 +2,7 @@
 
 namespace tests;
 
+use PeacefulBit\Slate\Exceptions\ParserException;
 use PeacefulBit\Slate\Parser\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -97,5 +98,79 @@ class ParserTest extends TestCase
         $ast = $this->parser->parse($tokens);
 
         $this->assertEquals('(foo a b)', strval($ast));
+    }
+
+    public function testIfExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('if'),
+            new Tokens\IdentifierToken('a'),
+            new Tokens\IdentifierToken('b'),
+            new Tokens\IdentifierToken('c'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $ast = $this->parser->parse($tokens);
+
+        $this->assertEquals('(if a b c)', strval($ast));
+    }
+
+    public function testOrExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('or'),
+            new Tokens\IdentifierToken('a'),
+            new Tokens\IdentifierToken('b'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $ast = $this->parser->parse($tokens);
+
+        $this->assertEquals('(or a b)', strval($ast));
+    }
+
+    public function testInvalidOrExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('or'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $this->expectException(ParserException::class);
+        $this->expectExceptionMessage("'or' requires at least one argument");
+
+        $this->parser->parse($tokens);
+    }
+
+    public function testAndExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('and'),
+            new Tokens\IdentifierToken('a'),
+            new Tokens\IdentifierToken('b'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $ast = $this->parser->parse($tokens);
+
+        $this->assertEquals('(and a b)', strval($ast));
+    }
+
+    public function testInvalidAndExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('and'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $this->expectException(ParserException::class);
+        $this->expectExceptionMessage("'and' requires at least one argument");
+
+        $this->parser->parse($tokens);
     }
 }
