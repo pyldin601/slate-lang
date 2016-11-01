@@ -74,6 +74,9 @@ class Parser
                     return $this->parseOrExpression($tail);
                 case 'and':
                     return $this->parseAndExpression($tail);
+                case 'use':
+                case 'cond':
+                    throw new ParserException('This keyword is reserved');
             }
         }
 
