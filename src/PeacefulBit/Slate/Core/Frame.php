@@ -6,7 +6,6 @@ use function Nerd\Common\Arrays\toString;
 use function Nerd\Common\Functional\tail;
 
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
-use PeacefulBit\Slate\Parser\Nodes;
 
 class Frame
 {
@@ -43,18 +42,19 @@ class Frame
      */
     public function evaluate($node)
     {
-        if (!$node instanceof Nodes\NodeInterface) {
-            return $node;
-        }
+//        if (!$node instanceof Nodes\NodeInterface) {
+//            return $node;
+//        }
 
-        $iter = tail(function ($node) use (&$iter) {
-            if ($node instanceof Nodes\CallExpression) {
-                return $iter($node->evaluate($this));
-            }
-            return $node;
-        });
-
-        return $iter($node->evaluate($this));
+//        $iter = tail(function ($node) use (&$iter) {
+//            if ($node instanceof Nodes\CallExpression) {
+//                return $iter($node->evaluate($this));
+//            }
+//            return $node;
+//        });
+//
+//        return $iter($node->evaluate($this));
+        return $node->evaluate($this);
     }
 
     /**
@@ -63,14 +63,15 @@ class Frame
      */
     public function valueOf($node)
     {
-        $iter = tail(function ($node) use (&$iter) {
-            if ($node instanceof Nodes\Node) {
-                return $iter($this->evaluate($node));
-            }
-            return $node;
-        });
-
-        return $iter($node);
+//        $iter = tail(function ($node) use (&$iter) {
+//            if ($node instanceof Nodes\Node) {
+//                return $iter($this->evaluate($node));
+//            }
+//            return $node;
+//        });
+//
+//        return $iter($node);
+        return $this->evaluate($node);
     }
 
     /**
