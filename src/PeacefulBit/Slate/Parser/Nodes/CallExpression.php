@@ -73,4 +73,17 @@ class CallExpression extends Node
 
         return $callee->call($frame, $this->getArguments());
     }
+
+    /**
+     * @param Frame $frame
+     * @return CallExpression
+     */
+    public function close(Frame $frame)
+    {
+//        $closedArgs = array_map(function (Node $argument) use ($frame) {
+//            return $argument instanceof Identifier ? $argument->evaluate($frame) : $argument;
+//        }, $this->getArguments());
+
+        return new self($this->getCallee(), $this->getArguments());
+    }
 }

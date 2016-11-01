@@ -38,11 +38,15 @@ class Frame
     }
 
     /**
-     * @param Nodes\NodeInterface $node
+     * @param mixed $node
      * @return mixed
      */
-    public function evaluate(Nodes\NodeInterface $node)
+    public function evaluate($node)
     {
+        if (!$node instanceof Nodes\NodeInterface) {
+            return $node;
+        }
+
         $iter = tail(function ($node) use (&$iter) {
             if ($node instanceof Nodes\CallExpression) {
                 return $iter($node->evaluate($this));
@@ -50,16 +54,14 @@ class Frame
             return $node;
         });
 
-        $result = $iter($node->evaluate($this));
-
-        return $result;
+        return $iter($node->evaluate($this));
     }
 
     /**
-     * @param Nodes\NodeInterface $node
+     * @param mixed $node
      * @return mixed
      */
-    public function valueOf(Nodes\NodeInterface $node)
+    public function valueOf($node)
     {
         $iter = tail(function ($node) use (&$iter) {
             if ($node instanceof Nodes\Node) {

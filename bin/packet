@@ -12,7 +12,7 @@ $code = <<<CODE
   (if (= x y) 
       x
       (iter (+ x 1) y)))
-(iter 0 500)
+(iter 0 10)
 CODE;
 
 $eval = new Evaluator([
@@ -23,7 +23,19 @@ $eval = new Evaluator([
 
         list ($test, $cons, $alt) = $arguments;
 
-        return $frame->evaluate($frame->valueOf($test) ? $cons : $alt);
+        $result = $frame->evaluate($test) ? $cons : $alt;
+
+        echo 'Test : ', $test, PHP_EOL;
+        echo 'Cons : ', $cons, PHP_EOL;
+        echo 'Alt  : ', $alt, PHP_EOL;
+        echo 'Res  : ', $result, PHP_EOL;
+        echo PHP_EOL;
+
+//        if ($result instanceof \PeacefulBit\Slate\Parser\Nodes\CallExpression) {
+//            return ($result->close($frame));
+//        }
+
+        return $frame->evaluate($result);
     }),
     '=' => new NativeExpression(function (Frame $frame, array $arguments) {
         if (sizeof($arguments) != 2) {
@@ -32,7 +44,7 @@ $eval = new Evaluator([
 
         list ($left, $right) = $arguments;
 
-        return $frame->valueOf($left) == $frame->valueOf($right);
+        return $frame->evaluate($left) == $frame->evaluate($right);
     }),
     '+' => new NativeExpression(function (Frame $frame, array $arguments) {
         if (sizeof($arguments) != 2) {
@@ -41,7 +53,7 @@ $eval = new Evaluator([
 
         list ($left, $right) = $arguments;
 
-        return $frame->valueOf($left) + $frame->valueOf($right);
+        return $frame->evaluate($left) + $frame->evaluate($right);
     }),
     'error' => new NativeExpression(function (Frame $frame, array $arguments) {
         fwrite(STDERR, implode(' ', array_map([$frame, 'evaluate'], $arguments)) . PHP_EOL);
