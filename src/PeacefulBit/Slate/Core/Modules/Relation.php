@@ -3,9 +3,6 @@
 namespace PeacefulBit\Slate\Core\Modules\Relation;
 
 use function Nerd\Common\Arrays\toHeadTail;
-use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Nodes\NativeNode;
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
 
 function relationReduce(NodeCalculatorVisitor $visitor, $callback, array $arguments)
 {

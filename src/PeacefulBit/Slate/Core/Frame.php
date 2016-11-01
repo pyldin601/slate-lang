@@ -75,6 +75,15 @@ class Frame
     }
 
     /**
+     * @param mixed $node
+     * @return mixed
+     */
+    public function __invoke($node)
+    {
+        return $this->evaluate($node);
+    }
+
+    /**
      * @return bool
      */
     public function isRoot(): bool
@@ -156,5 +165,13 @@ class Frame
     public function __toString()
     {
         return toString(array_keys($this->table));
+    }
+
+    /**
+     * @return Evaluator
+     */
+    public function getEvaluator(): Evaluator
+    {
+        return $this->evaluator;
     }
 }

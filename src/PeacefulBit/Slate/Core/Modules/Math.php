@@ -3,62 +3,69 @@
 namespace PeacefulBit\Slate\Core\Modules\Math;
 
 use function Nerd\Common\Arrays\toHeadTail;
-use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Nodes\NativeNode;
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
+
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
+use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 
 function export()
 {
     return [
-        '+' => new NativeNode('+', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            return array_reduce($arguments, function ($result, $argument) use ($visitor) {
-                return $result + $visitor->valueOf($argument);
-            }, 0);
-        }),
-        '*' => new NativeNode('*', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            return array_reduce($arguments, function ($result, $argument) use ($visitor) {
-                return $result * $visitor->valueOf($argument);
-            }, 1);
-        }),
-        '-' => new NativeNode('-', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            if (sizeof($arguments) == 0) {
-                throw new RuntimeException("Too few arguments");
-            }
-            list ($head, $tail) = toHeadTail($arguments);
-            if (empty($tail)) {
-                return -$visitor->valueOf($head);
-            }
-            return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return $result - $visitor->valueOf($argument);
-            }, $visitor->valueOf($head));
-        }),
-        '/' => new NativeNode('/', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            if (sizeof($arguments) == 0) {
-                throw new RuntimeException("Too few arguments");
-            }
-            list ($head, $tail) = toHeadTail($arguments);
-            if (empty($tail)) {
-                return 1 / $visitor->valueOf($head);
-            }
-            return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return $result / $visitor->valueOf($argument);
-            }, $visitor->valueOf($head));
-        }),
-        '%' => new NativeNode('%', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            if (sizeof($arguments) != 2) {
-                throw new RuntimeException("Modulo operation requires exactly two arguments");
-            }
-            list ($number, $div) = $arguments;
-            return $visitor->valueOf($number) % $visitor->valueOf($div);
-        }),
-        'pow' => new NativeNode('pow', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            if (sizeof($arguments) < 2) {
-                throw new RuntimeException("Function \"pow\" requires at least two arguments");
-            }
-            list ($head, $tail) = toHeadTail($arguments);
-            return array_reduce($tail, function ($result, $argument) use ($visitor) {
-                return pow($result, $visitor->valueOf($argument));
-            }, $visitor->valueOf($head));
-        })
+        'math' => [
+            '+' => new NativeExpression(function ($eval, array $arguments) {
+                return array_reduce($arguments, function ($result, $argument) use ($eval) {
+                    return $result + $eval($argument);
+                }, 0);
+            }),
+            '*' => new NativeExpression(function ($eval, array $arguments) {
+                return array_reduce($arguments, function ($result, $argument) use ($eval) {
+                    return $result * $eval($argument);
+                }, 1);
+            }),
+            '-' => new NativeExpression(function ($eval, array $arguments) {
+                switch (sizeof($arguments)) {
+                    case 0:
+                        throw new EvaluatorException("Too few arguments");
+                    case 1:
+                        return $eval($arguments[0]);
+                    default:
+                        list ($first, $rest) = toHeadTail($arguments);
+                        return array_reduce($rest, function ($result, $argument) use ($eval) {
+                            return $result - $eval($argument);
+                        }, $eval($first));
+                }
+            }),
+            '/' => new NativeExpression(function ($eval, array $arguments) {
+                switch (sizeof($arguments)) {
+                    case 0:
+                        throw new EvaluatorException("Too few arguments");
+                    case 1:
+                        return 1 / $eval($arguments[0]);
+                    default:
+                        list ($first, $rest) = toHeadTail($arguments);
+                        return array_reduce($rest, function ($result, $argument) use ($eval) {
+                            return $result / $eval($argument);
+                        }, $eval($first));
+                }
+            }),
+            '%' => new NativeExpression(function ($eval, array $arguments) {
+                if (sizeof($arguments) != 2) {
+                    throw new EvaluatorException("Modulo operation requires exactly two arguments");
+                }
+                list ($number, $div) = $arguments;
+                return $eval($number) % $eval($div);
+            }),
+            'pow' => new NativeExpression(function ($eval, array $arguments) {
+                switch (sizeof($arguments)) {
+                    case 0:
+                    case 1:
+                        throw new EvaluatorException("Function \"pow\" requires at least two arguments");
+                    default:
+                        list ($first, $rest) = toHeadTail($arguments);
+                        return array_reduce($rest, function ($result, $argument) use ($eval) {
+                            return pow($result, $eval($argument));
+                        }, $eval($first));
+                }
+            })
+        ]
     ];
 }

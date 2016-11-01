@@ -36,4 +36,13 @@ class Evaluator
 
         return $frame->valueOf($ast);
     }
+
+    /**
+     * @param string $code
+     * @return mixed
+     */
+    public function __invoke(string $code)
+    {
+        return $this->evaluate($code);
+    }
 }

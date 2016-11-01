@@ -23,10 +23,7 @@ class NativeExpression implements CallableNode
      */
     public function call(Frame $frame, array $arguments = [])
     {
-        $eval = function ($node) use ($frame) {
-            return $frame->evaluate($node);
-        };
-        return call_user_func($this->callable, $eval, $arguments);
+        return call_user_func($this->callable, $frame, $arguments);
     }
 
     /**

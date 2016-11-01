@@ -2,32 +2,35 @@
 
 namespace PeacefulBit\Slate\Core\Modules\Stdio;
 
-use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Nodes\NativeNode;
-use PeacefulBit\Packet\Nodes\StringNode;
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
+use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 
 function export()
 {
     return [
-        'input' => new NativeNode('input', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            if (empty($arguments)) {
-                throw new RuntimeException('Function expects one argument, but none given');
-            }
-            echo $visitor->valueOf($arguments[0]);
-            echo ' ';
-            return new StringNode(trim(fgets(STDIN)));
-        }),
-        'print' => new NativeNode('print', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            array_walk($arguments, function ($argument) use ($visitor) {
-                echo $visitor->valueOf($argument);
-            });
-        }),
-        'println' => new NativeNode('print', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            array_walk($arguments, function ($argument) use ($visitor) {
-                echo $visitor->valueOf($argument);
-            });
-            echo PHP_EOL;
-        })
+        'io' => [
+            'ask' => new NativeExpression(function ($eval, array $arguments) {
+                if (sizeof($arguments) > 0) {
+                    throw new EvaluatorException('Function expects one argument, but none given');
+                }
+                echo $eval($arguments[0]);
+                echo ' ';
+                return trim(fgets(STDIN));
+            }),
+            'say' => new NativeExpression('print', function ($eval, array $arguments) {
+                array_walk($arguments, function ($argument) use ($eval) {
+                    echo $eval($argument);
+                });
+            }),
+            'say-n' => new NativeExpression('print', function ($eval, array $arguments) {
+                array_walk($arguments, function ($argument) use ($eval) {
+                    echo $eval($argument);
+                });
+                echo PHP_EOL;
+            }),
+            'error' => new NativeExpression(function ($eval, array $arguments) {
+                fwrite(STDERR, implode(' ', array_map($eval, $arguments)) . PHP_EOL);
+            })
+        ]
     ];
 }

@@ -2,17 +2,14 @@
 
 namespace PeacefulBit\Slate\Core\Modules\Strings;
 
-use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Nodes\NativeNode;
-use PeacefulBit\Packet\Nodes\StringNode;
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
+use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 
 function export()
 {
     return [
-        'concat' => new NativeNode('input', function (NodeCalculatorVisitor $visitor, array $arguments) {
-            return array_reduce($arguments, function ($acc, $arg) use ($visitor) {
-                return $acc . $visitor->valueOf($arg);
+        'concat' => new NativeExpression('input', function ($eval, array $arguments) {
+            return array_reduce($arguments, function ($acc, $arg) use ($eval) {
+                return $acc . $eval($arg);
             }, '');
         })
     ];
