@@ -4,6 +4,7 @@
 
 Use module inside program:
 ```
+; Syntax: (use [module-name])
 (use math)
 
 (def (square-of-circle r) 
@@ -12,6 +13,7 @@ Use module inside program:
 
 Use module with name alias:
 ```
+; Syntax: (use [module-name] [module-alias])
 (use math my-math)
 
 (def (square-of-circle r) 
@@ -20,16 +22,18 @@ Use module with name alias:
 
 ### Import module functions into program
 
-Import single function from module:
+Import single or multiple functions from module:
 ```
+; Syntax: (import ([list-of-functions]) [module-name])
 (import (pow) math)
 
 (def (sum-of-squares x y)
   (+ (pow x 2) (pow y 2)))
 ```
 
-Import all functions from "math" module:
+Import all functions from module:
 ```
+; Syntax: (import [module-name])
 (import math)
 
 (def (sqrt-of-squares x y)
