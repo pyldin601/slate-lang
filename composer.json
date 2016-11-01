@@ -1,6 +1,6 @@
 {
-  "name": "peacefulbit/packet-lite",
-  "description": "My implementation of lisp-based language interpreter written on PHP.",
+  "name": "PeacefulBit/SlateLang",
+  "description": "My small interpreter of lisp-like code written on PHP.",
   "authors": [
     {
       "name": "Roman Gemini",
