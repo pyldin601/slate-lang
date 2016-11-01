@@ -2,72 +2,65 @@
 
 namespace tests;
 
-use PeacefulBit\Packet\Calculator;
-use PeacefulBit\Packet\Nodes\NativeNode;
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
-use PHPUnit\Framework\TestCase;
-
-class CalculatorTest extends TestCase
+class CalculatorTest extends AbstractEvaluatorTestCase
 {
     public function testNativeCall()
     {
-        $calculator = new Calculator([
-            '+' => new NativeNode('+', function (NodeCalculatorVisitor $visitor, array $arguments) {
-                return array_reduce($arguments, function ($acc, $argument) use ($visitor) {
-                    return $acc + $visitor->visit($argument);
-                }, 0);
-            })
-        ]);
+        $result = $this->evaluate("(? 1 2)");
 
-        $result = $calculator->calculate("(+ 1 2)");
-
-        $this->assertEquals(3, $result);
+        $this->assertEquals('1 ? 2', $result);
     }
 
     public function testStringCall()
     {
-        $calculator = new Calculator();
-        $result = $calculator->calculate('"foo"');
+        $result = $this->evaluate('"foo"');
         $this->assertEquals('foo', $result);
     }
 
     public function testConstantDefine()
     {
-        $calculator = new Calculator();
-        $result = $calculator->calculate('(def foo "bar") foo');
+        $result = $this->evaluate('(def foo "bar") foo');
         $this->assertEquals('bar', $result);
     }
 
     public function testFunctionDefine()
     {
-        $calculator = new Calculator();
-        $result = $calculator->calculate('(def (foo) "bar") (foo)');
+        $result = $this->evaluate('(def (foo) "bar") (foo)');
         $this->assertEquals('bar', $result);
     }
 
     public function testFunctionAsArgument()
     {
-        $calculator = new Calculator();
-        $result = $calculator->calculate('(def (foo) "bar") (def (baz) foo) ((baz))');
+        $result = $this->evaluate('(def (foo) "bar") (def (baz) foo) ((baz))');
         $this->assertEquals('bar', $result);
     }
 
-    public function testRunProgram()
+    public function testFunctionalComposition()
     {
-        $calculator = new Calculator();
-        $file = __DIR__ . '/fixtures/program.pt';
-        $result = $calculator->run($file);
-        $this->assertTrue($result);
-    }
-
-    public function testBug01()
-    {
-        $calculator = new Calculator();
-        $calculator->calculate('
+        $result = $this->evaluate('
             (def name "Foo")
-            (def (greet name) (print "Hello, " name))
+            (def (greet name) (? "Hello, " name))
             (greet name)
         ');
-        $this->expectOutputString("Hello, Foo");
+        $this->assertEquals('Hello,  ? Foo', $result);
+    }
+
+    public function testLambdaExpression()
+    {
+        $result = $this->evaluate('
+            (def func (lambda (x) (? x 2)))
+            (func 8)
+        ');
+        $this->assertEquals('8 ? 2', $result);
+    }
+
+    public function testArgumentsScopes()
+    {
+        $result = $this->evaluate('
+            (def a "foo")
+            (def (func a) (? a a))
+            (func "bar")
+        ');
+        $this->assertEquals('bar ? bar', $result);
     }
 }

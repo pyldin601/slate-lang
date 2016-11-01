@@ -1,8 +1,53 @@
 #!/usr/bin/env php
 <?php
 
+use PeacefulBit\Slate\Core\Evaluator;
+use PeacefulBit\Slate\Core\Frame;
+use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$calculator = new \PeacefulBit\Packet\Calculator();
+$code = <<<CODE
+(def (iter x y)
+  (if (= x y) 
+      x
+      (iter (+ x 1) y)))
+(iter 0 5)
+CODE;
 
-$calculator->run($argv[1]);
+$eval = new Evaluator([
+    'if' => new NativeExpression(function ($eval, array $arguments) {
+        if (sizeof($arguments) != 3) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($test, $cons, $alt) = $arguments;
+
+        $result = $eval($test) ? $cons : $alt;
+
+        return $eval($result);
+    }),
+    '=' => new NativeExpression(function ($eval, array $arguments) {
+        if (sizeof($arguments) != 2) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($left, $right) = $arguments;
+
+        return $eval($left) == $eval($right);
+    }),
+    '+' => new NativeExpression(function ($eval, array $arguments) {
+        if (sizeof($arguments) != 2) {
+            throw new \Exception('Incorrect number of arguments');
+        }
+
+        list ($left, $right) = $arguments;
+
+        return $eval($left) + $eval($right);
+    }),
+    'error' => new NativeExpression(function (Frame $frame, array $arguments) {
+        fwrite(STDERR, implode(' ', array_map([$frame, 'evaluate'], $arguments)) . PHP_EOL);
+    })
+]);
+
+echo $eval->evaluate($code), PHP_EOL;
