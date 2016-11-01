@@ -80,7 +80,9 @@ class LambdaExpression extends Node implements CallableNode
             throw new EvaluatorException("Number of arguments mismatch");
         }
 
-        $newFrame = array_combine($this->getParams(), $arguments);
+        $evaluatedArguments = array_map([$frame, 'evaluate'], $arguments);
+
+        $newFrame = array_combine($this->getParams(), $evaluatedArguments);
 
         return $frame->extend($newFrame)->evaluate($this->getBody());
     }
