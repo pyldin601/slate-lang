@@ -15,12 +15,12 @@ abstract class AbstractEvaluatorTestCase extends TestCase
 
     public function setUp()
     {
-        $this->eval = new Evaluator([
-            "?" => new NativeExpression(function ($eval, array $arguments) {
+        $this->eval = new Evaluator(['test' => [
+            '?' => new NativeExpression(function ($eval, array $arguments) {
                 $evaluatedArguments = array_map($eval, $arguments);
                 return implode(' ? ', $evaluatedArguments);
             })
-        ]);
+        ]]);
     }
 
     /**
