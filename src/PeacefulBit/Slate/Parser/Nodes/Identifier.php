@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 29.10.16
- * Time: 21:07
- */
 
 namespace PeacefulBit\Slate\Parser\Nodes;
-
 
 use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;

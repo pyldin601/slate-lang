@@ -31,7 +31,7 @@ class Parser
      * @return Nodes\Identifier|Nodes\Literal|Nodes\Node
      * @throws ParserException
      */
-    public function parseToken($token)
+    private function parseToken($token)
     {
         if (is_array($token)) {
             return $this->parseExpression($token);
@@ -209,18 +209,18 @@ class Parser
      * @param Tokens\StringToken $token
      * @return Nodes\Literal
      */
-    public function parseString(Tokens\StringToken $token): Nodes\Literal
+    private function parseString(Tokens\StringToken $token): Nodes\Literal
     {
-        return new Nodes\Literal($token->getValue());
+        return new Nodes\StringNode($token->getValue());
     }
 
     /**
      * @param Tokens\NumericToken $token
      * @return Nodes\Literal
      */
-    public function parseNumeric(Tokens\NumericToken $token): Nodes\Literal
+    private function parseNumeric(Tokens\NumericToken $token): Nodes\Literal
     {
-        return new Nodes\Literal($token->getValue());
+        return new Nodes\Number($token->getValue());
     }
 
     /**

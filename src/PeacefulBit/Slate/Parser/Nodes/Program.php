@@ -20,7 +20,7 @@ class Program extends Node
     /**
      * @return mixed
      */
-    private function getBody()
+    public function getBody()
     {
         return $this->body;
     }

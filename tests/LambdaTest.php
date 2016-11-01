@@ -2,11 +2,11 @@
 
 namespace tests;
 
-class LambdaTest extends AbstractCalculatorTest
+class LambdaTest extends AbstractEvaluatorTestCase
 {
     public function testLambdaDeclare()
     {
-        $result = $this->getCalculator()->calculate('
+        $result = $this->getEvaluator()->calculate('
             (lambda (x) (* x 2))
         ');
         $this->assertEquals('[function]', $result);
@@ -14,7 +14,7 @@ class LambdaTest extends AbstractCalculatorTest
 
     public function testLambdaAssign()
     {
-        $result = $this->getCalculator()->calculate('
+        $result = $this->getEvaluator()->calculate('
             (def func (lambda (x) (* x 2)))
             (func 8)
         ');

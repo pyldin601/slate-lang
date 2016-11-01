@@ -4,7 +4,7 @@ namespace PeacefulBit\Slate\Parser\Nodes;
 
 use PeacefulBit\Slate\Core\Frame;
 
-class Literal extends Node
+abstract class Literal extends Node
 {
     /**
      * @var mixed
@@ -25,14 +25,6 @@ class Literal extends Node
     public function getValue()
     {
         return $this->value;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function __toString()
-    {
-        return strval($this->getValue());
     }
 
     /**
