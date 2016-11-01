@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Modules\Strings;
+namespace PeacefulBit\Slate\Core\Modules\Strings;
 
 use PeacefulBit\Packet\Exception\RuntimeException;
 use PeacefulBit\Packet\Nodes\NativeNode;

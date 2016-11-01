@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Modules\Relation;
+namespace PeacefulBit\Slate\Core\Modules\Relation;
 
 use function Nerd\Common\Arrays\toHeadTail;
 use PeacefulBit\Packet\Exception\RuntimeException;

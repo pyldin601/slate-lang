@@ -15,11 +15,11 @@
   },
   "autoload": {
     "files": [
-      "src/PeacefulBit/Packet/Modules/Math.php",
-      "src/PeacefulBit/Packet/Modules/Logic.php",
-      "src/PeacefulBit/Packet/Modules/Relation.php",
-      "src/PeacefulBit/Packet/Modules/Stdio.php",
-      "src/PeacefulBit/Packet/Modules/Strings.php"
+      "src/PeacefulBit/Slate/Core/Modules/Math.php",
+      "src/PeacefulBit/Slate/Core/Modules/Logic.php",
+      "src/PeacefulBit/Slate/Core/Modules/Relation.php",
+      "src/PeacefulBit/Slate/Core/Modules/Stdio.php",
+      "src/PeacefulBit/Slate/Core/Modules/Strings.php"
     ],
     "psr-4": {
       "": "src/",

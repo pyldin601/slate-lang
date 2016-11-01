@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Modules\Stdio;
+namespace PeacefulBit\Slate\Core\Modules\Stdio;
 
 use PeacefulBit\Packet\Exception\RuntimeException;
 use PeacefulBit\Packet\Nodes\NativeNode;

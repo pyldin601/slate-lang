@@ -1,6 +1,6 @@
 <?php
 
-namespace PeacefulBit\Packet\Modules\Math;
+namespace PeacefulBit\Slate\Core\Modules\Math;
 
 use function Nerd\Common\Arrays\toHeadTail;
 use PeacefulBit\Packet\Exception\RuntimeException;

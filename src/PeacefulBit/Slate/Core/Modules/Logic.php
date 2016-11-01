@@ -1,12 +1,9 @@
 <?php
 
-namespace PeacefulBit\Packet\Modules\Logic;
+namespace PeacefulBit\Slate\Core\Modules\Logic;
 
 use function Nerd\Common\Arrays\all;
 use function Nerd\Common\Arrays\any;
-use PeacefulBit\Packet\Exception\RuntimeException;
-use PeacefulBit\Packet\Nodes\{NativeNode, NativeMacroNode};
-use PeacefulBit\Packet\Visitors\NodeCalculatorVisitor;
 
 function export()
 {

@@ -2,9 +2,10 @@
 
 namespace PeacefulBit\Slate\Parser;
 
-use function Nerd\Common\Arrays\{
-    all, toHeadTail, append
-};
+use function Nerd\Common\Arrays\all;
+use function Nerd\Common\Arrays\toHeadTail;
+use function Nerd\Common\Arrays\append;
+
 use function Nerd\Common\Functional\tail;
 
 use PeacefulBit\Slate\Exceptions\ParserException;

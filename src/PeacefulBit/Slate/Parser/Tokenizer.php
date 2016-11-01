@@ -8,9 +8,7 @@ use function Nerd\Common\Functional\tail;
 use function Nerd\Common\Strings\toArray;
 
 use PeacefulBit\Slate\Exceptions\TokenizerException;
-use PeacefulBit\Slate\Parser\Tokens\{
-    NumericToken, Token, OpenBracketToken, CloseBracketToken, IdentifierToken, StringToken
-};
+use PeacefulBit\Slate\Parser\Tokens;
 
 class Tokenizer
 {
@@ -91,10 +89,10 @@ class Tokenizer
             switch ($head) {
                 // We got '(', so we just add it to accumulator.
                 case self::TOKEN_OPEN_BRACKET:
-                    return $baseIter($tail, append($acc, new OpenBracketToken));
+                    return $baseIter($tail, append($acc, new Tokens\OpenBracketToken));
                 // We got ')', and doing the same as in previous case.
                 case self::TOKEN_CLOSE_BRACKET:
-                    return $baseIter($tail, append($acc, new CloseBracketToken));
+                    return $baseIter($tail, append($acc, new Tokens\CloseBracketToken));
                 // We got '"'. That means that we're in the beginning of the string.
                 // So we switch our state to stringIter.
                 case self::TOKEN_DOUBLE_QUOTE:
@@ -123,9 +121,9 @@ class Tokenizer
                 }
             }
             if (is_numeric($buffer)) {
-                $symbolToken = new NumericToken($buffer);
+                $symbolToken = new Tokens\NumericToken($buffer);
             } else {
-                $symbolToken = new IdentifierToken($buffer);
+                $symbolToken = new Tokens\IdentifierToken($buffer);
             }
             return $baseIter($rest, append($acc, $symbolToken));
         });
@@ -137,7 +135,7 @@ class Tokenizer
             }
             list ($head, $tail) = toHeadTail($rest);
             if ($head == self::TOKEN_DOUBLE_QUOTE) {
-                return $baseIter($tail, append($acc, new StringToken($buffer)));
+                return $baseIter($tail, append($acc, new Tokens\StringToken($buffer)));
             }
             if ($head == Tokenizer::TOKEN_BACK_SLASH) {
                 return $escapeIter($tail, $buffer, $acc);
