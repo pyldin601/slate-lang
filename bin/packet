@@ -9,6 +9,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $code = <<<CODE
 (def (iter x y)
+  (error x)
   (if (= x y) 
       x
       (iter (+ x 1) y)))
@@ -42,6 +43,9 @@ $eval = new Evaluator([
         list ($left, $right) = $arguments;
 
         return $frame->valueOf($left) + $frame->valueOf($right);
+    }),
+    'error' => new NativeExpression(function (Frame $frame, array $arguments) {
+        fwrite(STDERR, implode(' ', array_map([$frame, 'evaluate'], $arguments)) . PHP_EOL);
     })
 ]);
 

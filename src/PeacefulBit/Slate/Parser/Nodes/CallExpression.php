@@ -7,7 +7,7 @@ use function Nerd\Common\Strings\toString;
 use PeacefulBit\Slate\Core\Frame;
 use PeacefulBit\Slate\Exceptions\EvaluatorException;
 
-class NormalCallExpression extends Node implements MustEvaluateExpression
+class CallExpression extends Node
 {
     /**
      * @var Node

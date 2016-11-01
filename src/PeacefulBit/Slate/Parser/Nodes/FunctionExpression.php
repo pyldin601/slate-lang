@@ -3,7 +3,7 @@
 namespace PeacefulBit\Slate\Parser\Nodes;
 
 use function Nerd\Common\Strings\indent;
-use PeacefulBit\Slate\Core\Evaluator;
+
 use PeacefulBit\Slate\Core\Frame;
 
 class FunctionExpression extends LambdaExpression

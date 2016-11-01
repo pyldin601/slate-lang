@@ -2,7 +2,6 @@
 
 namespace PeacefulBit\Slate\Parser\Nodes;
 
-use PeacefulBit\Slate\Core\Evaluator;
 use PeacefulBit\Slate\Core\Frame;
 
 class Literal extends Node

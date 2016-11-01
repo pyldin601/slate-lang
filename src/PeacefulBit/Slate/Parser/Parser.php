@@ -172,7 +172,7 @@ class Parser
     {
         list ($head, $tail) = toHeadTail($tokens);
 
-        return new Nodes\NormalCallExpression(
+        return new Nodes\CallExpression(
             $this->parseToken($head),
             array_map([$this, 'parseToken'], $tail)
         );

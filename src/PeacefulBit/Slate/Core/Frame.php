@@ -44,7 +44,7 @@ class Frame
     public function evaluate(Nodes\NodeInterface $node)
     {
         $iter = tail(function ($node) use (&$iter) {
-            if ($node instanceof Nodes\MustEvaluateExpression) {
+            if ($node instanceof Nodes\CallExpression) {
                 return $iter($node->evaluate($this));
             }
             return $node;
@@ -63,7 +63,7 @@ class Frame
     {
         $iter = tail(function ($node) use (&$iter) {
             if ($node instanceof Nodes\Node) {
-                return $iter($node->evaluate($this));
+                return $iter($this->evaluate($node));
             }
             return $node;
         });
@@ -110,7 +110,7 @@ class Frame
                 return $frame->table[$key];
             }
             if ($frame->isRoot()) {
-                return null;
+                throw new EvaluatorException("Symbol \"$key\" not defined");
             }
             return $iter($key, $frame->parent);
         });
