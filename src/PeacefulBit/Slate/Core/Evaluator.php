@@ -7,17 +7,32 @@ use PeacefulBit\Slate\Parser\Tokenizer;
 
 class Evaluator
 {
+    private static $moduleExports = [
+        '\PeacefulBit\Slate\Core\Modules\Logic\export',
+        '\PeacefulBit\Slate\Core\Modules\Math\export',
+        '\PeacefulBit\Slate\Core\Modules\Relation\export',
+        '\PeacefulBit\Slate\Core\Modules\Stdio\export',
+        '\PeacefulBit\Slate\Core\Modules\Strings\export',
+    ];
+
     /**
      * @var array
      */
     private $modules;
 
     /**
-     * @param array $modules
+     * @param array $userModules
      */
-    public function __construct(array $modules = [])
+    public function __construct(array $userModules = [])
     {
-        $this->modules = $modules;
+        $this->loadModules($userModules);
+    }
+
+    private function loadModules(array $modules)
+    {
+        $this->modules = array_merge($modules, ...array_map(function ($export) {
+            return $export();
+        }, self::$moduleExports));
     }
 
     /**

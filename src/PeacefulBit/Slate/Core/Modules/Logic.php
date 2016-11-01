@@ -11,7 +11,7 @@ use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 function export()
 {
     return [
-        'logic' => [
+        '@' => [
             'or' => new NativeExpression(function ($eval, array $arguments) {
                 $predicate = function ($item) use ($eval) {
                     return !!$eval($item);
