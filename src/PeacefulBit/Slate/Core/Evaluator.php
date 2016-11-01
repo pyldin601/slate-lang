@@ -31,7 +31,7 @@ class Evaluator
 
     private function loadModules(array $modules)
     {
-        $this->modules = array_merge($modules, ...array_map(function ($export) {
+        $this->modules = array_merge_recursive($modules, ...array_map(function ($export) {
             return $export();
         }, self::$moduleExports));
     }
@@ -49,6 +49,9 @@ class Evaluator
         $ast = $parser->parse($tokens);
 
         $frame = new Frame($this, $this->modules);
+
+        // Import functions from @ module
+        $frame->importModule('@');
 
         return $frame->valueOf($ast);
     }
