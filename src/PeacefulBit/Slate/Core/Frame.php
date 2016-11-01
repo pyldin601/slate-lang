@@ -143,7 +143,7 @@ class Frame
      */
     public function replace(array $table = []): Frame
     {
-        $this->table = $table;
+        $this->table = array_merge($this->table, $table);
         return $this;
     }
 
