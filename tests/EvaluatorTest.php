@@ -77,4 +77,12 @@ class EvaluatorTest extends AbstractEvaluatorTestCase
         $this->assertEquals('1', $this->evaluate("(or 1 3 2)"));
         $this->assertFalse($this->evaluate("(or 0 0)"));
     }
+
+    public function testAndExpression()
+    {
+        $this->assertFalse($this->evaluate("(and 0 0 2)"));
+        $this->assertFalse($this->evaluate("(and 0 3 2)"));
+        $this->assertTrue($this->evaluate("(and 1 3 2)"));
+        $this->assertFalse($this->evaluate("(and 0 0)"));
+    }
 }

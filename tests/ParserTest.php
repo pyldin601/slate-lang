@@ -144,4 +144,33 @@ class ParserTest extends TestCase
 
         $this->parser->parse($tokens);
     }
+
+    public function testAndExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('and'),
+            new Tokens\IdentifierToken('a'),
+            new Tokens\IdentifierToken('b'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $ast = $this->parser->parse($tokens);
+
+        $this->assertEquals('(and a b)', strval($ast));
+    }
+
+    public function testInvalidAndExpression()
+    {
+        $tokens = [
+            new Tokens\OpenBracketToken(),
+            new Tokens\IdentifierToken('and'),
+            new Tokens\CloseBracketToken()
+        ];
+
+        $this->expectException(ParserException::class);
+        $this->expectExceptionMessage("'and' requires at least one argument");
+
+        $this->parser->parse($tokens);
+    }
 }

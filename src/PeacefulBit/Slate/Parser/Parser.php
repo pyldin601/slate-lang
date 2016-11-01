@@ -72,6 +72,8 @@ class Parser
                     return $this->parseIfExpression($tail);
                 case 'or':
                     return $this->parseOrExpression($tail);
+                case 'and':
+                    return $this->parseAndExpression($tail);
             }
         }
 
@@ -123,6 +125,22 @@ class Parser
         $expressions = array_map([$this, 'parseToken'], $tokens);
 
         return new Nodes\OrExpression($expressions);
+    }
+
+    /**
+     * @param $tokens
+     * @return Nodes\Node
+     * @throws ParserException
+     */
+    private function parseAndExpression($tokens): Nodes\Node
+    {
+        if (empty($tokens)) {
+            throw new ParserException("'and' requires at least one argument");
+        }
+
+        $expressions = array_map([$this, 'parseToken'], $tokens);
+
+        return new Nodes\AndExpression($expressions);
     }
 
     /**
