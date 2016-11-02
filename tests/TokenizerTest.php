@@ -169,7 +169,7 @@ class TokenizerTest extends TestCase
 
     public function testSourceCode()
     {
-        $file = __DIR__ . '/fixtures/program.pt';
+        $file = __DIR__ . '/fixtures/program.st';
         $code = file_get_contents($file);
         $tokens = $this->tokenizer->tokenize($code);
         $this->assertTrue(is_array($tokens));
