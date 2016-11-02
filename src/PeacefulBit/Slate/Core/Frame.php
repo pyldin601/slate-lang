@@ -146,6 +146,24 @@ class Frame
     }
 
     /**
+     * @param array $path
+     * @return mixed
+     * @throws EvaluatorException
+     */
+    public function getFromModule(array $path)
+    {
+        $node = array_reduce($path, function ($acc, $item) {
+            return (is_array($acc) && array_key_exists($item, $acc)) ? $acc[$item] : null;
+        }, $this->modules);
+
+        if (is_null($node)) {
+            throw new EvaluatorException("Module not imported");
+        }
+
+        return $node;
+    }
+
+    /**
      * @param array $table
      * @return Frame
      */

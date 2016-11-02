@@ -2,6 +2,8 @@
 
 namespace tests;
 
+use PeacefulBit\Slate\Exceptions\EvaluatorException;
+
 class EvaluatorTest extends AbstractEvaluatorTestCase
 {
     public function testNativeCall()
@@ -9,6 +11,20 @@ class EvaluatorTest extends AbstractEvaluatorTestCase
         $result = $this->evaluate("(? 1 2)");
 
         $this->assertEquals('1 ? 2', $result);
+    }
+
+    public function testSymbolCall()
+    {
+        $this->expectException(EvaluatorException::class);
+        $this->expectExceptionMessage('Symbol "unknown" not defined');
+        $this->evaluate('unknown');
+    }
+
+    public function testDotSymbolCall()
+    {
+        $this->expectException(EvaluatorException::class);
+        $this->expectExceptionMessage('Module not imported');
+        $this->evaluate('unknown.me');
     }
 
     public function testStringCall()

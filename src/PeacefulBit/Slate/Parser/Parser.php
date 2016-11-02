@@ -43,6 +43,9 @@ class Parser
         if ($token instanceof Tokens\IdentifierToken) {
             return $this->parseIdentifier($token);
         }
+        if ($token instanceof Tokens\DotIdentifierToken) {
+            return $this->parseDotIdentifier($token);
+        }
         if ($token instanceof Tokens\NumericToken) {
             return $this->parseNumeric($token);
         }
@@ -258,6 +261,15 @@ class Parser
     private function parseIdentifier(Tokens\IdentifierToken $token): Nodes\Identifier
     {
         return new Nodes\Identifier($token->getValue());
+    }
+
+    /**
+     * @param Tokens\Dot+IdentifierToken $token
+     * @return Nodes\DotIdentifier
+     */
+    private function parseDotIdentifier(Tokens\DotIdentifierToken $token): Nodes\DotIdentifier
+    {
+        return new Nodes\DotIdentifier($token->getValue());
     }
 
     /**

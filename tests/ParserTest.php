@@ -40,6 +40,15 @@ class ParserTest extends TestCase
         $this->assertEquals('foo', strval($ast));
     }
 
+    public function testDotSymbolNode()
+    {
+        $ast = $this->parser->parse([
+            new Tokens\DotIdentifierToken('foo.bar')
+        ]);
+
+        $this->assertEquals('foo.bar', strval($ast));
+    }
+
     public function testStringNode()
     {
         $ast = $this->parser->parse([
