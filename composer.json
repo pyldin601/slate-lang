@@ -9,14 +9,17 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
+  "bin": [
+    "bin/slate"
+  ],
   "require": {
     "nerd-components/common-functions": "dev-master",
     "docopt/docopt": "^1.0"
   },
   "autoload": {
     "files": [
+      "src/PeacefulBit/Slate/Core/Modules/Base.php",
       "src/PeacefulBit/Slate/Core/Modules/Math.php",
-      "src/PeacefulBit/Slate/Core/Modules/Logic.php",
       "src/PeacefulBit/Slate/Core/Modules/Relation.php",
       "src/PeacefulBit/Slate/Core/Modules/Stdio.php",
       "src/PeacefulBit/Slate/Core/Modules/Strings.php"

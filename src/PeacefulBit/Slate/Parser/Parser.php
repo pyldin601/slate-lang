@@ -264,7 +264,7 @@ class Parser
     }
 
     /**
-     * @param Tokens\Dot+IdentifierToken $token
+     * @param Tokens\DotIdentifierToken $token
      * @return Nodes\DotIdentifier
      */
     private function parseDotIdentifier(Tokens\DotIdentifierToken $token): Nodes\DotIdentifier

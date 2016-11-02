@@ -8,7 +8,7 @@ use PeacefulBit\Slate\Parser\Nodes\NativeExpression;
 function export()
 {
     return [
-        'stdio' => [
+        '@' => [
             'ask' => new NativeExpression(function ($eval, array $arguments) {
                 if (sizeof($arguments) > 0) {
                     throw new EvaluatorException('Function expects one argument, but none given');

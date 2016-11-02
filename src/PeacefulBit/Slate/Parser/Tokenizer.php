@@ -113,11 +113,11 @@ class Tokenizer
         });
 
         // State when parser parses any symbol
-        $symbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$dotSymbolIter) {
+        $symbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$preDotSymbolIter) {
             if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
                 if ($head == self::CHAR_DOT) {
-                    return $dotSymbolIter($tail, $buffer . $head, $acc);
+                    return $preDotSymbolIter($tail, $buffer . $head, $acc);
                 }
                 if ($this->isSymbol($head)) {
                     return $symbolIter($tail, $buffer . $head, $acc);
@@ -131,10 +131,23 @@ class Tokenizer
             return $baseIter($rest, append($acc, $symbolToken));
         });
 
-        // State when parser parses any symbol
-        $dotSymbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$dotSymbolIter) {
+        $preDotSymbolIter = tail(function ($rest, $buffer, $acc) use (&$baseIter, &$dotSymbolIter) {
             if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
+                if ($this->isSymbol($head)) {
+                    return $dotSymbolIter($tail, $buffer . $head, $acc);
+                }
+            }
+            throw new TokenizerException("Unexpected dot at the end of identifier");
+        });
+
+        // State when parser parses any symbol
+        $dotSymbolIter = tail(function ($rest, $buffer, $acc) use (&$baseIter, &$dotSymbolIter) {
+            if (sizeof($rest) > 0) {
+                list ($head, $tail) = toHeadTail($rest);
+                if ($head == '.') {
+                    throw new TokenizerException("Only one dot allowed");
+                }
                 if ($this->isSymbol($head)) {
                     return $dotSymbolIter($tail, $buffer . $head, $acc);
                 }
@@ -142,9 +155,6 @@ class Tokenizer
             if (is_numeric($buffer)) {
                 $symbolToken = new Tokens\NumericToken($buffer);
             } else {
-                if ($buffer[strlen($buffer) - 1] == '.') {
-                    throw new TokenizerException("Unexpected dot at the end of identifier");
-                }
                 $symbolToken = new Tokens\DotIdentifierToken($buffer);
             }
             return $baseIter($rest, append($acc, $symbolToken));

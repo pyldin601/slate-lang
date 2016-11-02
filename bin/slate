@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$readme = <<<DOCOPT
+Slate Lang Interpreter.
+
+Usage:
+  slate (-h|--help)
+  slate <file.st>
+
+Options:
+  -h --help         Show this screen
+DOCOPT;
+
+$doc = Docopt::handle($readme);

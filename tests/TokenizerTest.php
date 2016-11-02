@@ -40,14 +40,21 @@ class TokenizerTest extends TestCase
 
     public function testDotSymbol()
     {
-        $tokens = $this->tokenizer->tokenize("some.dot.symbol");
+        $tokens = $this->tokenizer->tokenize("some.dot");
         $this->assertCount(1, $tokens);
         $this->assertInstanceOf(DotIdentifierToken::class, $tokens[0]);
-        $this->assertEquals('dot_id:some.dot.symbol', strval($tokens[0]));
+        $this->assertEquals('dot_id:some.dot', strval($tokens[0]));
 
         $this->expectException(TokenizerException::class);
+        $this->expectExceptionMessage('Only one dot allowed');
+        $this->tokenizer->tokenize("some.other.dot");
+    }
+
+    public function testDotSymbol2()
+    {
+        $this->expectException(TokenizerException::class);
         $this->expectExceptionMessage('Unexpected dot at the end of identifier');
-        $this->tokenizer->tokenize("some.dot.");
+        $this->tokenizer->tokenize("some.");
     }
 
     public function testString()
