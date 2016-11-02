@@ -12,6 +12,7 @@ class Slate
         '\PeacefulBit\Slate\Core\Modules\Relation\export',
         '\PeacefulBit\Slate\Core\Modules\Stdio\export',
         '\PeacefulBit\Slate\Core\Modules\Strings\export',
+        '\PeacefulBit\Slate\Core\Modules\Lists\export'
     ];
 
     private function getModules()

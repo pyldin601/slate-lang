@@ -22,7 +22,8 @@
       "src/PeacefulBit/Slate/Core/Modules/Math.php",
       "src/PeacefulBit/Slate/Core/Modules/Relation.php",
       "src/PeacefulBit/Slate/Core/Modules/Stdio.php",
-      "src/PeacefulBit/Slate/Core/Modules/Strings.php"
+      "src/PeacefulBit/Slate/Core/Modules/Strings.php",
+      "src/PeacefulBit/Slate/Core/Modules/Lists.php"
     ],
     "psr-4": {
       "": "src/",
