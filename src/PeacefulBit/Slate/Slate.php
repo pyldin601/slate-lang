@@ -7,7 +7,7 @@ use PeacefulBit\Slate\Core\Evaluator;
 class Slate
 {
     private static $moduleExports = [
-        '\PeacefulBit\Slate\Core\Modules\Logic\export',
+        '\PeacefulBit\Slate\Core\Modules\Base\export',
         '\PeacefulBit\Slate\Core\Modules\Math\export',
         '\PeacefulBit\Slate\Core\Modules\Relation\export',
         '\PeacefulBit\Slate\Core\Modules\Stdio\export',
@@ -27,6 +27,6 @@ class Slate
 
         $evaluator = new Evaluator($modules);
 
-        return $evaluator->evaluate($modules);
+        return $evaluator->evaluate($code);
     }
 }
