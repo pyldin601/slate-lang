@@ -1,8 +1,0 @@
-#!/usr/bin/env php
-<?php
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-$calculator = new \PeacefulBit\Packet\Calculator();
-
-$calculator->run($argv[1]);
