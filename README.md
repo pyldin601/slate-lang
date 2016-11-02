@@ -5,6 +5,14 @@
 
 My implementation of lisp-like language interpreter written on PHP.
 
+## Installation
+	$ composer require global peaceful-bit/slate-lang
+
+## Usage
+	$ slate program.st
+	$ cat program.st | slate -s
+
+## Code example
 ```
 ; Define constant
 (def pi 3.14)
@@ -15,3 +23,4 @@ My implementation of lisp-like language interpreter written on PHP.
 ; Call function
 (print (square-of-circle 15))
 ```
+
