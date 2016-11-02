@@ -181,8 +181,8 @@ class Frame
     }
 
     /**
-     * @param $name
-     * @param null|string $alias
+     * @param string $name Module name to use
+     * @param null|string $alias Module alias name
      */
     public function useModule(string $name, string $alias = null)
     {
@@ -191,8 +191,8 @@ class Frame
     }
 
     /**
-     * @param string $name
-     * @param array|null $functions
+     * @param string $name Module name to import
+     * @param array|null $functions List of functions to import
      */
     public function importModule(string $name, array $functions = null)
     {

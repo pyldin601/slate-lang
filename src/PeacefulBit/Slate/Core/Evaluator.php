@@ -8,32 +8,29 @@ use PeacefulBit\Slate\Parser\Tokenizer;
 
 class Evaluator
 {
-    private static $moduleExports = [
-        '\PeacefulBit\Slate\Core\Modules\Logic\export',
-        '\PeacefulBit\Slate\Core\Modules\Math\export',
-        '\PeacefulBit\Slate\Core\Modules\Relation\export',
-        '\PeacefulBit\Slate\Core\Modules\Stdio\export',
-        '\PeacefulBit\Slate\Core\Modules\Strings\export',
-    ];
-
     /**
      * @var array
      */
     private $modules;
 
     /**
-     * @param array $userModules
+     * @param array $modules
      */
-    public function __construct(array $userModules = [])
+    public function __construct(array $modules = [])
     {
-        $this->loadModules($userModules);
+        $this->modules = $modules;
     }
 
-    private function loadModules(array $modules)
+    /**
+     * Initialize and return root frame.
+     * @return Frame
+     */
+    private function getRootFrame()
     {
-        $this->modules = array_merge_recursive($modules, ...array_map(function ($export) {
-            return $export();
-        }, self::$moduleExports));
+        $frame = new Frame($this);
+        $frame->importModule('@');
+
+        return $frame;
     }
 
     /**
@@ -48,10 +45,7 @@ class Evaluator
         $parser = new Parser();
         $ast = $parser->parse($tokens);
 
-        $frame = new Frame($this, $this->modules);
-
-        // Import functions from @ module
-        $frame->importModule('@');
+        $frame = $this->getRootFrame();
 
         return $frame->valueOf($ast);
     }
@@ -73,7 +67,7 @@ class Evaluator
     public function getModule($name)
     {
         if (!array_key_exists($name, $this->modules)) {
-            throw new EvaluatorException("Module \"$name\" not found");
+            throw new EvaluatorException("Module \"$name\" does not exist");
         }
         return $this->modules[$name];
     }
