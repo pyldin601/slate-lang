@@ -20,11 +20,12 @@ Slate Lang Interpreter. Written by Roman Gemini.
 
 Usage:
   slate (-h|--help)
-  slate -
+  slate (-s|--stdin)
   slate <file.st>
 
 Options:
-  -h --help         Show this screen
+  -h --help     Show this screen
+  -s --stdin    Read program from stdin
 DOCOPT;
 
 $doc = Docopt::handle($readme);
@@ -32,13 +33,13 @@ $doc = Docopt::handle($readme);
 $slate = new \PeacefulBit\Slate\Slate();
 
 try {
-    if (!empty($doc->args['<file.st>'])) {
+    if ($doc->args['<file.st>']) {
         $file = $doc->args['<file.st>'];
         if (!file_exists($file)) {
             throw new Exception("File \"$file\" does not exist");
         }
         $code = file_get_contents($doc->args['<file.st>']);
-    } else {
+    } elseif ($doc->args['--stdin']) {
         $code = stream_get_contents(STDIN);
     }
     $slate->evaluate($code);
