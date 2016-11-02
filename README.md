@@ -6,7 +6,7 @@
 My implementation of lisp-like language interpreter written on PHP.
 
 ## Installation
-	$ composer require global peaceful-bit/slate-lang
+	$ composer global require peaceful-bit/slate-lang
 
 ## Usage
 	$ slate program.st
