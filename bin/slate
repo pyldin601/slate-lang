@@ -20,6 +20,7 @@ Slate Lang Interpreter. Written by Roman Gemini.
 
 Usage:
   slate (-h|--help)
+  slate -
   slate <file.st>
 
 Options:
