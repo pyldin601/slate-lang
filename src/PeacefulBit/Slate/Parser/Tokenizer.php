@@ -113,9 +113,12 @@ class Tokenizer
         });
 
         // State when parser parses any symbol
-        $symbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$delimiterIter) {
+        $symbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$dotSymbolIter) {
             if (sizeof($rest) > 0) {
                 list ($head, $tail) = toHeadTail($rest);
+                if ($head == self::CHAR_DOT) {
+                    return $dotSymbolIter($tail, $buffer . $head, $acc);
+                }
                 if ($this->isSymbol($head)) {
                     return $symbolIter($tail, $buffer . $head, $acc);
                 }
@@ -124,6 +127,25 @@ class Tokenizer
                 $symbolToken = new Tokens\NumericToken($buffer);
             } else {
                 $symbolToken = new Tokens\IdentifierToken($buffer);
+            }
+            return $baseIter($rest, append($acc, $symbolToken));
+        });
+
+        // State when parser parses any symbol
+        $dotSymbolIter = tail(function ($rest, $buffer, $acc) use (&$symbolIter, &$baseIter, &$dotSymbolIter) {
+            if (sizeof($rest) > 0) {
+                list ($head, $tail) = toHeadTail($rest);
+                if ($this->isSymbol($head)) {
+                    return $dotSymbolIter($tail, $buffer . $head, $acc);
+                }
+            }
+            if (is_numeric($buffer)) {
+                $symbolToken = new Tokens\NumericToken($buffer);
+            } else {
+                if ($buffer[strlen($buffer) - 1] == '.') {
+                    throw new TokenizerException("Unexpected dot at the end of identifier");
+                }
+                $symbolToken = new Tokens\DotIdentifierToken($buffer);
             }
             return $baseIter($rest, append($acc, $symbolToken));
         });

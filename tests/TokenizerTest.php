@@ -5,6 +5,7 @@ namespace tests;
 use PeacefulBit\Slate\Exceptions\TokenizerException;
 use PeacefulBit\Slate\Parser\Tokenizer;
 use PeacefulBit\Slate\Parser\Tokens\CloseBracketToken;
+use PeacefulBit\Slate\Parser\Tokens\DotIdentifierToken;
 use PeacefulBit\Slate\Parser\Tokens\IdentifierToken;
 use PeacefulBit\Slate\Parser\Tokens\NumericToken;
 use PeacefulBit\Slate\Parser\Tokens\OpenBracketToken;
@@ -35,6 +36,14 @@ class TokenizerTest extends TestCase
         $this->assertCount(1, $tokens);
         $this->assertInstanceOf(IdentifierToken::class, $tokens[0]);
         $this->assertEquals('id:some', $tokens[0]);
+    }
+
+    public function testDotSymbol()
+    {
+        $tokens = $this->tokenizer->tokenize("some.dot.symbol");
+        $this->assertCount(1, $tokens);
+        $this->assertInstanceOf(DotIdentifierToken::class, $tokens[0]);
+        $this->assertEquals('dot_id:some.dot.symbol', strval($tokens[0]));
     }
 
     public function testString()
