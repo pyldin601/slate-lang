@@ -1,5 +1,5 @@
 {
-  "name": "PeacefulBit/SlateLang",
+  "name": "peaceful-bit/slate-lang",
   "description": "My small interpreter of lisp-like code written on PHP.",
   "authors": [
     {
