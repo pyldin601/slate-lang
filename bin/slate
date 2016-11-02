@@ -42,6 +42,7 @@ try {
     }
     $slate->evaluate($code);
 } catch (Exception $e) {
-    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL . PHP_EOL);
+    fwrite(STDERR, $e->getTraceAsString());
     exit(1);
 }

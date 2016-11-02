@@ -10,7 +10,7 @@ function export()
     return [
         '@' => [
             'ask' => new NativeExpression(function ($eval, array $arguments) {
-                if (sizeof($arguments) > 0) {
+                if (sizeof($arguments) != 1) {
                     throw new EvaluatorException('Function expects one argument, but none given');
                 }
                 echo $eval($arguments[0]);

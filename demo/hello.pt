@@ -1,7 +1,0 @@
-(def (greet name) (println "Hello, " name "."))
-(def (think age)  (println "You're so "
-                           (if (> age 18) "old" "young")
-                           "."))
-
-(greet (input "What is your name?"))
-(think (input "How old are you?"))
