@@ -44,6 +44,10 @@ class TokenizerTest extends TestCase
         $this->assertCount(1, $tokens);
         $this->assertInstanceOf(DotIdentifierToken::class, $tokens[0]);
         $this->assertEquals('dot_id:some.dot.symbol', strval($tokens[0]));
+
+        $this->expectException(TokenizerException::class);
+        $this->expectExceptionMessage('Unexpected dot at the end of identifier');
+        $this->tokenizer->tokenize("some.dot.");
     }
 
     public function testString()
