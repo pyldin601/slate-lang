@@ -1,7 +1,7 @@
-# packet-lite
-[![Build Status](https://travis-ci.org/peacefulbit/packet-lite.svg?branch=master)](https://travis-ci.org/peacefulbit/packet-lite)
-[![Coverage Status](https://coveralls.io/repos/github/peacefulbit/packet-lite/badge.svg?branch=master)](https://coveralls.io/github/peacefulbit/packet-lite?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/peacefulbit/packet-lite/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/peacefulbit/packet-lite/?branch=master)
+# slate-lang
+[![Build Status](https://travis-ci.org/peaceful-bit/slate-lang.svg?branch=master)](https://travis-ci.org/peaceful-bit/slate-lang)
+[![Coverage Status](https://coveralls.io/repos/github/peaceful-bit/slate-lang/badge.svg?branch=master)](https://coveralls.io/github/peaceful-bit/slate-lang?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/peaceful-bit/slate-lang/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/peaceful-bit/slate-lang/?branch=master)
 
 My implementation of lisp-like language interpreter written on PHP.
 
